@@ -84,6 +84,60 @@ kbd{font:700 12px/1 var(--mono);padding:5px 6px;border-radius:4px;background:lin
 .piece.target.brick{border-color:var(--gold)}
 .hint{position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:12px;background:var(--gold);color:#1a0f30;padding:2px 6px;border-radius:6px;z-index:2}
 .jack{color:#ffc83d!important;font-size:56px!important}
+/* ===== Workflow mode ===== */
+body.wfmode #wrap{max-width:1360px}
+body.wfmode #hud,body.wfmode #main,body.wfmode #banner{display:none!important}
+#wf{flex:1;display:flex;gap:10px;min-height:0;position:relative;margin-top:8px}
+#wf .pnl{background:var(--panel);border:1px solid var(--bd);border-radius:4px;padding:10px;display:flex;flex-direction:column;gap:8px;min-height:0}
+#wfLeft{width:260px;overflow:auto}#wfRight{width:300px}
+#wfCenter{flex:1;display:flex;flex-direction:column;min-width:0;border:2px solid var(--gold);border-radius:4px;background:var(--panel)}
+#wfBar{display:flex;gap:6px;padding:6px;border-bottom:1px solid var(--bd);font:12px var(--mono);align-items:center}
+#wfName{width:90px;padding:3px 6px;background:var(--bg);border:1px solid var(--bd);color:var(--green)}
+#wfFx{flex:1;padding:3px 6px;background:var(--bg);border:1px solid var(--bd);white-space:nowrap;overflow:hidden;min-height:20px}
+#wfFx::before{content:'fx  ';color:var(--gold);font-style:italic}
+#wfSeq{display:flex;gap:2px;align-items:center}#wfSeq kbd{font-size:10px;padding:3px 4px}
+#wfGridWrap{flex:1;overflow:auto;min-height:0}
+#wfGrid{border-collapse:collapse;table-layout:fixed;font:12px var(--mono)}
+#wfGrid td,#wfGrid th{border:1px solid #1f324a;height:23px;padding:0 4px;overflow:hidden;white-space:nowrap}
+body.light #wfGrid td,body.light #wfGrid th{border-color:#dcd3bd}
+#wfGrid th{background:#0f2238;color:var(--mut);font-weight:600;text-align:center;position:sticky;top:0;z-index:1}
+#wfGrid th.rh{position:sticky;left:0;z-index:2}
+body.light #wfGrid th{background:#e9e0c8}
+#wfGrid th.hsel{color:#19d47a;background:#123528}
+body.light #wfGrid th.hsel{background:#cfe6d3;color:#0b6b35}
+#wfGrid td{background:#06111f;color:var(--fg)}
+body.light #wfGrid td{background:#fffdf6}
+#wfGrid td.num{text-align:right}#wfGrid td.neg{color:var(--red)}
+#wfGrid td.fl{background:#d4af3738}
+#wfGrid td.sel{background:#19d47a2e}#wfGrid td.fl.sel{background:#8fbf5a55}
+#wfGrid td.act{outline:2px solid #19d47a;outline-offset:-2px}
+#wfGrid td.bd{border:1px solid var(--fg)}
+#wfGrid td.fzr{border-bottom:3px solid var(--gold)}#wfGrid td.fzc{border-right:3px solid var(--gold)}
+.farr{float:right;font-size:8px;border:1px solid var(--mut);padding:0 2px;margin-left:3px;line-height:12px;margin-top:4px}
+.cur{color:#19d47a;animation:cur .8s steps(1) infinite}
+#wfTabs{display:flex;gap:2px;padding:4px 6px;border-top:1px solid var(--bd);font:12px var(--mono);align-items:center}
+#wfTabs span{padding:3px 12px;background:var(--bg);border-bottom:3px solid var(--green)}#wfTabs i{margin-left:auto;color:var(--mut);font-size:11px}
+#wfChecks{list-style:none;padding:0;margin:0;font-size:13px}
+#wfChecks li{padding:5px 4px 5px 24px;position:relative;border-bottom:1px dashed var(--bd)}
+#wfChecks li::before{content:'☐';position:absolute;left:4px;color:var(--mut)}
+#wfChecks li.done{color:var(--green)}#wfChecks li.done::before{content:'☑';color:var(--green)}
+.wfStats{display:grid;grid-template-columns:1fr 1fr;gap:6px;font:11px var(--mono);color:var(--mut)}
+.wfStats div{background:var(--bg);padding:4px;border:1px solid var(--bd);text-align:center}.wfStats b{display:block;font-size:16px;color:var(--green)}
+#wfLog{flex:1;overflow:auto;font:11px/1.4 var(--mono);min-height:0}
+#wfLog div{padding:3px 4px;border-bottom:1px solid #ffffff10;display:grid;grid-template-columns:50px 1fr;gap:0 6px}
+#wfLog div.hl{background:#d4af3740}
+#wfLog .t{color:var(--mut)}#wfLog .k{color:var(--gold);font-weight:700}#wfLog .e{grid-column:2;color:var(--fg);opacity:.8}#wfLog .bad .k,#wfLog .bad .e{color:var(--red)}
+#wfHint{font-size:12px;background:#d4af3722;border-left:3px solid var(--gold);padding:6px}
+#wf h3{margin:0}
+.tcard{text-align:left;padding:10px;border-radius:4px;display:flex;flex-direction:column;gap:4px}
+.tcard b{color:var(--gold);font-size:15px}.tcard small{font:11px var(--mono);color:var(--mut)}
+#wfEnd .grade{font:900 64px var(--serif);color:#19d47a;line-height:1}
+#wfEnd table{font:12px var(--mono);border-collapse:collapse}#wfEnd td{padding:2px 10px;text-align:left}
+.chips{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;max-width:640px}.chips kbd{font-size:10px}
+.paths{display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:700px;width:100%;font:11px var(--mono);text-align:left}
+.paths div{background:#0a1729;border:1px solid #d4af3755;padding:6px;max-height:120px;overflow:auto}
+.wfOnly{display:none!important}body.wfmode .wfOnly{display:flex!important}
+@media (max-width:980px){#wf{flex-direction:column;overflow:auto}#wfLeft,#wfRight{width:auto}#wfRight{min-height:150px;max-height:200px}#wfCenter{min-height:360px}#wfLeft{max-height:none}}
 </style></head><body>
 <div id="marquee"></div>
 <div id="wrap">
@@ -92,7 +146,7 @@ kbd{font:700 12px/1 var(--mono);padding:5px 6px;border-radius:4px;background:lin
 <div id="hud"><div class="stat"><b id="sScore">0</b><span>Score</span></div><div class="stat"><b id="sCombo">x0</b><span>Combo</span></div><div class="stat"><b id="sTime">60</b><span>Time · <i id="sSpd">1x</i></span></div><div class="stat"><b id="sStack"><i id="stackBar"></i><em id="sPct">0%</em></b><span>Stack</span></div></div>
 <div id="main">
  <div id="field"><div id="flash"></div><div id="quote"></div><div id="seq" class="hidden"></div><div id="combo"></div><div id="floor"></div>
-  <div id="ovStart" class="overlay"><h2>KEYBOARD WARRIOR</h2><p>Excel (Windows) shortcut speedrun. Actions fall — type the real shortcut before they land.<br>Missed prompts land and <b>stack up</b> like Tetris bricks. Stack hits the top = game over. 60 seconds. 5 clean hits in a row = JACKPOT.<br>Stuck? <b>Tab</b> or <b>/</b> (or 💡) for a hint: 1st shows the modifier, 2nd the full keys — hinted clears score less and don't build combo. <b>Alt KeyTips</b>: tap Alt alone, release, then type the letters (Alt › H › O › I). Landed bricks show their keys — type any brick's shortcut to sell it off the stack.</p><div class="spd" id="poolSel"></div><div class="spd" id="spdSel"></div><button class="big" id="bStart">OPEN THE MARKET ▶</button><p class="note">Best: <span id="best0">0</span>. Browsers block Ctrl+N/W/T, so Ctrl+N only shows up in fullscreen mode (⛶) where the keyboard can be locked. Click the field first so it has keyboard focus.</p></div>
+  <div id="ovStart" class="overlay"><h2>KEYBOARD WARRIOR</h2><p>Excel (Windows) shortcut speedrun. Actions fall — type the real shortcut before they land.<br>Missed prompts land and <b>stack up</b> like Tetris bricks. Stack hits the top = game over. 60 seconds. 5 clean hits in a row = JACKPOT.<br>Stuck? <b>Tab</b> or <b>/</b> (or 💡) for a hint: 1st shows the modifier, 2nd the full keys — hinted clears score less and don't build combo. <b>Alt KeyTips</b>: tap Alt alone, release, then type the letters (Alt › H › O › I). Landed bricks show their keys — type any brick's shortcut to sell it off the stack.</p><div class="spd" id="poolSel"></div><div class="spd" id="spdSel"></div><div class="spd"><button class="big" id="bStart">🎰 ARCADE ▶</button><button class="big" id="bWorkflow" style="background:linear-gradient(#3be08f,#128a4f)">📊 WORKFLOW MODE</button></div><p class="note" style="margin:0">Arcade: speedrun falling prompts. Workflow: format real-looking sheets with a live keystroke tracker.</p><p class="note">Best: <span id="best0">0</span>. Browsers block Ctrl+N/W/T, so Ctrl+N only shows up in fullscreen mode (⛶) where the keyboard can be locked. Click the field first so it has keyboard focus.</p></div>
   <div id="ovPause" class="overlay hidden"><h2>TRADING HALTED</h2><div class="spd" id="spdPause"></div><button class="big" id="bResume">RESUME</button><p class="note">Esc to resume</p></div>
   <div id="ovEnd" class="overlay hidden"><h2 id="endTitle">ROUND OVER</h2>
    <div>Score <b id="eScore" style="font-size:28px;color:#19d47a;font-family:var(--mono)">0</b> · Best combo <b id="eCombo">0</b> · Hints used <b id="eHints">0</b> · Speed <b id="eSpd"></b> · High score <b id="eBest">0</b></div>
@@ -101,6 +155,21 @@ kbd{font:700 12px/1 var(--mono);padding:5px 6px;border-radius:4px;background:lin
    <div class="note" id="shareMsg"></div><div class="note" id="missed"></div></div>
  </div>
  <div id="side"><div id="queue"><h3>Up next</h3><div id="qList"></div></div><p class="note">Esc = pause · Tab or / = hint. Only the glowing (lowest) prompt is targeted; with nothing falling, the top brick is. Type ANY brick's shortcut (shown on its keycaps) to sell it off the stack.</p></div>
+</div>
+<div id="wf" class="hidden">
+ <div id="wfLeft" class="pnl">
+  <h3 id="wfTitle" style="color:var(--gold);font-variant:small-caps">Task</h3>
+  <div id="wfBrief" class="note"></div>
+  <ul id="wfChecks"></ul>
+  <div class="wfStats"><div><b id="wfTime">0:00.0</b>time</div><div><b id="wfKeys">0</b>keystrokes</div><div><b id="wfPar">0</b>par</div><div><b id="wfEff">—</b>efficiency</div></div>
+  <div id="wfHint" class="hidden"></div>
+  <div style="display:flex;gap:6px;flex-wrap:wrap"><button id="wfBHint">💡 Hint (F1)</button><button id="wfBReset">↺ Restart</button><button id="wfBMenu">☰ Tasks</button><button id="wfBExit">🎰 Arcade</button></div>
+  <p class="note">Simulated sheet: runs entirely in your browser, nothing is uploaded. Mouse-free: drive it with the keyboard. Alt KeyTips: tap Alt, release, then letters.</p>
+ </div>
+ <div id="wfCenter"><div id="wfBar"><div id="wfName">A1</div><div id="wfFx"></div><div id="wfSeq"></div></div><div id="wfGridWrap"><table id="wfGrid"></table></div><div id="wfTabs"><span id="wfTab">Sheet1</span><i>KBW · simulated workbook</i></div></div>
+ <div id="wfRight" class="pnl"><h3 style="font:12px var(--mono);color:var(--mut)">⌨ KEYSTROKE TRACKER</h3><div id="wfLog"></div></div>
+ <div id="wfMenu" class="overlay"><h2>WORKFLOW MODE</h2><p class="note">Real-world Excel formatting jobs on a simulated sheet. Every keystroke is tracked and logged. Beat par for an A.</p><div id="wfTasks" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:8px;width:min(960px,100%)"></div><button id="wfBExit2">🎰 Back to Arcade</button></div>
+ <div id="wfEnd" class="overlay hidden"></div>
 </div>
 <div id="touch"></div>
 <div id="banner" class="ad"></div>
@@ -139,7 +208,7 @@ const SHORTCUTS = [
  ['New workbook','Ctrl+KeyN'] // reserved by browsers -> only in fullscreen w/ Keyboard Lock
 ].filter(s=>!s[1].endsWith('_SAFE')); // Ctrl+T (Create table) excluded: browsers can't intercept it
 const RESERVED = new Set(['Ctrl+KeyN']);
-const LABEL = c=>c.replace(/Key([A-Z])/g,'$1').replace(/Digit(\d)/g,'$1').replace(/Semicolon/g,';').replace(/Equal/g,'=').replace(/Backquote/g,'`').replace(/Quote/g,"'").replace(/ArrowDown/g,'↓').replace(/ArrowLeft/g,'←').replace(/ArrowRight/g,'→');
+const LABEL = c=>c.replace(/Key([A-Z])/g,'$1').replace(/Digit(\d)/g,'$1').replace(/Semicolon/g,';').replace(/Equal/g,'=').replace(/Backquote/g,'`').replace(/Quote/g,"'").replace(/ArrowDown/g,'↓').replace(/ArrowUp/g,'↑').replace(/ArrowLeft/g,'←').replace(/ArrowRight/g,'→');
 const isSeq=c=>c.includes('>');
 const TOKENS=c=>LABEL(c).split(isSeq(c)?'>':'+');
 const SEP=c=>isSeq(c)?' › ':' + ';
@@ -261,6 +330,7 @@ function seqKey(code){seq.push(code);const cand=seq.join('>');clearTimeout(seqTi
  if(live.some(c=>c.startsWith(cand+'>'))){seqShow();seqTimer=setTimeout(seqCancel,2500);return}
  seqCancel();submit(cand)}
 addEventListener('keydown',e=>{
+ if(window.WF_ACTIVE)return;
  const playing0=st&&st.running&&!st.paused;
  if(e.code==='AltLeft'||e.code==='AltRight'){if(playing0){e.preventDefault();if(!e.repeat){altDown=true;altUsed=false}}return}
  if(altDown)altUsed=true;
@@ -277,8 +347,8 @@ addEventListener('keydown',e=>{
  // plain typing with no modifier on non-function keys is ignored unless it's a real shortcut (e.g. F2)
  if(!e.ctrlKey&&!e.altKey&&!ALLOWED.has(c)&&!/^F\d+$/.test(e.code))return;
  submit(c)},{capture:true});
-addEventListener('keyup',e=>{if(e.code==='AltLeft'||e.code==='AltRight'){e.preventDefault();if(altDown&&!altUsed)seqStart();altDown=false}},{capture:true});
-addEventListener('blur',()=>pause(true));
+addEventListener('keyup',e=>{if(window.WF_ACTIVE)return;if(e.code==='AltLeft'||e.code==='AltRight'){e.preventDefault();if(altDown&&!altUsed)seqStart();altDown=false}},{capture:true});
+addEventListener('blur',()=>{if(!window.WF_ACTIVE)pause(true)});
 
 /* Touch controls */
 const tm={Ctrl:false,Alt:false,Shift:false};
@@ -288,7 +358,7 @@ const tm={Ctrl:false,Alt:false,Shift:false};
  const mr=document.createElement('div');mr.className='row';
  ['Ctrl','Alt','Shift'].forEach(m=>{const b=document.createElement('button');b.className='mod';b.textContent=m;b.onclick=()=>{tm[m]=!tm[m];b.classList.toggle('on',tm[m])};mr.appendChild(b)});T.appendChild(mr);
  const kr=document.createElement('div');kr.className='row';
- keys.forEach(([l,c])=>{const b=document.createElement('button');b.textContent=l;b.onclick=()=>{if(c==='HINT'){showHint();return}
+ keys.forEach(([l,c])=>{const b=document.createElement('button');b.textContent=l;b.onclick=()=>{if(window.WF_ACTIVE){WF.touch(c,tm.Ctrl,tm.Alt,tm.Shift);Object.keys(tm).forEach(k=>tm[k]=false);mr.querySelectorAll('.mod').forEach(x=>x.classList.remove('on'));return}if(c==='HINT'){showHint();return}
   const chord=(tm.Ctrl?'Ctrl+':'')+(tm.Alt?'Alt+':'')+(tm.Shift?'Shift+':'')+c;
   if(st&&st.running&&!st.paused){
    if(seq&&!tm.Ctrl&&!tm.Alt&&!tm.Shift){seqKey(c);return}
@@ -320,4 +390,305 @@ adUnit($('banner'),ADS.bannerSlot,'🎰 Your banner here');
 function showInterstitial(){adUnit($('inter'),ADS.interstitialSlot,'✨ Between-round sponsor')}
 showInterstitial();
 if(location.hash.startsWith("#demo")){if(location.hash==="#demo-light")document.body.classList.add("light");document.head.insertAdjacentHTML("beforeend","<style>.reel{animation:none}.reel div:not(:last-child){display:none}</style>");start();spawn();spawn();spawn();spawn();st.pieces[3].combo="Alt>KeyH>KeyO>KeyI";st.pieces[3].el.querySelector(".reel div:last-child").textContent="AutoFit column width";land(st.pieces[3]);land(st.pieces[2]);const fh=field.clientHeight;st.pieces.forEach((p,i)=>{p.y=fh*.42-i*fh*.3;p.el.style.top=p.y+"px"});st.score=1350;st.combo=4;markTarget();showHint();hud();comboText("COMBO x4");coins(st.pieces[1].el,20);quote();seq=["Alt","KeyW","KeyF"];seqShow()} // test/demo only
-</script></body></html>
+</script>
+<script>
+/* =====================================================================
+ * WORKFLOW MODE — simulated Excel sheet + keystroke tracker (100% client-side)
+ * ===================================================================== */
+const WF=(function(){
+const R=15,C=10,$=id=>document.getElementById(id);
+const L=c=>String.fromCharCode(65+c),A1=(r,c)=>L(c)+(r+1);
+const esc=s=>String(s).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+const parseRef=s=>{const m=/^\$?([A-Z])\$?(\d+)$/.exec(s);return{c:m[1].charCodeAt(0)-65,r:+m[2]-1}};
+const parseRange=s=>{const[a,b]=s.split(':');const x=parseRef(a),y=parseRef(b||a);return{r1:Math.min(x.r,y.r),c1:Math.min(x.c,y.c),r2:Math.max(x.r,y.r),c2:Math.max(x.c,y.c)}};
+const rs=g=>A1(g.r1,g.c1)+(g.r1===g.r2&&g.c1===g.c2?'':':'+A1(g.r2,g.c2));
+const K=(r,c)=>r+','+c, clone=o=>JSON.parse(JSON.stringify(o));
+const pretty=c=>isSeq(c)?TOKENS(c).join(' › '):LABEL(c);
+let S,act,ext,selG,editing=null,clip=null,undo=[],redo=[],log=[],snaps=[],keys=0,t0=0,tEnd=0,timerOn=false,task=null,lastRep=null,hints=0,done=false,replaying=false,used=new Set();
+const cell=(r,c)=>S.cells[K(r,c)], ensure=(r,c)=>S.cells[K(r,c)]||(S.cells[K(r,c)]={v:''});
+const filled=(r,c)=>{const x=cell(r,c);return!!x&&((x.v!==''&&x.v!=null)||!!x.f)};
+const blank=()=>({cells:{},colW:Array(C).fill(84),colHidden:Array(C).fill(false),rowHidden:Array(R).fill(false),merges:[],freeze:null,filter:null,autofit:Array(C).fill(false)});
+/* ---- formulas: numbers, refs, + - * / ( ), SUM()/AVERAGE() over ranges ---- */
+function val(r,c,d=0){const x=cell(r,c);if(!x)return'';if(x.f)return d>30?'#CIRC':evalF(x.f,d+1);return x.v}
+function evalF(f,d){let e=f.slice(1).toUpperCase();
+ e=e.replace(/(SUM|AVERAGE)\((\$?[A-Z]\$?\d+(?::\$?[A-Z]\$?\d+)?)\)/g,(m,fn,rg)=>{const g=parseRange(rg.replace(/\$/g,''));let s=0,n=0;
+  for(let r=g.r1;r<=g.r2;r++)for(let c=g.c1;c<=g.c2;c++){const v=val(r,c,d);if(typeof v==='number'){s+=v;n++}}return'('+(fn==='SUM'?s:(n?s/n:0))+')'});
+ e=e.replace(/\$?([A-Z])\$?(\d+)/g,(m,a,b)=>{const v=val(+b-1,a.charCodeAt(0)-65,d);return'('+(typeof v==='number'?v:0)+')'});
+ if(!/^[\d.+\-*/() e]*$/.test(e))return'#NAME?';
+ try{const v=Function('return ('+e+')')();return isFinite(v)?v:'#DIV/0!'}catch(_){return'#ERR'}}
+function disp(r,c){const x=cell(r,c);if(!x)return'';const v=val(r,c);if(typeof v!=='number')return String(v);
+ if(x.fmt==='cur')return(v<0?'-':'')+'$'+Math.abs(v).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+ if(x.fmt==='pct')return(v*100).toFixed(2)+'%';return v.toLocaleString('en-US',{maximumFractionDigits:4})}
+/* ---- selection model: active cell stays fixed, ext is the moving corner (like Excel) ---- */
+const sel=()=>selG?selG:{r1:Math.min(act.r,ext.r),r2:Math.max(act.r,ext.r),c1:Math.min(act.c,ext.c),c2:Math.max(act.c,ext.c)};
+const each=(g,fn)=>{for(let r=g.r1;r<=g.r2;r++)for(let c=g.c1;c<=g.c2;c++)fn(r,c)};
+const single=g=>g.r1===g.r2&&g.c1===g.c2;
+function fromG(){if(selG){ext={r:selG.r1===act.r?selG.r2:selG.r1,c:selG.c1===act.c?selG.c2:selG.c1};selG=null}}
+const goto=p=>{act={...p};ext={...p};selG=null};
+function step(p,dr,dc){let r=p.r,c=p.c;do{r+=dr;c+=dc}while(r>=0&&r<R&&c>=0&&c<C&&(S.rowHidden[r]||S.colHidden[c]));return(r<0||r>=R||c<0||c>=C)?{...p}:{r,c}}
+function jump(p,dr,dc){const same=(a,b)=>a.r===b.r&&a.c===b.c;let cur={...p},n=step(cur,dr,dc);if(same(n,cur))return cur;
+ if(filled(cur.r,cur.c)&&filled(n.r,n.c)){for(;;){const m=step(cur,dr,dc);if(same(m,cur)||!filled(m.r,m.c))return cur;cur=m}}
+ cur=n;while(!filled(cur.r,cur.c)){const m=step(cur,dr,dc);if(same(m,cur))return cur;cur=m}return cur}
+function region(p){const g={r1:p.r,r2:p.r,c1:p.c,c2:p.c};let ch=true;
+ const any=(r1,r2,c1,c2)=>{for(let r=Math.max(0,r1);r<=Math.min(R-1,r2);r++)for(let c=Math.max(0,c1);c<=Math.min(C-1,c2);c++)if(filled(r,c))return true;return false};
+ while(ch){ch=false;if(g.r1>0&&any(g.r1-1,g.r1-1,g.c1-1,g.c2+1)){g.r1--;ch=true}if(g.r2<R-1&&any(g.r2+1,g.r2+1,g.c1-1,g.c2+1)){g.r2++;ch=true}
+  if(g.c1>0&&any(g.r1-1,g.r2+1,g.c1-1,g.c1-1)){g.c1--;ch=true}if(g.c2<C-1&&any(g.r1-1,g.r2+1,g.c2+1,g.c2+1)){g.c2++;ch=true}}return g}
+const REFRX=/(\$?)([A-Z])(\$?)(\d+)/g;
+const shiftF=(f,dr,dc)=>f.replace(REFRX,(m,a,col,b,row)=>a+(a?col:L(col.charCodeAt(0)-65+dc))+b+(b?+row:+row+dr));
+function shiftAxis(ax,at,n,del){const map=(r,c)=>{const p={r,c},v=p[ax];if(del){if(v>=at&&v<at+n)return null;if(v>=at+n)p[ax]=v-n}else if(v>=at)p[ax]=v+n;return p};
+ const nc={};for(const k in S.cells){const[r,c]=k.split(',').map(Number),q=map(r,c);if(q&&q.r<R&&q.c<C)nc[K(q.r,q.c)]=S.cells[k]}S.cells=nc;
+ Object.values(S.cells).forEach(x=>{if(x.f)x.f=x.f.replace(REFRX,(m,a,col,b,row)=>{const q=map(+row-1,col.charCodeAt(0)-65);return q?a+L(q.c)+b+(q.r+1):'#REF!'})});
+ const arrs=ax==='r'?[[S.rowHidden,false]]:[[S.colHidden,false],[S.colW,84],[S.autofit,false]],len=ax==='r'?R:C;
+ arrs.forEach(([a,d])=>{if(del){a.splice(at,n);while(a.length<len)a.push(d)}else{a.splice(at,0,...Array(n).fill(d));a.length=len}});
+ const k1=ax+'1',k2=ax+'2';S.merges=S.merges.filter(m=>{if(del){if(m[k2]>=at&&m[k1]<at+n)return false;if(m[k1]>=at+n){m[k1]-=n;m[k2]-=n}}else if(m[k1]>=at){m[k1]+=n;m[k2]+=n}return true})}
+/* ---- actions: each returns an effect string (or null = nothing happened) ---- */
+const A={};
+const def=(combo,n,f,o={})=>A[combo]=Object.assign({n,f},o);
+const fmtToggle=(p,label)=>()=>{const on=!(cell(act.r,act.c)||{})[p];each(sel(),(r,c)=>ensure(r,c)[p]=on);return label+(on?' ON':' OFF')+' → '+rs(sel())};
+const setFmt=(f,label)=>()=>{each(sel(),(r,c)=>ensure(r,c).fmt=f);return label+' → '+rs(sel())};
+const D={ArrowUp:[-1,0],ArrowDown:[1,0],ArrowLeft:[0,-1],ArrowRight:[0,1]};
+for(const[k,[dr,dc]]of Object.entries(D)){
+ def(k,'Move',()=>{goto(step(act,dr,dc));return'Go to '+A1(act.r,act.c)});
+ def('Shift+'+k,'Extend selection',()=>{fromG();ext=step(ext,dr,dc);return'Select '+rs(sel())});
+ def('Ctrl+'+k,'Jump to data edge',()=>{goto(jump(act,dr,dc));return'Go to '+A1(act.r,act.c)});
+ def('Ctrl+Shift+'+k,'Extend to data edge',()=>{fromG();ext=jump(ext,dr,dc);return'Select '+rs(sel())})}
+def('Enter','Move down',()=>{goto(step(act,1,0));return'Go to '+A1(act.r,act.c)});
+def('Shift+Enter','Move up',()=>{goto(step(act,-1,0));return'Go to '+A1(act.r,act.c)});
+def('Tab','Move right',()=>{goto(step(act,0,1));return'Go to '+A1(act.r,act.c)});
+def('Shift+Tab','Move left',()=>{goto(step(act,0,-1));return'Go to '+A1(act.r,act.c)});
+def('Ctrl+Home','Go to A1',()=>{goto({r:0,c:0});return'Go to A1'});
+def('Ctrl+End','Go to last used cell',()=>{let r=0,c=0;for(const k in S.cells){const[a,b]=k.split(',').map(Number);if(filled(a,b)){r=Math.max(r,a);c=Math.max(c,b)}}goto({r,c});return'Go to '+A1(r,c)});
+def('Ctrl+Space','Select entire column',()=>{const g=sel();selG={r1:0,r2:R-1,c1:g.c1,c2:g.c2};return'Select '+rs(selG)});
+def('Shift+Space','Select entire row',()=>{const g=sel();selG={r1:g.r1,r2:g.r2,c1:0,c2:C-1};return'Select '+rs(selG)});
+def('Ctrl+KeyA','Select all / current region',()=>{const g=region(act),cur=sel(),same=JSON.stringify(g)===JSON.stringify(cur);
+ selG=(same||single(g))?{r1:0,r2:R-1,c1:0,c2:C-1}:g;return'Select '+rs(selG)+(same||single(g)?' (whole sheet)':' (current region)')});
+def('F2','Edit cell',()=>{const x=cell(act.r,act.c)||{};editing={r:act.r,c:act.c,buf:x.f||(x.v===''||x.v==null?'':String(x.v)),n:0,f2:true};return'Edit '+A1(act.r,act.c)});
+def('Delete','Clear contents',()=>{each(sel(),(r,c)=>{const x=cell(r,c);if(x){x.v='';x.f=null}});return'Clear '+rs(sel())},{m:1,rep:1});
+def('Ctrl+KeyB','Bold',fmtToggle('b','Bold'),{m:1,rep:1});
+def('Ctrl+KeyI','Italic',fmtToggle('i','Italic'),{m:1,rep:1});
+def('Ctrl+KeyU','Underline',fmtToggle('u','Underline'),{m:1,rep:1});
+def('Ctrl+Digit5','Strikethrough',fmtToggle('s','Strikethrough'),{m:1,rep:1});
+def('Ctrl+Shift+Digit4','Currency format',setFmt('cur','Currency $'),{m:1,rep:1});
+def('Ctrl+Shift+Digit5','Percent format',setFmt('pct','Percent %'),{m:1,rep:1});
+def('Ctrl+Shift+Backquote','General format',setFmt(null,'General'),{m:1,rep:1});
+def('Ctrl+Digit1','Format Cells dialog',()=>null);
+def('Ctrl+KeyS','Save',()=>'Workbook saved (simulated)');
+def('Ctrl+Semicolon',"Insert today's date",()=>{const d=new Date();ensure(act.r,act.c).v=(d.getMonth()+1)+'/'+d.getDate()+'/'+d.getFullYear();cell(act.r,act.c).f=null;return'Date → '+A1(act.r,act.c)},{m:1});
+def('Alt+Equal','AutoSum',()=>{const g=sel();
+ if(single(g)){const{r,c}=act;let r0=r-1;while(r0>=0&&typeof val(r0,c)==='number')r0--;
+  if(r0<r-1){const x=ensure(r,c);x.f='=SUM('+A1(r0+1,c)+':'+A1(r-1,c)+')';x.fmt=x.fmt||(cell(r-1,c)||{}).fmt;return'AutoSum '+A1(r,c)+' '+x.f}
+  let c0=c-1;while(c0>=0&&typeof val(r,c0)==='number')c0--;if(c0<c-1){const x=ensure(r,c);x.f='=SUM('+A1(r,c0+1)+':'+A1(r,c-1)+')';return'AutoSum '+A1(r,c)+' '+x.f}return null}
+ const out=[];for(let c=g.c1;c<=g.c2;c++){const tr=filled(g.r2,c)?g.r2+1:g.r2;if(tr>=R||tr-1<g.r1)continue;const x=ensure(tr,c);x.f='=SUM('+A1(g.r1,c)+':'+A1(tr-1,c)+')';x.fmt=x.fmt||(cell(tr-1,c)||{}).fmt;out.push(A1(tr,c))}
+ return out.length?'AutoSum totals → '+out.join(', '):null},{m:1});
+function fill(dn){const g=sel();let src=dn?g.r1:g.c1,from=src+1;if(dn?g.r1===g.r2:g.c1===g.c2){if(src===0)return null;src--;from=src+1}
+ if(dn){for(let c=g.c1;c<=g.c2;c++){const s=cell(src,c);for(let r=from;r<=g.r2;r++){const n=s?clone(s):{v:''};if(n.f)n.f=shiftF(n.f,r-src,0);S.cells[K(r,c)]=n}}
+  return'Fill down '+A1(src,g.c1)+(g.c2>g.c1?':'+A1(src,g.c2):'')+' → '+rs({...g,r1:from})}
+ for(let r=g.r1;r<=g.r2;r++){const s=cell(r,src);for(let c=from;c<=g.c2;c++){const n=s?clone(s):{v:''};if(n.f)n.f=shiftF(n.f,0,c-src);S.cells[K(r,c)]=n}}
+ return'Fill right '+A1(g.r1,src)+' → '+rs({...g,c1:from})}
+def('Ctrl+KeyD','Fill down',()=>fill(true),{m:1,rep:1});
+def('Ctrl+KeyR','Fill right',()=>fill(false),{m:1,rep:1});
+function copy(cut){const g=sel(),data=[],vals=[];for(let r=g.r1;r<=g.r2;r++){const a=[],b=[];for(let c=g.c1;c<=g.c2;c++){a.push(cell(r,c)?clone(cell(r,c)):null);b.push(val(r,c))}data.push(a);vals.push(b)}
+ clip={g,data,vals,cut};return(cut?'Cut ':'Copy ')+rs(g)+' to clipboard'}
+function paste(vo){if(!clip)return null;const{g,data,vals,cut}=clip,dr=act.r-g.r1,dc=act.c-g.c1;
+ if(cut&&!vo)each(g,(r,c)=>delete S.cells[K(r,c)]);
+ data.forEach((row,i)=>row.forEach((x,j)=>{const r=act.r+i,c=act.c+j;if(r>=R||c>=C)return;
+  if(vo){const t=ensure(r,c);t.f=null;t.v=vals[i][j]}else if(!x)delete S.cells[K(r,c)];else{const n=clone(x);if(n.f&&!cut)n.f=shiftF(n.f,dr,dc);S.cells[K(r,c)]=n}}));
+ const d={r1:act.r,c1:act.c,r2:Math.min(R-1,act.r+data.length-1),c2:Math.min(C-1,act.c+data[0].length-1)};ext={r:d.r2,c:d.c2};selG=null;if(cut)clip=null;
+ return(vo?'Paste values':'Paste')+' → '+rs(d)}
+def('Ctrl+KeyC','Copy',()=>copy(false));
+def('Ctrl+KeyX','Cut',()=>copy(true));
+def('Ctrl+KeyV','Paste',()=>paste(false),{m:1});
+def('Ctrl+KeyZ','Undo',()=>{if(!undo.length)return null;redo.push(snap());restore(undo.pop());return'Reverted last change'});
+def('Ctrl+KeyY','Redo',()=>{if(!redo.length)return null;undo.push(snap());restore(redo.pop());return'Re-applied change'});
+def('Ctrl+Digit9','Hide rows',()=>{const g=sel();for(let r=g.r1;r<=g.r2;r++)S.rowHidden[r]=true;return'Hide rows '+(g.r1+1)+(g.r2>g.r1?'–'+(g.r2+1):'')},{m:1,rep:1});
+def('Ctrl+Digit0','Hide columns',()=>{const g=sel();for(let c=g.c1;c<=g.c2;c++)S.colHidden[c]=true;return'Hide column '+L(g.c1)+(g.c2>g.c1?'–'+L(g.c2):'')},{m:1,rep:1});
+def('Ctrl+Shift+Digit9','Unhide rows',()=>{const g=sel();let n=0;for(let r=g.r1;r<=g.r2;r++)if(S.rowHidden[r]){S.rowHidden[r]=false;n++}return n?'Unhide '+n+' row(s)':null},{m:1});
+def('Ctrl+Shift+KeyL','Toggle AutoFilter',()=>{if(S.filter){S.filter=null;return'AutoFilter OFF'}const g=region(act);S.filter={r:g.r1,c1:g.c1,c2:g.c2};return'AutoFilter ON → header '+rs({r1:g.r1,r2:g.r1,c1:g.c1,c2:g.c2})},{m:1});
+def('F4','Repeat last action',()=>{if(!lastRep)return null;const a=A[lastRep],e=a.f();return e?'↻ '+a.n+': '+e:null},{m:1});
+def('Escape','Esc',()=>{if(clip){clip=null;return'Clipboard cleared'}return null});
+def('Alt>KeyH>KeyO>KeyI','AutoFit column width',()=>{const g=sel(),out=[];for(let c=g.c1;c<=g.c2;c++){let w=4;for(let r=0;r<R;r++){if(S.merges.some(m=>r>=m.r1&&r<=m.r2&&c>=m.c1&&c<=m.c2&&m.c2>m.c1))continue;const x=cell(r,c);const t=disp(r,c).length*(x&&x.b?7.9:7.3);w=Math.max(w,t)}
+ S.colW[c]=Math.max(36,Math.round(w+14+(S.filter&&S.filter.r>=0?12:0)));S.autofit[c]=true;out.push(L(c)+'='+S.colW[c]+'px')}return'AutoFit '+out.join(', ')},{m:1,rep:1});
+def('Alt>KeyH>KeyO>KeyA','AutoFit row height',()=>'AutoFit rows '+(sel().r1+1)+'–'+(sel().r2+1)+' (already fit)');
+def('Alt>KeyH>KeyB>KeyA','All borders',()=>{each(sel(),(r,c)=>ensure(r,c).bd=true);return'All borders → '+rs(sel())},{m:1,rep:1});
+def('Alt>KeyH>KeyB>KeyN','No border',()=>{each(sel(),(r,c)=>{const x=cell(r,c);if(x)x.bd=false});return'Borders removed → '+rs(sel())},{m:1,rep:1});
+def('Alt>KeyH>KeyH','Fill color',()=>{const on=!(cell(act.r,act.c)||{}).fill;each(sel(),(r,c)=>ensure(r,c).fill=on);return'Fill '+(on?'gold':'none')+' → '+rs(sel())},{m:1,rep:1});
+def('Alt>KeyH>KeyM>KeyC','Merge & Center',()=>{const i=S.merges.findIndex(m=>act.r>=m.r1&&act.r<=m.r2&&act.c>=m.c1&&act.c<=m.c2);if(i>=0)return'Unmerge '+rs(S.merges.splice(i,1)[0]);
+ const g=sel();if(single(g))return null;each(g,(r,c)=>{if(r!==g.r1||c!==g.c1)delete S.cells[K(r,c)]});ensure(g.r1,g.c1).al='center';S.merges.push({...g});return'Merge & Center → '+rs(g)},{m:1});
+const align=a=>()=>{each(sel(),(r,c)=>ensure(r,c).al=a);return'Align '+a+' → '+rs(sel())};
+def('Alt>KeyH>KeyA>KeyC','Center align',align('center'),{m:1,rep:1});
+def('Alt>KeyH>KeyA>KeyL','Left align',align('left'),{m:1,rep:1});
+def('Alt>KeyH>KeyA>KeyR','Right align',align('right'),{m:1,rep:1});
+def('Alt>KeyW>KeyF>KeyF','Freeze / unfreeze panes',()=>{if(S.freeze){S.freeze=null;return'Unfreeze panes'}if(!act.r&&!act.c)return null;S.freeze={r:act.r,c:act.c};
+ return'Freeze '+(act.r?'rows 1–'+act.r:'')+(act.r&&act.c?' + ':'')+(act.c?'cols A–'+L(act.c-1):'')},{m:1});
+function sort(desc){const g=region(act);if(g.r1===g.r2)return null;let h=0;
+ if([...Array(g.c2-g.c1+1)].every((_,i)=>{const v=val(g.r1,g.c1+i);return v!==''&&typeof v!=='number'})&&[...Array(g.c2-g.c1+1)].some((_,i)=>typeof val(g.r1+1,g.c1+i)==='number'))h=1;
+ const rows=[];for(let r=g.r1+h;r<=g.r2;r++){const row=[];for(let c=g.c1;c<=g.c2;c++)row.push(cell(r,c));rows.push({r,row,k:val(r,act.c)})}
+ rows.sort((a,b)=>{const x=a.k,y=b.k,d=typeof x==='number'&&typeof y==='number'?x-y:String(x).localeCompare(String(y));return desc?-d:d});
+ rows.forEach((o,i)=>o.row.forEach((x,j)=>{const nr=g.r1+h+i,k=K(nr,g.c1+j);if(x){if(x.f)x.f=shiftF(x.f,nr-o.r,0);S.cells[k]=x}else delete S.cells[k]}));
+ return'Sort '+(desc?'Z→A':'A→Z')+' by column '+L(act.c)+' → '+rs({...g,r1:g.r1+h})+(h?' (header kept)':'')}
+def('Alt>KeyA>KeyS>KeyA','Sort A to Z',()=>sort(false),{m:1});
+def('Alt>KeyA>KeyS>KeyD','Sort Z to A',()=>sort(true),{m:1});
+def('Alt>KeyH>KeyI>KeyR','Insert rows',()=>{const g=sel(),n=g.r2-g.r1+1;shiftAxis('r',g.r1,n,false);return'Insert '+n+' row(s) at row '+(g.r1+1)},{m:1,rep:1});
+def('Alt>KeyH>KeyI>KeyC','Insert columns',()=>{const g=sel(),n=g.c2-g.c1+1;shiftAxis('c',g.c1,n,false);return'Insert '+n+' column(s) at '+L(g.c1)},{m:1,rep:1});
+def('Alt>KeyH>KeyD>KeyR','Delete rows',()=>{const g=sel(),n=g.r2-g.r1+1;shiftAxis('r',g.r1,n,true);return'Delete row(s) '+(g.r1+1)+(n>1?'–'+(g.r2+1):'')},{m:1,rep:1});
+def('Alt>KeyH>KeyD>KeyC','Delete columns',()=>{const g=sel(),n=g.c2-g.c1+1;shiftAxis('c',g.c1,n,true);return'Delete column(s) '+L(g.c1)+(n>1?'–'+L(g.c2):'')},{m:1,rep:1});
+def('Alt>KeyH>KeyV>KeyV','Paste values',()=>paste(true),{m:1});
+const SEQS=Object.keys(A).filter(isSeq);
+/* ---- tasks ---- */
+const all=(rg,p)=>{const g=parseRange(rg);for(let r=g.r1;r<=g.r2;r++)for(let c=g.c1;c<=g.c2;c++)if(!p(cell(r,c)||{},r,c))return false;return true};
+const near=(a,b)=>typeof a==='number'&&Math.abs(a-b)<1e-6*Math.max(1,Math.abs(b));
+const colSum=(c,r1,r2)=>{let s=0;for(let r=r1;r<=r2;r++){const v=val(r,c);if(typeof v==='number')s+=v}return s};
+const TASKS=[
+{id:'pnl',name:'Format the Q3 P&L',tab:'Q3 P&L',brief:'The desk head wants the Q3 P&L presentable before the 9am call.',par:28,
+ data:[['Line item','Jul','Aug','Sep'],['Advisory fees',1250000,1310000,1405000],['Trading revenue',2840000,2615000,3020000],['Underwriting',980000,1120000,860000],['Interest income',415000,428000,436000],['Comp & benefits',-2150000,-2210000,-2290000],['Non-comp expense',-640000,-655000,-702000],['Total']],
+ path:['Ctrl+Home','Shift+→ ×3','Ctrl+B','↓','→','Ctrl+Shift+→','Ctrl+Shift+↓','Shift+↓','Alt+=','Shift+↑','Ctrl+Shift+4','Ctrl+A','Alt › H › B › A','Ctrl+Home','↓','Alt › W › F › F','Alt › H › O › I'],
+ goals:[{t:'Bold the header row (A1:D1)',h:'Ctrl+Home, Shift+→ ×3, then Ctrl+B',ok:()=>all('A1:D1',x=>x.b)},
+  {t:'Totals row 8: SUM formulas for Jul–Sep',h:'Select B2:D8 (Ctrl+Shift+→, Ctrl+Shift+↓, Shift+↓) then Alt+=',ok:()=>all('B8:D8',(x,r,c)=>x.f&&/SUM/.test(x.f)&&near(val(r,c),colSum(c,1,6)))},
+  {t:'Currency format on B2:D7',h:'Select B2:D7 then Ctrl+Shift+4',ok:()=>all('B2:D7',x=>x.fmt==='cur')},
+  {t:'All borders on A1:D8',h:'Ctrl+A (current region) then Alt › H › B › A',ok:()=>all('A1:D8',x=>x.bd)},
+  {t:'Freeze the top row',h:'Go to A2 (Ctrl+Home, ↓) then Alt › W › F › F',ok:()=>S.freeze&&S.freeze.r===1},
+  {t:'AutoFit column A',h:'With a cell in column A selected: Alt › H › O › I',ok:()=>S.autofit[0]}]},
+{id:'blotter',name:'Clean up the trade blotter',tab:'Blotter',brief:'Compliance needs today\'s blotter sorted, filterable and tidy.',par:14,
+ data:[['Ticker','Side','Qty','Price','P&L %','Helper'],['MSFT','Buy',500,412.5,0.034,1],['AAPL','Sell',1200,227.1,-0.012,1],['NVDA','Buy',300,118.4,0.087,1],['JPM','Buy',800,211.9,0.015,1],['GS','Sell',250,498.2,-0.021,1],['AMZN','Buy',650,186.3,0.042,1],['TSLA','Sell',400,251.7,-0.065,1],['META','Buy',350,563.8,0.028,1],['BAC','Buy',2000,39.6,0.009,1],['XOM','Sell',900,117.2,-0.004,1]],
+ path:['Alt › A › S › A','Ctrl+Shift+L','→ ×4','↓','Ctrl+Shift+↓','Ctrl+Shift+5','→','Ctrl+0'],
+ goals:[{t:'Sort trades by Ticker A→Z (header stays)',h:'From A1: Alt › A › S › A',ok:()=>{const Q={MSFT:500,AAPL:1200,NVDA:300,JPM:800,GS:250,AMZN:650,TSLA:400,META:350,BAC:2000,XOM:900};let p='';for(let r=1;r<=10;r++){const t=val(r,0);if(Q[t]!==val(r,2)||String(t).localeCompare(p)<0)return false;p=t}return val(0,0)==='Ticker'}},
+  {t:'Turn on AutoFilter for the header',h:'Ctrl+Shift+L',ok:()=>S.filter&&S.filter.r===0&&S.filter.c1===0&&S.filter.c2>=4}, 
+  {t:'Percent format on P&L % (E2:E11)',h:'Go to E2, Ctrl+Shift+↓, Ctrl+Shift+5',ok:()=>all('E2:E11',x=>x.fmt==='pct')},
+  {t:'Hide the Helper column (F)',h:'Select a cell in F, Ctrl+0',ok:()=>S.colHidden[5]&&val(0,5)==='Helper'}]},
+{id:'comps',name:'Build the deal comps table',tab:'Comps',brief:'The MD wants a clean comps table for the pitch book.',par:35,
+ data:[['Deal Comps — Q3 2026'],['Company','EV ($mm)','EBITDA ($mm)','EV/EBITDA'],['Sterling Holdings',4200,525,'=B3/C3'],['Ashford Capital',2850,310],['Whitmore & Co',6100,690],['Blackstone Ridge',3900,455],['Pemberton Group',1750,240],['Kensington Partners',5300,610]],
+ path:['Shift+→ ×3','Alt › H › M › C','↓','Shift+→ ×3','Ctrl+B','Alt › H › H','↓','→ ×3','Shift+↓ ×5','Ctrl+D','← ×2','Ctrl+Shift+↓','Shift+→','Ctrl+Shift+4','Ctrl+A','Alt › H › B › A'],
+ goals:[{t:'Merge & center the title across A1:D1',h:'Shift+→ ×3 then Alt › H › M › C',ok:()=>S.merges.some(m=>m.r1===0&&m.c1===0&&m.r2===0&&m.c2===3)},
+  {t:'Header row A2:D2 bold + fill color',h:'Select A2:D2, Ctrl+B, Alt › H › H',ok:()=>all('A2:D2',x=>x.b&&x.fill)},
+  {t:'Fill the EV/EBITDA formula down to D8',h:'Select D3:D8 then Ctrl+D',ok:()=>all('D3:D8',(x,r)=>x.f&&near(val(r,3),val(r,1)/val(r,2)))},
+  {t:'Currency format on B3:C8',h:'Select B3:C8 then Ctrl+Shift+4',ok:()=>all('B3:C8',x=>x.fmt==='cur')},
+  {t:'All borders on A2:D8',h:'Ctrl+A then Alt › H › B › A',ok:()=>all('A2:D8',x=>x.bd)}]},
+{id:'comm',name:'Hard-code the commissions',tab:'Commissions',brief:'Finance wants commissions as hard values (no live formulas) and the scratch column gone.',par:23,
+ data:[['Trader','Notional','Rate','Commission','Scratch'],['Harper',2500000,0.0025,'=B2*C2',11],['Okafor',1800000,0.003,null,7],['Lindqvist',4200000,0.002,null,3],['Moreau',950000,0.0035,null,9],['Tanaka',3100000,0.0025,null,2],['Reyes',1250000,0.003,null,5],['Whitfield',5600000,0.0015,null,8],['Novak',2200000,0.0025,null,4]],
+ path:['→ ×3','↓','Shift+↓ ×7','Ctrl+D','Ctrl+C','Alt › H › V › V','Ctrl+Shift+4','→','Alt › H › D › C'],
+ goals:[{t:'Commission (D2:D9) = Notional × Rate for every trader',h:'Select D2:D9 then Ctrl+D',ok:()=>all('D2:D9',(x,r)=>near(val(r,3),val(r,1)*val(r,2)))},
+  {t:'D2:D9 pasted as values (no formulas)',h:'Ctrl+C then Alt › H › V › V',ok:()=>all('D2:D9',x=>!x.f&&typeof x.v==='number')},
+  {t:'Currency format on D2:D9',h:'Ctrl+Shift+4',ok:()=>all('D2:D9',x=>x.fmt==='cur')},
+  {t:'Delete the Scratch column',h:'Go to E2, Alt › H › D › C',ok:()=>val(0,3)==='Commission'&&!Object.values(S.cells).some(x=>x.v==='Scratch')}]},
+{id:'risk',name:'Tidy the desk risk report',tab:'Risk',brief:'The CRO is reading this at 7am. Make it clean and hide the internal codes.',par:23,
+ data:[['Desk Risk Report'],['Trade ID','Desk','Internal code','Limit used','Status'],['T-1041','Rates','RX-77',0.62,'Active'],['T-1042','FX','FX-12',0.48,'Active'],['T-1043','Credit','CR-03',0.91,'Active'],['T-1044','Equities','EQ-55',0.35,'Cancelled'],['T-1045','Commodities','CM-21',0.77,'Active'],['T-1046','Rates','RX-80',0.54,'Active'],['T-1047','FX','FX-19',0.29,'Active'],['T-1048','Credit','CR-08',0.83,'Active']],
+ path:['Ctrl+U','↓','Shift+→ ×4','Ctrl+B','↓ ×4','Shift+Space','Ctrl+5','↑ ×3','→ ×3','Ctrl+Shift+↓','Ctrl+Shift+5','←','Ctrl+0'],
+ goals:[{t:'Underline the report title (A1)',h:'Ctrl+U on A1',ok:()=>(cell(0,0)||{}).u},
+  {t:'Bold the header row A2:E2',h:'Select A2:E2 then Ctrl+B',ok:()=>all('A2:E2',x=>x.b)},
+  {t:'Strike through the Cancelled trade (A:E)',h:'Go to its row, Shift+Space, Ctrl+5',ok:()=>{for(let r=0;r<R;r++)if(val(r,4)==='Cancelled'){for(let c=0;c<5;c++)if(!(cell(r,c)||{}).s)return false;return true}return false}},
+  {t:'Percent format on Limit used (D3:D10)',h:'Go to D3, Ctrl+Shift+↓, Ctrl+Shift+5',ok:()=>all('D3:D10',x=>x.fmt==='pct')},
+  {t:'Hide the Internal code column (C)',h:'Select a cell in C, Ctrl+0',ok:()=>S.colHidden[2]&&val(1,2)==='Internal code'}]}];
+/* ---- state/snapshots/log ---- */
+const snap=()=>JSON.stringify({S,act,ext,selG});
+function restore(s){const o=JSON.parse(s);S=o.S;act=o.act;ext=o.ext;selG=o.selG}
+const elapsed=()=>done?tEnd:timerOn?(performance.now()-t0)/1000:0;
+const fmtT=t=>Math.floor(t/60)+':'+(t%60).toFixed(1).padStart(4,'0');
+function tick(){if(done||replaying)return;keys++;if(!timerOn){timerOn=true;t0=performance.now()}}
+function rec(k,n,eff,bad){log.push({t:+elapsed().toFixed(2),keys:k,action:n,effect:eff||'(no change)',bad:!!bad});snaps.push(snap());
+ const d=document.createElement('div');if(bad)d.className='bad';d.innerHTML=`<span class="t">${fmtT(log[log.length-1].t)}</span><span class="k">${esc(k)}</span><span class="e">${esc(n)} · ${esc(eff||'(no change)')}</span>`;
+ const lg=$('wfLog');lg.appendChild(d);lg.scrollTop=lg.scrollHeight}
+function run(combo){const a=A[combo];if(!a){rec(pretty(combo),'Not simulated','—',true);after();return}
+ const before=a.m?snap():null,eff=a.f();if(a.m&&eff){undo.push(before);redo=[];if(a.rep)lastRep=combo}
+ used.add(pretty(combo));rec(pretty(combo),a.n+(combo==='Ctrl+Digit1'?' (not simulated)':''),eff,false);after()}
+function commit(){const{r,c,buf,n}=editing;editing=null;const before=snap(),x=ensure(r,c);
+ if(buf.startsWith('=')){x.f=buf.toUpperCase();x.v=''}else{x.f=null;const t=buf.trim(),nm=parseFloat(t.replace(/[$,%]/g,''));
+  if(t!==''&&!isNaN(nm)&&/^[-$\d.,%() ]+$/.test(t)){x.v=/%$/.test(t)?nm/100:nm;if(/%$/.test(t))x.fmt='pct';if(/\$/.test(t))x.fmt='cur'}else x.v=t}
+ undo.push(before);redo=[];rec(n?'Type ×'+n:'Edit','Enter value',A1(r,c)+' = '+(x.f||x.v));used.add('Typing')}
+/* ---- KeyTip sequences ---- */
+let wseq=null,wseqT=0;
+function seqShow(){$('wfSeq').innerHTML=wseq?CAPS(wseq.join('>'))+'<span class="cur">▌</span>':''}
+function seqCancel(){wseq=null;clearTimeout(wseqT);seqShow()}
+function seqStart(){wseq=['Alt'];seqShow();clearTimeout(wseqT);wseqT=setTimeout(seqCancel,2500)}
+function handle(code,m){
+ if(code==='F1'){showHint();return}
+ if(wseq){if(code==='Escape'){seqCancel();rec('Esc','Cancel KeyTips','—');return}
+  wseq.push(code);const cand=wseq.join('>');clearTimeout(wseqT);
+  if(A[cand]){seqCancel();run(cand);return}if(SEQS.some(k=>k.startsWith(cand+'>'))){seqShow();wseqT=setTimeout(seqCancel,2500);return}
+  seqCancel();rec(pretty(cand),'Unknown KeyTip','—',true);return}
+ if(editing){
+  if(code==='Escape'){editing=null;rec('Esc','Cancel edit','—');render();return}
+  const mv={Enter:m.shift?[-1,0]:[1,0],Tab:m.shift?[0,-1]:[0,1]};if(!editing.f2)Object.assign(mv,D);
+  if(mv[code]){commit();goto(step(act,...mv[code]));after();return}
+  if(code==='Backspace'){editing.buf=editing.buf.slice(0,-1);render();return}
+  if(m.key&&m.key.length===1&&!m.ctrl&&!m.alt){editing.buf+=m.key;editing.n++;render();return}return}
+ const combo=(m.ctrl?'Ctrl+':'')+(m.alt?'Alt+':'')+(m.shift?'Shift+':'')+code;
+ if(A[combo]){run(combo);return}
+ if(code==='Backspace'&&!m.ctrl&&!m.alt){editing={r:act.r,c:act.c,buf:'',n:0};goto(act);render();return}
+ if(!m.ctrl&&!m.alt&&m.key&&m.key.length===1){editing={r:act.r,c:act.c,buf:m.key,n:1};goto(act);render();return}
+ rec(pretty(combo),'Not simulated','—',true)}
+let altDown=false,altUsed=false;
+const blocked=()=>!window.WF_ACTIVE||replaying||done||!task||!$('wfMenu').classList.contains('hidden')||!$('wfEnd').classList.contains('hidden');
+addEventListener('keydown',e=>{if(!window.WF_ACTIVE)return;if(blocked()){if(e.code==='Escape'&&done){}return}
+ if(e.code==='F12'||(e.ctrlKey&&e.shiftKey&&e.code==='KeyI'))return;
+ e.preventDefault();e.stopPropagation();
+ if(e.code==='AltLeft'||e.code==='AltRight'){if(!e.repeat){altDown=true;altUsed=false}return}
+ if(altDown)altUsed=true;
+ if(['ControlLeft','ControlRight','ShiftLeft','ShiftRight','MetaLeft','MetaRight','CapsLock'].includes(e.code))return;
+ tick();handle(e.code,{ctrl:e.ctrlKey,alt:e.altKey,shift:e.shiftKey,key:e.key})},true);
+addEventListener('keyup',e=>{if(!window.WF_ACTIVE)return;if(e.code==='AltLeft'||e.code==='AltRight'){e.preventDefault();e.stopPropagation();if(altDown&&!altUsed&&!blocked()&&!editing){tick();seqStart()}altDown=false}},true);
+/* ---- render ---- */
+function render(){const g=sel(),one=single(g);let h='<colgroup><col style="width:36px">';
+ for(let c=0;c<C;c++)if(!S.colHidden[c])h+=`<col style="width:${S.colW[c]}px">`;h+='</colgroup><tr><th class="rh"></th>';
+ for(let c=0;c<C;c++)if(!S.colHidden[c])h+=`<th class="${c>=g.c1&&c<=g.c2?'hsel':''}">${L(c)}${S.colHidden[c+1]?' ‖':''}</th>`;h+='</tr>';
+ const cov=new Set();S.merges.forEach(m=>each(m,(r,c)=>{if(r!==m.r1||c!==m.c1)cov.add(K(r,c))}));
+ for(let r=0;r<R;r++){if(S.rowHidden[r])continue;h+=`<tr><th class="rh ${r>=g.r1&&r<=g.r2?'hsel':''}">${r+1}</th>`;
+  for(let c=0;c<C;c++){if(S.colHidden[c]||cov.has(K(r,c)))continue;const x=cell(r,c)||{},v=val(r,c),mg=S.merges.find(m=>m.r1===r&&m.c1===c);let span='';
+   if(mg){let cs=0,rn=0;for(let k=mg.c1;k<=mg.c2;k++)if(!S.colHidden[k])cs++;for(let k=mg.r1;k<=mg.r2;k++)if(!S.rowHidden[k])rn++;span=` colspan="${cs}" rowspan="${rn}"`}
+   const cl=[];if(typeof v==='number'){cl.push('num');if(v<0)cl.push('neg')}if(!one&&r>=g.r1&&r<=g.r2&&c>=g.c1&&c<=g.c2)cl.push('sel');if(r===act.r&&c===act.c)cl.push('act');if(x.bd)cl.push('bd');if(x.fill)cl.push('fl');
+   if(S.freeze){if(r===S.freeze.r-1)cl.push('fzr');if(c===S.freeze.c-1)cl.push('fzc')}
+   const st=[];if(x.b)st.push('font-weight:700');if(x.i)st.push('font-style:italic');const dec=[x.u?'underline':'',x.s?'line-through':''].filter(Boolean).join(' ');if(dec)st.push('text-decoration:'+dec);if(x.al)st.push('text-align:'+x.al);
+   let t=esc(disp(r,c));if(editing&&editing.r===r&&editing.c===c)t=esc(editing.buf)+'<span class="cur">|</span>';
+   const fa=S.filter&&r===S.filter.r&&c>=S.filter.c1&&c<=S.filter.c2?'<span class="farr">▼</span>':'';
+   h+=`<td class="${cl.join(' ')}" style="${st.join(';')}"${span}>${fa}${t}</td>`}h+='</tr>'}
+ $('wfGrid').innerHTML=h;$('wfName').textContent=one?A1(act.r,act.c):rs(g);
+ const x=cell(act.r,act.c);$('wfFx').textContent=editing?editing.buf:x?(x.f||(x.v==null?'':String(x.v))):'';
+ $('wfKeys').textContent=keys;$('wfEff').textContent=keys?Math.min(100,Math.round(100*task.par/keys))+'%':'—';
+ const a=document.querySelector('#wfGrid td.act');if(a)a.scrollIntoView({block:'nearest',inline:'nearest'})}
+function check(){if(replaying)return;let n=0;task.goals.forEach((g,i)=>{const ok=!!g.ok();if(ok)n++;const li=$('wfChecks').children[i];if(ok&&!li.classList.contains('done')){li.classList.add('done');tone(1046,.1,'triangle',.06)}else if(!ok)li.classList.remove('done')});
+ if(n===task.goals.length&&!done){done=true;tEnd=(performance.now()-t0)/1000;if(!timerOn)tEnd=0;timerOn=false;const tok=task,lc=log;setTimeout(()=>{if(task===tok&&log===lc&&done)finish()},500)}}
+function after(){render();check()}
+function showHint(){const g=task&&task.goals.find(g=>!g.ok());if(!g)return;hints++;const el=$('wfHint');el.classList.remove('hidden');el.innerHTML='💡 <b>'+esc(g.t)+'</b><br>'+esc(g.h);rec('F1','Hint',g.h)}
+/* ---- load / menu / finish ---- */
+const bestAll=()=>{try{return JSON.parse(localStorage.kwWF||'{}')}catch(_){return{}}};
+function load(i){task=TASKS[i];task.i=i;S=blank();task.data.forEach((row,r)=>row.forEach((v,c)=>{if(v==null)return;S.cells[K(r,c)]=typeof v==='string'&&v[0]==='='?{v:'',f:v}:{v}}));
+ act={r:0,c:0};ext={r:0,c:0};selG=null;editing=null;clip=null;undo=[];redo=[];log=[];snaps=[snap()];keys=0;timerOn=false;done=false;tEnd=0;lastRep=null;hints=0;used=new Set();seqCancel();
+ $('wfTitle').textContent=task.name;$('wfBrief').textContent=task.brief;$('wfPar').textContent=task.par;$('wfTime').textContent='0:00.0';$('wfTab').textContent=task.tab;$('wfHint').classList.add('hidden');
+ $('wfChecks').innerHTML=task.goals.map(g=>'<li>'+esc(g.t)+'</li>').join('');$('wfLog').innerHTML='';$('wfMenu').classList.add('hidden');$('wfEnd').classList.add('hidden');render();check()}
+function menu(){const b=bestAll();$('wfTasks').innerHTML='';TASKS.forEach((t,i)=>{const x=b[t.id],btn=document.createElement('button');btn.className='tcard';
+ btn.innerHTML=`<b>${i+1}. ${esc(t.name)}</b><span class="note">${esc(t.brief)}</span><small>${t.goals.length} goals · par ${t.par} keys${x?' · best '+fmtT(x.time)+' / '+x.keys+' keys ('+x.grade+')':''}</small>`;btn.onclick=()=>load(i);$('wfTasks').appendChild(btn)});
+ $('wfMenu').classList.remove('hidden');$('wfEnd').classList.add('hidden')}
+const grade=e=>e>=90?'A':e>=75?'B':e>=60?'C':e>=45?'D':'F';
+function finish(){sfx.jackpot();const t=tEnd,eff=Math.min(100,Math.round(100*task.par/Math.max(1,keys))),gr=grade(eff),b=bestAll(),prev=b[task.id];let nb=false;
+ if(!prev||t<prev.time){b[task.id]={time:t,keys,grade:gr};localStorage.kwWF=JSON.stringify(b);nb=true}
+ const sc=[...used].filter(u=>u!=='Typing');const acts=log.filter(l=>!l.bad&&l.action!=='Hint');
+ $('wfEnd').innerHTML=`<h2>${nb?'🏆 New best — ':''}Task complete</h2><div class="grade">${gr}</div>
+ <table><tr><td>Time</td><td><b>${fmtT(t)}</b>${prev&&!nb?' (best '+fmtT(prev.time)+')':''}</td></tr><tr><td>Keystrokes</td><td><b>${keys}</b> vs par ${task.par}</td></tr><tr><td>Mouse-free efficiency</td><td><b>${eff}%</b></td></tr><tr><td>Hints used</td><td>${hints}</td></tr><tr><td>Logged actions</td><td>${log.length} (${log.filter(l=>l.bad).length} invalid)</td></tr></table>
+ <div class="note">Shortcuts used (${sc.length}):</div><div class="chips">${sc.map(s=>'<kbd>'+esc(s)+'</kbd>').join('')}</div>
+ <div class="paths"><div><b style="color:#d4af37">Par path (${task.par} keys)</b><br>${task.path.map(esc).join(' → ')}</div><div><b style="color:#19d47a">Your path (${keys} keys)</b><br>${acts.map(l=>esc(l.keys)).join(' → ')}</div></div>
+ <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center"><button id="wfRep">▶ Replay</button><button id="wfCsv">📋 Copy log (CSV)</button><button id="wfJson">⬇ JSON</button><button id="wfCsvDl">⬇ CSV</button>${task.i<TASKS.length-1?'<button id="wfNext" class="big">Next task ▶</button>':''}<button id="wfTasksB">☰ Tasks</button></div><div class="note" id="wfMsg">Everything stays in your browser (simulated sheet).</div>`;
+ $('wfEnd').classList.remove('hidden');$('wfRep').onclick=replay;$('wfCsv').onclick=()=>{copyText(csv());$('wfMsg').textContent='Log copied as CSV.'};
+ $('wfJson').onclick=()=>dl('keyboard-warrior-'+task.id+'.json',JSON.stringify(exportObj(),null,2),'application/json');$('wfCsvDl').onclick=()=>dl('keyboard-warrior-'+task.id+'.csv',csv(),'text/csv');
+ if($('wfNext'))$('wfNext').onclick=()=>load(task.i+1);$('wfTasksB').onclick=menu}
+const exportObj=()=>({app:'Keyboard Warrior — Workflow Mode (simulated sheet)',task:task.name,time:+tEnd.toFixed(2),keystrokes:keys,par:task.par,efficiency:Math.min(100,Math.round(100*task.par/Math.max(1,keys))),hints,log});
+const csv=()=>'time_s,keys,action,effect\n'+log.map(l=>[l.t,l.keys,l.action,l.effect].map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\n');
+function dl(name,txt,type){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([txt],{type}));a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500)}
+async function copyText(t){try{await navigator.clipboard.writeText(t)}catch(e){const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove()}}
+function replay(){replaying=true;$('wfEnd').classList.add('hidden');const fin=snap();let i=0;const rows=$('wfLog').children;
+ const iv=setInterval(()=>{restore(snaps[i]);editing=null;render();[...rows].forEach((d,j)=>d.classList.toggle('hl',j===i-1));if(rows[i-1])rows[i-1].scrollIntoView({block:'nearest'});
+  if(++i>=snaps.length){clearInterval(iv);setTimeout(()=>{restore(fin);render();replaying=false;[...rows].forEach(d=>d.classList.remove('hl'));$('wfEnd').classList.remove('hidden')},700)}},300)}
+function enter(){window.WF_ACTIVE=true;if(st&&st.running)end('');document.body.classList.add('wfmode');$('wf').classList.remove('hidden');menu()}
+function exit(){window.WF_ACTIVE=false;document.body.classList.remove('wfmode');$('wf').classList.add('hidden');$('ovStart').classList.remove('hidden');$('ovEnd').classList.add('hidden')}
+setInterval(()=>{if(window.WF_ACTIVE&&timerOn&&!done)$('wfTime').textContent=fmtT(elapsed());else if(window.WF_ACTIVE&&done)$('wfTime').textContent=fmtT(tEnd)},100);
+$('bWorkflow').onclick=enter;$('wfBExit').onclick=exit;$('wfBExit2').onclick=exit;$('wfBMenu').onclick=menu;$('wfBReset').onclick=()=>task&&load(task.i);$('wfBHint').onclick=showHint;
+/* touch: best effort */
+function touch(code,ctrl,alt,shift){if(!window.WF_ACTIVE||blocked())return;if(code==='HINT'){showHint();return}tick();
+ const keyFor=c=>/^Key/.test(c)?c.slice(3).toLowerCase():/^Digit/.test(c)?c.slice(5):({Semicolon:';',Equal:'=',Backquote:'`',Quote:"'",Space:' ',Slash:'/',Period:'.',Minus:'-'}[c]||'');
+ if(wseq){handle(code,{});return}
+ if(alt&&!ctrl&&!shift&&!A['Alt+'+code]){seqStart();handle(code,{});return}
+ handle(code,{ctrl,alt,shift,key:keyFor(code)})}
+(function(){const T=$('touch');if(!T)return;const row=document.createElement('div');row.className='row wfOnly';
+ [['↑','ArrowUp'],['Tab','Tab'],['Esc','Escape'],['Del','Delete'],['⌫','Backspace'],['$','Digit4'],['%','Digit5'],['.','Period']].forEach(([l,c])=>{const b=document.createElement('button');b.textContent=l;b.onclick=()=>touch(c,false,false,false);row.appendChild(b)});T.insertBefore(row,T.children[1]||null)})();
+return{touch,load,menu,enter,exit,handle,run,get S(){return S},get keys(){return keys},get log(){return log},val,cell,TASKS,get done(){return done},snapCount:()=>snaps.length,get act(){return act},sel}})();
+if(location.hash==='#workflow-demo'){WF.enter();WF.load(0);const seqs=['Ctrl+Home','Shift+ArrowRight','Shift+ArrowRight','Shift+ArrowRight','Ctrl+KeyB','ArrowDown','ArrowRight','Ctrl+Shift+ArrowRight','Ctrl+Shift+ArrowDown','Shift+ArrowDown','Alt+Equal','Shift+ArrowUp','Ctrl+Shift+Digit4'];seqs.forEach(c=>WF.run(c))}
+</script>
+</body></html>
