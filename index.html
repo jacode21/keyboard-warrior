@@ -56,24 +56,30 @@ button:active{transform:scale(.95)}
 .note{font-size:12px;color:var(--mut);max-width:520px}
 @media (max-width:700px){#side{display:none}#touch{display:flex}#wrap{padding:10px 8px 4px}}
 @media (pointer:coarse){#touch{display:flex}}
+#sStack{height:30px;display:flex;align-items:flex-end;justify-content:center}
+#stackBar{display:block;width:60%;height:22px;border:2px solid var(--gold);border-radius:6px;background:linear-gradient(to top,var(--red) var(--h,0%),transparent var(--h,0%))}
+.piece.brick{border-color:var(--red);background:repeating-linear-gradient(135deg,var(--piece) 0 10px,#ff4d6d22 10px 20px);opacity:.9}
+.piece.brick.top{border-style:dashed}
+.piece.target.brick{border-color:var(--gold)}
+.hint{position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:12px;background:var(--gold);color:#1a0f30;padding:2px 6px;border-radius:6px;z-index:2}
 .jack{color:#ffc83d!important;font-size:56px!important}
 </style></head><body>
 <div id="marquee"></div>
 <div id="wrap">
 <header><h1>🎰 KEYBOARD WARRIOR</h1>
-<button id="bPause" title="Pause (Esc)">⏸</button><button id="bMute" title="Mute">🔊</button><button id="bTheme" title="Theme">🌓</button><button id="bFs" title="Fullscreen (enables Ctrl+N)">⛶</button></header>
-<div id="hud"><div class="stat"><b id="sScore">0</b><span>Score</span></div><div class="stat"><b id="sCombo">x0</b><span>Combo</span></div><div class="stat"><b id="sTime">60</b><span>Time</span></div><div class="stat"><b id="sLives">❤❤❤</b><span>Lives</span></div></div>
+<button id="bHint" title="Hint (Tab or /)">💡</button><button id="bPause" title="Pause (Esc)">⏸</button><button id="bMute" title="Mute">🔊</button><button id="bTheme" title="Theme">🌓</button><button id="bFs" title="Fullscreen (enables Ctrl+N)">⛶</button></header>
+<div id="hud"><div class="stat"><b id="sScore">0</b><span>Score</span></div><div class="stat"><b id="sCombo">x0</b><span>Combo</span></div><div class="stat"><b id="sTime">60</b><span>Time</span></div><div class="stat"><b id="sStack"><i id="stackBar"></i></b><span>Stack</span></div></div>
 <div id="main">
  <div id="field"><div id="flash"></div><div id="combo"></div><div id="floor"></div>
-  <div id="ovStart" class="overlay"><h2>KEYBOARD WARRIOR</h2><p>Excel (Windows) shortcut speedrun. Actions fall — type the real shortcut before they land.<br>No hints. 60 seconds. 3 lives. 5 in a row = JACKPOT.</p><button class="big" id="bStart">INSERT COIN ▶</button><p class="note">Best: <span id="best0">0</span>. Browsers block Ctrl+N/W/T, so Ctrl+N only shows up in fullscreen mode (⛶) where the keyboard can be locked. Click the field first so it has keyboard focus.</p></div>
+  <div id="ovStart" class="overlay"><h2>KEYBOARD WARRIOR</h2><p>Excel (Windows) shortcut speedrun. Actions fall — type the real shortcut before they land.<br>Missed prompts land and <b>stack up</b> like Tetris bricks. Stack hits the top = game over. 60 seconds. 5 clean hits in a row = JACKPOT.<br>Stuck? <b>Tab</b> or <b>/</b> (or 💡) for a hint: 1st shows the modifier, 2nd the full keys — hinted clears score less and don't build combo. Type a landed brick's shortcut to knock it off the top of the stack.</p><button class="big" id="bStart">INSERT COIN ▶</button><p class="note">Best: <span id="best0">0</span>. Browsers block Ctrl+N/W/T, so Ctrl+N only shows up in fullscreen mode (⛶) where the keyboard can be locked. Click the field first so it has keyboard focus.</p></div>
   <div id="ovPause" class="overlay hidden"><h2>PAUSED</h2><button class="big" id="bResume">RESUME</button><p class="note">Esc to resume</p></div>
   <div id="ovEnd" class="overlay hidden"><h2 id="endTitle">ROUND OVER</h2>
-   <div>Score <b id="eScore" style="font-size:28px;color:#ffc83d">0</b> · Best combo <b id="eCombo">0</b> · High score <b id="eBest">0</b></div>
+   <div>Score <b id="eScore" style="font-size:28px;color:#ffc83d">0</b> · Best combo <b id="eCombo">0</b> · Hints used <b id="eHints">0</b> · High score <b id="eBest">0</b></div>
    <div id="inter" class="ad"></div>
    <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center"><button class="big" id="bShare">📋 Copy challenge</button><button class="big" id="bAgain">PLAY AGAIN</button></div>
    <div class="note" id="shareMsg"></div><div class="note" id="missed"></div></div>
  </div>
- <div id="side"><div id="queue"><h3>Up next</h3><div id="qList"></div></div><p class="note">Esc = pause. Only the glowing (lowest) prompt is targeted.</p></div>
+ <div id="side"><div id="queue"><h3>Up next</h3><div id="qList"></div></div><p class="note">Esc = pause · Tab or / = hint. Only the glowing (lowest) prompt is targeted; with nothing falling, the top brick is. Type the top brick's shortcut anytime to knock it off.</p></div>
 </div>
 <div id="touch"></div>
 <div id="banner" class="ad"></div>
@@ -117,7 +123,7 @@ let ac; function tone(f,d,type='square',v=.08,when=0){ if(muted)return; ac=ac||n
  g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(g).connect(ac.destination);o.start(t);o.stop(t+d);}
 const sfx={hit(c){tone(660+c*40,.12);tone(990+c*40,.12,'square',.06,.06)},miss(){tone(180,.3,'sawtooth',.1);tone(120,.35,'sawtooth',.08,.1)},
  jackpot(){[523,659,784,1047,784,1047,1319].forEach((f,i)=>tone(f,.18,'square',.08,i*.09))},spin(){for(let i=0;i<5;i++)tone(300+i*80,.04,'triangle',.03,i*.05)},
- end(){[784,659,523,392].forEach((f,i)=>tone(f,.25,'triangle',.08,i*.15))}};
+ land(){tone(90,.15,'square',.1)},end(){[784,659,523,392].forEach((f,i)=>tone(f,.25,'triangle',.08,i*.15))}};
 
 /* ---------- Marquee ---------- */
 function marquee(){const m=$('marquee');m.innerHTML='';const W=innerWidth,H=innerHeight,s=34;let i=0;
@@ -129,33 +135,49 @@ addEventListener('resize',marquee);marquee();
 function pool(){return SHORTCUTS.filter(s=>!RESERVED.has(s[1])||kbLocked)}
 function pick(){const p=pool();let s;do{s=p[Math.random()*p.length|0]}while(st&&st.last===s[1]&&p.length>1);if(st)st.last=s[1];return s}
 function start(){document.querySelectorAll('.piece').forEach(e=>e.remove());
- st={score:0,combo:0,bestCombo:0,lives:3,time:60,pieces:[],queue:[],spawnT:0,running:true,paused:false,last:null,missed:[]};
+ st={score:0,combo:0,bestCombo:0,hints:0,bricks:[],time:60,pieces:[],queue:[],spawnT:0,running:true,paused:false,last:null,missed:[]};
  for(let i=0;i<3;i++)st.queue.push(pick());
  ['ovStart','ovEnd','ovPause'].forEach(o=>$(o).classList.add('hidden'));field.focus();spawn();hud();lastT=performance.now();requestAnimationFrame(loop)}
 function spawn(){const s=st.queue.shift();st.queue.push(pick());const el=document.createElement('div');el.className='piece';
  // slot reel: a strip of random names that spins down to the real one
  const strip=[...Array(5)].map(()=>SHORTCUTS[Math.random()*SHORTCUTS.length|0][0]);
  el.innerHTML='<span class="reel">'+strip.map(n=>'<div style="opacity:.45">'+n+'</div>').join('')+'<div>'+s[0]+'</div></span>';
-  const rl=el.querySelector('.reel');rl.onanimationend=()=>rl.classList.add('done');field.appendChild(el);st.pieces.push({el,name:s[0],combo:s[1],y:4});sfx.spin();renderQueue()}
+  const rl=el.querySelector('.reel');rl.onanimationend=()=>rl.classList.add('done');field.appendChild(el);st.pieces.push({el,name:s[0],combo:s[1],y:4,hint:0});sfx.spin();renderQueue()}
 function renderQueue(){$('qList').innerHTML=st.queue.map(q=>'<div>'+q[0]+'</div>').join('')}
 function speed(){const e=60-st.time;return 40+e*2.2} // px/s, accelerates
 function interval(){const e=60-st.time;return Math.max(.9,2.6-e*.03)}
 let lastT=0;
 function loop(t){if(!st||!st.running)return;const dt=Math.min(.05,(t-lastT)/1000);lastT=t;
  if(!st.paused){st.time-=dt;st.spawnT+=dt;if(st.spawnT>=interval()){st.spawnT=0;spawn()}
-  const H=field.clientHeight-54,v=speed();
-  for(const p of [...st.pieces]){p.y+=v*dt;p.el.style.top=p.y+'px';if(p.y>=H){fail(p,true)}}
+  const v=speed();layoutBricks();
+  for(const p of [...st.pieces]){p.y+=v*dt;p.el.style.top=p.y+'px';if(p.y+PH>=stackTop()){land(p);if(!st.running)return}}
   markTarget();if(st.time<=0){st.time=0;return end()} hud()}
  requestAnimationFrame(loop)}
-function target(){return st.pieces.reduce((a,p)=>!a||p.y>a.y?p:a,null)}
-function markTarget(){const tg=target();st.pieces.forEach(p=>p.el.classList.toggle('target',p===tg))}
+const PH=48,PITCH=50;
+function stackTop(){return field.clientHeight-8-PITCH*st.bricks.length}
+function layoutBricks(){const fh=field.clientHeight;st.bricks.forEach((b,i)=>{b.y=fh-8-PITCH*(i+1)+1;b.el.style.top=b.y+'px';b.el.classList.toggle('top',i===st.bricks.length-1)})}
+function topBrick(){return st.bricks[st.bricks.length-1]||null}
+// Target = lowest falling prompt; if nothing is falling, the top brick of the stack.
+function target(){return st.pieces.reduce((a,p)=>!a||p.y>a.y?p:a,null)||topBrick()}
+function markTarget(){const tg=target();[...st.pieces,...st.bricks].forEach(p=>p.el.classList.toggle('target',p===tg))}
+function stackPct(){return Math.min(100,Math.round(100*st.bricks.length*PITCH/(field.clientHeight-8-PITCH)))}
+function land(p){const i=st.pieces.indexOf(p);if(i>=0)st.pieces.splice(i,1);if(!st.missed.includes(p.name+' = '+LABEL(p.combo)))st.missed.push(p.name+' = '+LABEL(p.combo));
+ p.el.classList.remove('shake');p.el.classList.add('brick');st.bricks.push(p);layoutBricks();sfx.land();
+ if(stackTop()<PITCH+4){hud();end('STACK OVERFLOW!')}}
+function showHint(){if(!st||!st.running||st.paused)return;const tg=target();if(!tg||tg.hint>=2)return;tg.hint++;st.hints++;
+ const parts=LABEL(tg.combo).split('+'),txt=tg.hint===1?(parts.length>1?parts.slice(0,-1).join(' + ')+' + ?':'(no modifier) ?'):parts.join(' + ');
+ let h=tg.el.querySelector('.hint');if(!h){h=document.createElement('span');h.className='hint';tg.el.appendChild(h)}h.textContent='💡 '+txt;tone(880,.08,'triangle',.06);hud()}
 function hud(){$('sScore').textContent=st.score;$('sCombo').textContent='x'+st.combo;$('sTime').textContent=Math.ceil(st.time);
- $('sLives').textContent='❤'.repeat(st.lives)+'♡'.repeat(3-st.lives);$('sTime').style.color=st.time<10?'var(--red)':''}
-function hit(p){st.pieces.splice(st.pieces.indexOf(p),1);st.score+=100+25*st.combo;st.combo++;st.bestCombo=Math.max(st.bestCombo,st.combo);
+ $('stackBar').style.setProperty('--h',stackPct()+'%');$('sTime').style.color=st.time<10?'var(--red)':''}
+function hit(p){const isB=st.bricks.includes(p);(isB?st.bricks:st.pieces).splice((isB?st.bricks:st.pieces).indexOf(p),1);
+ if(p.hint||isB){ // hinted or brick clears: flat points, combo neither grows nor resets, no jackpot progress
+  st.score+=isB?75:(p.hint===1?50:25);p.el.classList.add('hit');setTimeout(()=>p.el.remove(),300);flash('var(--green)');coins(p.el,6);sfx.hit(0);layoutBricks();hud();return}
+ st.score+=100+25*st.combo;st.combo++;st.bestCombo=Math.max(st.bestCombo,st.combo);
  p.el.classList.add('hit');setTimeout(()=>p.el.remove(),300);flash('var(--green)');coins(p.el,8+st.combo*2);sfx.hit(st.combo);
  if(st.combo%5===0){st.score+=500;sfx.jackpot();comboText('JACKPOT! +500',true);coins(field,50,true)}else if(st.combo>=2)comboText('COMBO x'+st.combo);hud()}
-function fail(p,landed){if(p){st.pieces.splice(st.pieces.indexOf(p),1);st.missed.push(p.name+' = '+LABEL(p.combo));p.el.classList.add('miss');p.el.classList.add('shake');setTimeout(()=>p.el.remove(),350)}
- st.combo=0;st.lives--;flash('var(--red)');field.classList.remove('shake');void field.offsetWidth;field.classList.add('shake');sfx.miss();hud();if(st.lives<=0)end()}
+// Wrong key: combo reset, red shake, and a falling target slams straight onto the stack.
+function fail(p){st.combo=0;flash('var(--red)');field.classList.remove('shake');void field.offsetWidth;field.classList.add('shake');sfx.miss();
+ if(p&&st.pieces.includes(p))land(p);hud()}
 function flash(c){const f=$('flash');f.style.background=c;f.animate([{opacity:.35},{opacity:0}],{duration:300})}
 function comboText(t,j){const c=$('combo');c.textContent=t;c.classList.toggle('jack',!!j);c.style.fontSize=Math.min(72,36+st.combo*3)+'px';c.classList.remove('go');void c.offsetWidth;c.classList.add('go')}
 function coins(el,n,rain){const fr=field.getBoundingClientRect(),r=el.getBoundingClientRect();
@@ -163,12 +185,13 @@ function coins(el,n,rain){const fr=field.getBoundingClientRect(),r=el.getBoundin
   c.style.left=x+'px';c.style.top=y+'px';field.appendChild(c);const a=Math.random()*Math.PI*2,d=60+Math.random()*120;
   const to=rain?`translate(${(Math.random()-.5)*80}px,${fr.height+40}px)`:`translate(${Math.cos(a)*d}px,${Math.sin(a)*d+80}px)`;
   c.animate([{transform:'translate(0,0) scale(1)',opacity:1},{transform:to+' scale(.6) rotate(720deg)',opacity:0}],{duration:rain?1400+Math.random()*600:700,easing:'cubic-bezier(.2,.6,.4,1)'}).onfinish=()=>c.remove()}}
-function end(){st.running=false;document.querySelectorAll('.piece').forEach(e=>e.remove());sfx.end();
- if(st.score>best){best=st.score;localStorage.kwBest=best;$('endTitle').textContent='🏆 NEW HIGH SCORE!'}else $('endTitle').textContent=st.lives<=0?'OUT OF LIVES':'TIME!';
- $('eScore').textContent=st.score;$('eCombo').textContent=st.bestCombo;$('eBest').textContent=best;$('best0').textContent=best;$('shareMsg').textContent='';
+function end(why){if(!st.running)return;st.running=false;setTimeout(()=>document.querySelectorAll('.piece').forEach(e=>e.remove()),900);sfx.end();
+ const nb=st.score>best;if(nb){best=st.score;localStorage.kwBest=best}$('endTitle').textContent=(why||'TIME!')+(nb?' 🏆 NEW HIGH SCORE!':'');
+ $('eScore').textContent=st.score;$('eCombo').textContent=st.bestCombo;$('eHints').textContent=st.hints;$('eBest').textContent=best;$('best0').textContent=best;$('shareMsg').textContent='';
  $('missed').textContent=st.missed.length?'Missed: '+st.missed.slice(-4).join(' · '):'';$('ovEnd').classList.remove('hidden');hud();showInterstitial()}
 function pause(v){if(!st||!st.running)return;st.paused=v===undefined?!st.paused:v;$('ovPause').classList.toggle('hidden',!st.paused);$('bPause').textContent=st.paused?'▶':'⏸';if(!st.paused)lastT=performance.now()}
-function submit(c){if(!st||!st.running||st.paused)return;const tg=target();if(!tg)return;if(tg.combo===c)hit(tg);else fail(tg)}
+function submit(c){if(!st||!st.running||st.paused)return;const tg=target();if(!tg)return;const tb=topBrick();
+ if(tg.combo===c)hit(tg);else if(tb&&tb!==tg&&tb.combo===c)hit(tb);else fail(tg)}
 
 /* ---------- Input ---------- */
 const MODS=['ControlLeft','ControlRight','AltLeft','AltRight','ShiftLeft','ShiftRight','MetaLeft','MetaRight','CapsLock'];
@@ -176,6 +199,7 @@ const ALLOWED=new Set(SHORTCUTS.map(s=>s[1]));
 addEventListener('keydown',e=>{
  if(e.code==='Escape'){if(st&&st.running){e.preventDefault();pause()}return}
  if(MODS.includes(e.code))return;
+ if((e.code==='Tab'||(e.code==='Slash'&&!e.ctrlKey&&!e.altKey))&&st&&st.running){e.preventDefault();if(!e.repeat)showHint();return}
  const c=(e.ctrlKey?'Ctrl+':'')+(e.altKey?'Alt+':'')+(e.shiftKey?'Shift+':'')+e.code;
  const playing=st&&st.running&&!st.paused;
  // Block browser defaults (Ctrl+S/P/F/D/...) while playing; Ctrl+N/W/T cannot be blocked unless keyboard is locked.
@@ -192,15 +216,15 @@ addEventListener('blur',()=>pause(true));
 const tm={Ctrl:false,Alt:false,Shift:false};
 (function buildTouch(){const T=$('touch');
  const keys=[['B','KeyB'],['C','KeyC'],['V','KeyV'],['X','KeyX'],['Z','KeyZ'],['Y','KeyY'],['S','KeyS'],['I','KeyI'],['U','KeyU'],['F','KeyF'],['H','KeyH'],['A','KeyA'],['P','KeyP'],['D','KeyD'],['R','KeyR'],['K','KeyK'],['L','KeyL'],['O','KeyO'],['N','KeyN'],
-  ['1','Digit1'],['4','Digit4'],['5','Digit5'],['9','Digit9'],['0','Digit0'],[';','Semicolon'],['=','Equal'],['`','Backquote'],['Space','Space'],['Home','Home'],['End','End'],['F2','F2'],['F4','F4'],['F5','F5'],['F7','F7'],['F11','F11']];
+  ['1','Digit1'],['4','Digit4'],['5','Digit5'],['9','Digit9'],['0','Digit0'],[';','Semicolon'],['=','Equal'],['`','Backquote'],['Space','Space'],['Home','Home'],['End','End'],['F2','F2'],['F4','F4'],['F5','F5'],['F7','F7'],['F11','F11'],['💡 Hint','HINT']];
  const mr=document.createElement('div');mr.className='row';
  ['Ctrl','Alt','Shift'].forEach(m=>{const b=document.createElement('button');b.className='mod';b.textContent=m;b.onclick=()=>{tm[m]=!tm[m];b.classList.toggle('on',tm[m])};mr.appendChild(b)});T.appendChild(mr);
  const kr=document.createElement('div');kr.className='row';
- keys.forEach(([l,c])=>{const b=document.createElement('button');b.textContent=l;b.onclick=()=>{submit((tm.Ctrl?'Ctrl+':'')+(tm.Alt?'Alt+':'')+(tm.Shift?'Shift+':'')+c);
+ keys.forEach(([l,c])=>{const b=document.createElement('button');b.textContent=l;b.onclick=()=>{if(c==='HINT'){showHint();return}submit((tm.Ctrl?'Ctrl+':'')+(tm.Alt?'Alt+':'')+(tm.Shift?'Shift+':'')+c);
   Object.keys(tm).forEach(k=>tm[k]=false);mr.querySelectorAll('.mod').forEach(x=>x.classList.remove('on'))};kr.appendChild(b)});T.appendChild(kr)})();
 
 /* Buttons */
-$('bStart').onclick=start;$('bAgain').onclick=()=>{$('ovEnd').classList.add('hidden');start()};$('bResume').onclick=()=>pause(false);$('bPause').onclick=()=>pause();
+$('bStart').onclick=start;$('bHint').onclick=showHint;$('bAgain').onclick=()=>{$('ovEnd').classList.add('hidden');start()};$('bResume').onclick=()=>pause(false);$('bPause').onclick=()=>pause();
 const setMute=()=>{$('bMute').textContent=muted?'🔇':'🔊';localStorage.kwMute=muted?'1':'0'};setMute();$('bMute').onclick=()=>{muted=!muted;setMute()};
 if(localStorage.kwTheme==='light')document.body.classList.add('light');
 $('bTheme').onclick=()=>{document.body.classList.toggle('light');localStorage.kwTheme=document.body.classList.contains('light')?'light':'dark'};
@@ -221,5 +245,5 @@ if(ADS.publisherId){const s=document.createElement('script');s.async=true;s.cros
 adUnit($('banner'),ADS.bannerSlot,'🎰 Your banner here');
 function showInterstitial(){adUnit($('inter'),ADS.interstitialSlot,'✨ Between-round sponsor')}
 showInterstitial();
-if(location.hash==="#demo"){document.head.insertAdjacentHTML("beforeend","<style>.reel{animation:none}.reel div:not(:last-child){display:none}</style>");start();spawn();spawn();st.pieces.forEach((p,i)=>{p.y=380-i*150;p.el.style.top=p.y+"px"});st.score=1350;st.combo=4;markTarget();hud();comboText("COMBO x4");coins(st.pieces[0].el,20)} // test/demo only
+if(location.hash==="#demo"){document.head.insertAdjacentHTML("beforeend","<style>.reel{animation:none}.reel div:not(:last-child){display:none}</style>");start();spawn();spawn();spawn();spawn();land(st.pieces[3]);land(st.pieces[2]);st.pieces.forEach((p,i)=>{p.y=230-i*150;p.el.style.top=p.y+"px"});st.score=1350;st.combo=4;markTarget();showHint();hud();comboText("COMBO x4");coins(st.pieces[1].el,20)} // test/demo only
 </script></body></html>
