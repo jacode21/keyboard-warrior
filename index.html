@@ -3,6 +3,15 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
 <title>Keyboard Warrior — Excel Shortcut Speedrun</title>
+<meta name="description" content="Free browser game to master Excel keyboard shortcuts: a 60-second Tetris-style speedrun, a daily challenge, realistic spreadsheet workflows, and Keyboard Hero rhythm mode. Windows &amp; Mac.">
+<link rel="canonical" href="https://www.playkeyboardwarrior.com/">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png"><link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#030912">
+<meta property="og:type" content="website"><meta property="og:site_name" content="Keyboard Warrior"><meta property="og:url" content="https://www.playkeyboardwarrior.com/">
+<meta property="og:title" content="Keyboard Warrior — Excel Shortcut Speedrun"><meta property="og:description" content="Type the real Excel shortcut before it lands. Speedrun, daily challenge, workflow mode and Keyboard Hero. Beat your coworkers.">
+<meta property="og:image" content="https://www.playkeyboardwarrior.com/og-image.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Keyboard Warrior — Excel Shortcut Speedrun"><meta name="twitter:description" content="Type the real Excel shortcut before it lands. Can you beat my score?"><meta name="twitter:image" content="https://www.playkeyboardwarrior.com/og-image.png">
+<!--ADSENSE-HEAD-->
 <style>
 :root{--bg:#030912;--panel:#0a1729;--fg:#e9efe6;--mut:#8fa3b8;--gold:#d4af37;--red:#ff3b4f;--green:#19d47a;--piece:#0e2238;--bd:#d4af3755;--serif:Georgia,'Times New Roman',serif;--mono:'Consolas','Menlo','Courier New',monospace}
 body.light{--bg:#f4ecd8;--panel:#fbf6e9;--fg:#1b1b1b;--mut:#6a5f4d;--gold:#8a6a12;--red:#b3121f;--green:#0b6b35;--piece:#fffaf0;--bd:#8a6a1266}
@@ -216,6 +225,7 @@ body.light #wfGrid td{background:#fffdf6}
 @media (orientation:portrait) and (pointer:coarse){#hLand{display:block}}
 @media (max-width:700px){#hHud b{font-size:17px}#hero .hov h2{font-size:26px}#hCall{font-size:24px}.htk button{min-width:140px!important}}
 body.light #hero{background:radial-gradient(ellipse at 50% 0,#e8e0c8,#f4efe1 70%);color:#1d2a22}
+.sitefoot{font:12px var(--mono);color:var(--mut);text-align:center;margin-top:6px}.sitefoot a{color:var(--gold);text-decoration:none;display:inline-block;padding:6px 4px}.sitefoot.below{margin:0 auto 2px}body.playing .sitefoot.below,body.wfmode .sitefoot.below{display:none}@media (max-width:700px){.sitefoot.below{display:none}}
 </style></head><body>
 <div id="marquee"></div>
 <div id="wrap">
@@ -224,7 +234,7 @@ body.light #hero{background:radial-gradient(ellipse at 50% 0,#e8e0c8,#f4efe1 70%
 <div id="hud"><div class="stat"><b id="sScore">0</b><span>Score</span></div><div class="stat"><b id="sCombo">x0</b><span>Combo</span></div><div class="stat"><b id="sTime">60</b><span>Time · <i id="sSpd">1x</i></span></div><div class="stat"><b id="sStack"><i id="stackBar"></i><em id="sPct">0%</em></b><span>Stack</span></div></div>
 <div id="main">
  <div id="field"><div id="flash"></div><div id="quote"></div><div id="seq" class="hidden"></div><div id="combo"></div><div id="floor"></div>
-  <div id="ovStart" class="overlay"><h2>KEYBOARD WARRIOR</h2><p style="margin:0">Excel shortcut speedrun: type the real shortcut before each action lands. 60s · missed prompts stack up · 5 clean hits = JACKPOT.</p><details class="note" style="max-width:560px;text-align:left"><summary style="cursor:pointer;text-align:center">How to play</summary><b>Wrong key?</b> The first miss on a prompt is a warning strike (✕, combo resets). A second wrong key on the same prompt slams it onto the stack. Missed prompts land as bricks; the stack hitting the top ends the round. <b>Hints:</b> Tab or / (or 💡): 1st shows the modifier, 2nd the full keys; hinted clears score less. <b>Alt KeyTips:</b> tap Alt, release, then the letters (Alt › H › O › I). <b>Bricks</b> show their keys; type any brick's shortcut to sell it off the stack. <b>Daily:</b> same sequence for everyone today; first run is official.</details><div id="chBanner" class="hidden"></div><div class="spd" id="platSel"></div><input id="pName" maxlength="20" placeholder="Your name (optional)" autocomplete="nickname"><div class="spd" id="poolSel"></div><div class="spd" id="spdSel"></div><div class="spd"><button class="big" id="bStart">🎰 ARCADE ▶</button><button class="big" id="bDaily" style="background:linear-gradient(#f4ecd8,#c9b98f)">📅 DAILY <span id="dailyN"></span></button><button class="big" id="bWorkflow" style="background:linear-gradient(#3be08f,#128a4f)">📊 WORKFLOW MODE</button><button class="big" id="bHero" style="background:linear-gradient(#ff6ad5,#7a2bd6);color:#fff">🎸 KEYBOARD HERO</button></div><p class="note" style="margin:0">Arcade: speedrun falling prompts. Workflow: format real-looking sheets with a live keystroke tracker. Keyboard Hero: rhythm game with original music.</p><p class="note">Best: <span id="best0">0</span>. Browsers block Ctrl+N/W/T, so Ctrl+N only shows up in fullscreen mode (⛶) where the keyboard can be locked. Click the field first so it has keyboard focus.</p></div>
+  <div id="ovStart" class="overlay"><h2>KEYBOARD WARRIOR</h2><p style="margin:0">Excel shortcut speedrun: type the real shortcut before each action lands. 60s · missed prompts stack up · 5 clean hits = JACKPOT.</p><details class="note" style="max-width:560px;text-align:left"><summary style="cursor:pointer;text-align:center">How to play</summary><b>Wrong key?</b> The first miss on a prompt is a warning strike (✕, combo resets). A second wrong key on the same prompt slams it onto the stack. Missed prompts land as bricks; the stack hitting the top ends the round. <b>Hints:</b> Tab or / (or 💡): 1st shows the modifier, 2nd the full keys; hinted clears score less. <b>Alt KeyTips:</b> tap Alt, release, then the letters (Alt › H › O › I). <b>Bricks</b> show their keys; type any brick's shortcut to sell it off the stack. <b>Daily:</b> same sequence for everyone today; first run is official.</details><div id="chBanner" class="hidden"></div><div class="spd" id="platSel"></div><input id="pName" maxlength="20" placeholder="Your name (optional)" autocomplete="nickname"><div class="spd" id="poolSel"></div><div class="spd" id="spdSel"></div><div class="spd"><button class="big" id="bStart">🎰 ARCADE ▶</button><button class="big" id="bDaily" style="background:linear-gradient(#f4ecd8,#c9b98f)">📅 DAILY <span id="dailyN"></span></button><button class="big" id="bWorkflow" style="background:linear-gradient(#3be08f,#128a4f)">📊 WORKFLOW MODE</button><button class="big" id="bHero" style="background:linear-gradient(#ff6ad5,#7a2bd6);color:#fff">🎸 KEYBOARD HERO</button></div><p class="note" style="margin:0">Arcade: speedrun falling prompts. Workflow: format real-looking sheets with a live keystroke tracker. Keyboard Hero: rhythm game with original music.<nav class="sitefoot"><a href="/about">About</a> · <a href="/privacy">Privacy</a> · <a href="/terms">Terms</a></nav></p><p class="note">Best: <span id="best0">0</span>. Browsers block Ctrl+N/W/T, so Ctrl+N only shows up in fullscreen mode (⛶) where the keyboard can be locked. Click the field first so it has keyboard focus.</p></div>
   <div id="ovPause" class="overlay hidden"><h2>TRADING HALTED</h2><div class="spd" id="spdPause"></div><button class="big" id="bResume">RESUME</button><p class="note">Esc to resume</p></div>
   <div id="ovEnd" class="overlay hidden"><h2 id="endTitle">ROUND OVER</h2>
    <div id="eDaily" class="note"></div><div>Score <b id="eScore" style="font-size:28px;color:#19d47a;font-family:var(--mono)">0</b> · Best combo <b id="eCombo">0</b> · Jackpots <b id="eJack">0</b> · Accuracy <b id="eAcc">—</b> · Hints <b id="eHints">0</b> · Speed <b id="eSpd"></b> · High score <b id="eBest">0</b></div>
@@ -250,7 +260,7 @@ body.light #hero{background:radial-gradient(ellipse at 50% 0,#e8e0c8,#f4efe1 70%
  <div id="wfEnd" class="overlay hidden"></div>
 </div>
 <div id="touch"></div>
-<div id="banner" class="ad"></div>
+<div id="banner" class="ad"></div><nav class="sitefoot below"><a href="/about">About</a> · <a href="/privacy">Privacy</a> · <a href="/terms">Terms</a></nav>
 </div>
 <script>
 /* ================= AD CONFIG =================
@@ -261,6 +271,7 @@ body.light #hero{background:radial-gradient(ellipse at 50% 0,#e8e0c8,#f4efe1 70%
  * When publisherId is empty, tasteful placeholders are shown instead.
  * When set, the AdSense script is injected and <ins class="adsbygoogle"> units are created.
  */
+const SITE_URL='https://www.playkeyboardwarrior.com/'; // canonical share/challenge base
 const ADS = { publisherId: '', bannerSlot: '', interstitialSlot: '' };
 
 /* ================= LEADERBOARD CONFIG =================
@@ -469,7 +480,7 @@ async function lbFetch(d){if(!LEADERBOARD.endpoint)return;try{const u=LEADERBOAR
  const r=await fetch(u,{headers:LEADERBOARD.headers});const a=await r.json();const el=$('lbRemote');if(el&&Array.isArray(a))el.innerHTML='<div class="note">Daily #'+d+' leaderboard</div><table class="lb">'+a.slice(0,10).map((x,i)=>`<tr><td>${i+1}.</td><td>${esc0(x.name||'anon')}</td><td>${fmtN(x.score)}</td><td>${x.accuracy??''}%</td></tr>`).join('')+'</table>'}catch(e){}}
 async function lbPost(d){if(!LEADERBOARD.endpoint)return;try{await fetch(LEADERBOARD.endpoint,{method:'POST',headers:Object.assign({'Content-Type':'application/json'},LEADERBOARD.flavor==='supabase'?{Prefer:'return=minimal'}:{},LEADERBOARD.headers),
  body:JSON.stringify({daily:d,name:pname()||'anon',score:st.score,accuracy:acc(),jackpots:st.jackpots,combo:st.bestCombo})})}catch(e){}}
-function shareText(){const who=pname()||'I',sp=SP();const url=location.origin+location.pathname+'?c='+enc({n:pname(),s:st.score,d:st.daily||0,sp:st.daily?'normal':speedKey,a:acc(),j:st.jackpots,b:st.bestCombo});
+function shareText(){const who=pname()||'I',sp=SP();const url=SITE_URL+'?c='+enc({n:pname(),s:st.score,d:st.daily||0,sp:st.daily?'normal':speedKey,a:acc(),j:st.jackpots,b:st.bestCombo});
  const t=`${who} scored ${fmtN(st.score)} on Keyboard Warrior (${st.daily?'Daily #'+st.daily+', ':''}${IS_MAC()?'Mac, ':''}${sp.n} ${sp.m}x, ${st.jackpots} jackpot${st.jackpots===1?'':'s'}, ${acc()}% accuracy, best combo x${st.bestCombo}) — beat me!`;return{t,url}}
 function pause(v){if(!st||!st.running)return;renderSpeed();st.paused=v===undefined?!st.paused:v;$('ovPause').classList.toggle('hidden',!st.paused);$('bPause').textContent=st.paused?'▶':'⏸';if(!st.paused)lastT=performance.now()}
 // Priority: falling prompt (lowest matching) > any brick with that shortcut > wrong key.
@@ -562,7 +573,7 @@ function adUnit(el,slot,label){
  if(!ADS.publisherId||!slot){el.innerHTML='<div>'+label+'<br><small>Ad space · set ADS config to enable</small></div>';return}
  el.innerHTML=`<ins class="adsbygoogle" style="display:block;width:100%" data-ad-client="${ADS.publisherId}" data-ad-slot="${slot}" data-ad-format="auto" data-full-width-responsive="true"></ins>`;
  try{(window.adsbygoogle=window.adsbygoogle||[]).push({})}catch(e){}}
-if(ADS.publisherId){const s=document.createElement('script');s.async=true;s.crossOrigin='anonymous';
+if(ADS.publisherId&&!document.querySelector('script[src*="adsbygoogle.js"]')){const s=document.createElement('script');s.async=true;s.crossOrigin='anonymous';
  s.src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client='+encodeURIComponent(ADS.publisherId);document.head.appendChild(s)}
 adUnit($('banner'),ADS.bannerSlot,'🎰 Your banner here');
 function showInterstitial(){adUnit($('inter'),ADS.interstitialSlot,'✨ Between-round sponsor')}
@@ -1062,7 +1073,7 @@ function results(){const t=total(),c=H.cnt,acc=t?(c.perfect+c.great*.75+c.good*.
  const grade=H.failed?'F':pct>=95?'S':pct>=90?'A':pct>=80?'B':pct>=70?'C':pct>=60?'D':'F',stars=H.failed?0:pct>=95?5:pct>=88?4:pct>=75?3:pct>=60?2:1;
  return{score:H.score,acc:pct,grade,stars,maxStreak:H.maxStreak,cnt:Object.assign({},c),phr:H.phr,phrN:H.c.phrases.length,failed:H.failed,notes:t}}
 const bests=()=>{try{return JSON.parse(localStorage.kwHeroBest||'{}')}catch(e){return{}}};
-function shareText(r=H.res){const n=(localStorage.kwName||'').trim(),url=location.origin+location.pathname+'?mode=hero';
+function shareText(r=H.res){const n=(localStorage.kwName||'').trim(),url=SITE_URL+'?mode=hero';
  return{t:`${n||'I'} scored ${r.score.toLocaleString()} on Keyboard Hero — ${TRACKS[H.ti].name} (${DIFFS[H.di].n}, ${r.acc}% accuracy, ${'★'.repeat(r.stars)||'0★'}, max streak ${r.maxStreak}${noFail?', no-fail':''}) — beat me!`,url}}
 function showResults(){const r=H.res,key=TRACKS[H.ti].id+'-'+H.di,b=bests(),prev=b[key];let nb=false;
  if(!r.failed&&(!prev||r.score>prev.score)){b[key]={score:r.score,acc:r.acc,stars:r.stars,nf:noFail};localStorage.kwHeroBest=JSON.stringify(b);nb=!!prev||r.score>0}
