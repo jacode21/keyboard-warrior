@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
 <title>Keyboard Warrior — Excel Shortcut Speedrun</title>
 <style>
 :root{--bg:#030912;--panel:#0a1729;--fg:#e9efe6;--mut:#8fa3b8;--gold:#d4af37;--red:#ff3b4f;--green:#19d47a;--piece:#0e2238;--bd:#d4af3755;--serif:Georgia,'Times New Roman',serif;--mono:'Consolas','Menlo','Courier New',monospace}
 body.light{--bg:#f4ecd8;--panel:#fbf6e9;--fg:#1b1b1b;--mut:#6a5f4d;--gold:#8a6a12;--red:#b3121f;--green:#0b6b35;--piece:#fffaf0;--bd:#8a6a1266}
-*{box-sizing:border-box}html,body{margin:0;height:100%}
+*{box-sizing:border-box}html,body{margin:0;height:100%;overscroll-behavior:none;touch-action:manipulation;-webkit-text-size-adjust:100%}
+body.playing,body.playing #field{touch-action:none}
+button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 body{background:var(--bg);color:var(--fg);font-family:var(--serif);display:flex;flex-direction:column;align-items:center;overflow:hidden;user-select:none;transition:background .3s}
 #marquee{position:fixed;inset:0;pointer-events:none;z-index:50}
 .tape{position:absolute;left:0;right:0;height:24px;background:#000;border-color:var(--gold);border-style:solid;border-width:0;overflow:hidden;font:600 13px/24px var(--mono);white-space:nowrap;color:#e9efe6}
@@ -67,7 +70,12 @@ button:active{transform:scale(.95)}
 #touch button{font-family:var(--mono)}
 .note{font-size:12px;color:var(--mut);max-width:520px}
 @media (max-width:700px){#side{display:none}#touch{display:flex}#wrap{padding:28px 6px 26px}h1 small{display:none}h1{font-size:18px}header button{padding:4px 6px}#hud{gap:4px;margin:6px 0}.stat{padding:3px}.stat span{font-size:9px}#sStack{height:24px}#stackBar{height:20px}#touch{padding:4px;gap:3px}#touch button{padding:6px 4px;min-width:36px;font-size:13px}#banner{min-height:40px;margin:2px auto}#field{min-height:260px}}
-@media (pointer:coarse){#touch{display:flex}}
+@media (pointer:coarse){#touch{display:flex}button{min-height:44px;min-width:44px}}
+#wrap{padding-left:max(16px,env(safe-area-inset-left));padding-right:max(16px,env(safe-area-inset-right))}
+.tape.t{top:env(safe-area-inset-top)}.tape.b{bottom:env(safe-area-inset-bottom)}
+#touch{padding-bottom:max(4px,env(safe-area-inset-bottom))!important}
+@media (pointer:coarse) and (max-height:900px) and (min-width:701px){#banner{display:none!important}.overlay{overflow-y:auto;justify-content:flex-start!important;padding-top:10px!important}.overlay h2{font-size:28px;margin:4px 0}#hud .stat{padding:4px}#wrap{padding-top:24px;padding-bottom:22px}#touch{gap:4px}#touch .row{gap:4px}}
+#platSel button.on{background:var(--gold);color:#0a1220}
 .overlay{overflow:auto;justify-content:safe center}
 .pip{position:absolute;left:6px;top:50%;transform:translateY(-50%);font:900 12px var(--mono);color:#fff;background:var(--red);border-radius:50%;width:18px;height:18px;line-height:18px;text-align:center;z-index:2}
 .piece.strike{border-color:var(--red)!important;animation:pshake .35s}
@@ -138,6 +146,7 @@ body.light #wfGrid td{background:#fffdf6}
 #wfGrid td.sel{background:#19d47a2e}#wfGrid td.fl.sel{background:#8fbf5a55}
 #wfGrid td.act{outline:2px solid #19d47a;outline-offset:-2px}
 #wfGrid td.bd{border:1px solid var(--fg)}
+#wfGrid td.obt{border-top:2px solid var(--fg)}#wfGrid td.obb{border-bottom:2px solid var(--fg)}#wfGrid td.obl{border-left:2px solid var(--fg)}#wfGrid td.obr{border-right:2px solid var(--fg)}
 #wfGrid td.fzr{border-bottom:3px solid var(--gold)}#wfGrid td.fzc{border-right:3px solid var(--gold)}
 .farr{float:right;font-size:8px;border:1px solid var(--mut);padding:0 2px;margin-left:3px;line-height:12px;margin-top:4px}
 .cur{color:#19d47a;animation:cur .8s steps(1) infinite}
@@ -172,7 +181,7 @@ body.light #wfGrid td{background:#fffdf6}
 <div id="hud"><div class="stat"><b id="sScore">0</b><span>Score</span></div><div class="stat"><b id="sCombo">x0</b><span>Combo</span></div><div class="stat"><b id="sTime">60</b><span>Time · <i id="sSpd">1x</i></span></div><div class="stat"><b id="sStack"><i id="stackBar"></i><em id="sPct">0%</em></b><span>Stack</span></div></div>
 <div id="main">
  <div id="field"><div id="flash"></div><div id="quote"></div><div id="seq" class="hidden"></div><div id="combo"></div><div id="floor"></div>
-  <div id="ovStart" class="overlay"><h2>KEYBOARD WARRIOR</h2><p style="margin:0">Excel shortcut speedrun: type the real shortcut before each action lands. 60s · missed prompts stack up · 5 clean hits = JACKPOT.</p><details class="note" style="max-width:560px;text-align:left"><summary style="cursor:pointer;text-align:center">How to play</summary><b>Wrong key?</b> The first miss on a prompt is a warning strike (✕, combo resets). A second wrong key on the same prompt slams it onto the stack. Missed prompts land as bricks; the stack hitting the top ends the round. <b>Hints:</b> Tab or / (or 💡): 1st shows the modifier, 2nd the full keys; hinted clears score less. <b>Alt KeyTips:</b> tap Alt, release, then the letters (Alt › H › O › I). <b>Bricks</b> show their keys; type any brick's shortcut to sell it off the stack. <b>Daily:</b> same sequence for everyone today; first run is official.</details><div id="chBanner" class="hidden"></div><input id="pName" maxlength="20" placeholder="Your name (optional)" autocomplete="nickname"><div class="spd" id="poolSel"></div><div class="spd" id="spdSel"></div><div class="spd"><button class="big" id="bStart">🎰 ARCADE ▶</button><button class="big" id="bDaily" style="background:linear-gradient(#f4ecd8,#c9b98f)">📅 DAILY <span id="dailyN"></span></button><button class="big" id="bWorkflow" style="background:linear-gradient(#3be08f,#128a4f)">📊 WORKFLOW MODE</button></div><p class="note" style="margin:0">Arcade: speedrun falling prompts. Workflow: format real-looking sheets with a live keystroke tracker.</p><p class="note">Best: <span id="best0">0</span>. Browsers block Ctrl+N/W/T, so Ctrl+N only shows up in fullscreen mode (⛶) where the keyboard can be locked. Click the field first so it has keyboard focus.</p></div>
+  <div id="ovStart" class="overlay"><h2>KEYBOARD WARRIOR</h2><p style="margin:0">Excel shortcut speedrun: type the real shortcut before each action lands. 60s · missed prompts stack up · 5 clean hits = JACKPOT.</p><details class="note" style="max-width:560px;text-align:left"><summary style="cursor:pointer;text-align:center">How to play</summary><b>Wrong key?</b> The first miss on a prompt is a warning strike (✕, combo resets). A second wrong key on the same prompt slams it onto the stack. Missed prompts land as bricks; the stack hitting the top ends the round. <b>Hints:</b> Tab or / (or 💡): 1st shows the modifier, 2nd the full keys; hinted clears score less. <b>Alt KeyTips:</b> tap Alt, release, then the letters (Alt › H › O › I). <b>Bricks</b> show their keys; type any brick's shortcut to sell it off the stack. <b>Daily:</b> same sequence for everyone today; first run is official.</details><div id="chBanner" class="hidden"></div><div class="spd" id="platSel"></div><input id="pName" maxlength="20" placeholder="Your name (optional)" autocomplete="nickname"><div class="spd" id="poolSel"></div><div class="spd" id="spdSel"></div><div class="spd"><button class="big" id="bStart">🎰 ARCADE ▶</button><button class="big" id="bDaily" style="background:linear-gradient(#f4ecd8,#c9b98f)">📅 DAILY <span id="dailyN"></span></button><button class="big" id="bWorkflow" style="background:linear-gradient(#3be08f,#128a4f)">📊 WORKFLOW MODE</button></div><p class="note" style="margin:0">Arcade: speedrun falling prompts. Workflow: format real-looking sheets with a live keystroke tracker.</p><p class="note">Best: <span id="best0">0</span>. Browsers block Ctrl+N/W/T, so Ctrl+N only shows up in fullscreen mode (⛶) where the keyboard can be locked. Click the field first so it has keyboard focus.</p></div>
   <div id="ovPause" class="overlay hidden"><h2>TRADING HALTED</h2><div class="spd" id="spdPause"></div><button class="big" id="bResume">RESUME</button><p class="note">Esc to resume</p></div>
   <div id="ovEnd" class="overlay hidden"><h2 id="endTitle">ROUND OVER</h2>
    <div id="eDaily" class="note"></div><div>Score <b id="eScore" style="font-size:28px;color:#19d47a;font-family:var(--mono)">0</b> · Best combo <b id="eCombo">0</b> · Jackpots <b id="eJack">0</b> · Accuracy <b id="eAcc">—</b> · Hints <b id="eHints">0</b> · Speed <b id="eSpd"></b> · High score <b id="eBest">0</b></div>
@@ -249,14 +258,42 @@ const SHORTCUTS = [
  ['New workbook','Ctrl+KeyN'] // reserved by browsers -> only in fullscreen w/ Keyboard Lock
 ].filter(s=>!s[1].endsWith('_SAFE')); // Ctrl+T (Create table) excluded: browsers can't intercept it
 const RESERVED = new Set(['Ctrl+KeyN']);
-const LABEL = c=>c.replace(/Key([A-Z])/g,'$1').replace(/Digit(\d)/g,'$1').replace(/Semicolon/g,';').replace(/Equal/g,'=').replace(/Backquote/g,'`').replace(/Quote/g,"'").replace(/ArrowDown/g,'↓').replace(/ArrowUp/g,'↑').replace(/ArrowLeft/g,'←').replace(/ArrowRight/g,'→');
+/* ===== PLATFORM: Windows vs Mac (Excel for Mac shortcuts, verified against Microsoft's
+ * "Keyboard shortcuts in Excel" > macOS tab). Combo format: Ctrl+Meta+Alt+Shift+<e.code> (⌃ ⌘ ⌥ ⇧).
+ * null = no reliable Mac equivalent in a browser -> action excluded in Mac mode. */
+const MACMAP={'Ctrl+KeyB':'Meta+KeyB','Ctrl+KeyC':'Meta+KeyC','Ctrl+KeyV':'Meta+KeyV','Ctrl+KeyX':'Meta+KeyX','Ctrl+KeyZ':'Meta+KeyZ','Ctrl+KeyY':'Meta+KeyY',
+ 'Ctrl+KeyS':'Meta+KeyS','Ctrl+KeyI':'Meta+KeyI','Ctrl+KeyU':'Meta+KeyU','Ctrl+KeyF':'Meta+KeyF','Ctrl+KeyH':'Ctrl+KeyH','Ctrl+KeyA':'Meta+KeyA','Ctrl+KeyP':'Meta+KeyP',
+ 'Ctrl+KeyD':'Meta+KeyD','Ctrl+KeyR':'Meta+KeyR','Ctrl+KeyK':'Meta+KeyK','Ctrl+KeyO':'Meta+KeyO',
+ 'Ctrl+Digit5':'Meta+Shift+KeyX',          // strikethrough ⌘⇧X
+ 'Alt+Equal':null,                          // AutoSum is ⌘⇧T, but browsers reserve ⌘⇧T (reopen tab)
+ 'F2':'Ctrl+KeyU',                          // edit active cell ⌃U (avoids fn+F2)
+ 'F4':null,                                 // ⌘T = toggle absolute ref, but ⌘T opens a new tab
+ 'Ctrl+Home':null,'Ctrl+End':null,          // need fn on MacBooks
+ 'Ctrl+Semicolon':'Ctrl+Semicolon','Ctrl+Shift+Semicolon':'Meta+Semicolon',
+ 'Ctrl+Shift+KeyL':'Meta+Shift+KeyF','Ctrl+Digit1':'Meta+Digit1','Ctrl+Digit9':'Ctrl+Digit9','Ctrl+Digit0':'Ctrl+Digit0',
+ 'Ctrl+Shift+Digit4':'Ctrl+Shift+Digit4','Ctrl+Shift+Digit5':'Ctrl+Shift+Digit5','Shift+F11':null,'F5':'Ctrl+KeyG','F7':null,
+ 'Ctrl+Space':null,                         // ⌃Space = macOS input-source switch
+ 'Shift+Space':'Shift+Space','Ctrl+Backquote':'Ctrl+Backquote','Ctrl+KeyN':null,
+ 'Alt+Enter':null,'Alt+ArrowDown':'Alt+ArrowDown','Alt+F1':null,'Alt+Shift+ArrowRight':'Meta+Shift+KeyK','Alt+Shift+ArrowLeft':'Meta+Shift+KeyJ',
+ 'Alt+F8':null,'Alt+F11':null,'Alt+Semicolon':'Meta+Shift+Digit8','Alt+Quote':'Meta+Shift+KeyL'}; // ribbon KeyTips (Alt>…) don't exist on Mac
+const detectPlat=()=>{const p=(navigator.userAgentData&&navigator.userAgentData.platform)||navigator.platform||'',ua=navigator.userAgent||'';
+ return(/mac|iphone|ipad|ipod/i.test(p)||/Macintosh|iPad|iPhone/.test(ua)||(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1))?'mac':'win'};
+let PLAT=localStorage.kwPlat==='mac'||localStorage.kwPlat==='win'?localStorage.kwPlat:detectPlat();
+const IS_MAC=()=>PLAT==='mac';
+const platCombo=w=>PLAT==='mac'?(isSeq(w)?null:(w in MACMAP?MACMAP[w]:null)):w;
+let ACTIVE=[];function rebuildActive(){ACTIVE=SHORTCUTS.map(s=>[s[0],platCombo(s[1]),s[1]]).filter(s=>s[1])}
+// Daily: only actions that exist on BOTH platforms, so Mac and Windows players get the same sequence.
+const BOTH=()=>SHORTCUTS.filter(s=>!RESERVED.has(s[1])&&MACMAP[s[1]]);
+const evCombo=e=>(e.ctrlKey?'Ctrl+':'')+(e.metaKey?'Meta+':'')+(e.altKey?'Alt+':'')+(e.shiftKey?'Shift+':'')+e.code;
+const LABEL0 = c=>c.replace(/Key([A-Z])/g,'$1').replace(/Digit(\d)/g,'$1').replace(/Semicolon/g,';').replace(/Equal/g,'=').replace(/Backquote/g,'`').replace(/Quote/g,"'").replace(/ArrowDown/g,'↓').replace(/ArrowUp/g,'↑').replace(/ArrowLeft/g,'←').replace(/ArrowRight/g,'→').replace(/Minus/g,'−');
+const LABEL = c=>{let t=LABEL0(c);if(typeof PLAT!=='undefined'&&PLAT==='mac'&&!c.includes('>'))t=t.replace(/\bCtrl\b/g,'⌃').replace(/\bMeta\b/g,'⌘').replace(/\bAlt\b/g,'⌥').replace(/\bShift\b/g,'⇧').replace(/\bEnter\b/g,'Return');return t};
 const isSeq=c=>c.includes('>');
 const TOKENS=c=>LABEL(c).split(isSeq(c)?'>':'+');
 const SEP=c=>isSeq(c)?' › ':' + ';
 const CAPS=c=>TOKENS(c).map(k=>'<kbd>'+k+'</kbd>').join(isSeq(c)?'<i class="sep">›</i>':'');
 /* Pool filter: 'ctrl' = everything without Alt, 'alt' = Alt chords + KeyTip sequences, 'mixed' = all */
 let poolKey=['ctrl','alt','mixed'].includes(localStorage.kwPool)?localStorage.kwPool:'mixed';
-const isAlt=c=>c.startsWith('Alt');
+const isAlt=c=>PLAT==='mac'?!c.includes('Meta'):c.startsWith('Alt');
 
 const $=id=>document.getElementById(id);
 /* Speed levels: f scales fall speed & spawn rate, m is the score multiplier. Normal is ~17% slower than v1. */
@@ -280,7 +317,10 @@ const QUOTES=[["Greed, for lack of a better word, is good.","Wall Street (1987)"
 ["Looking good, Billy Ray! Feeling good, Louis!","Trading Places (1983)"],["Sell, Mortimer! Sell!","Trading Places (1983)"],["Turn those machines back on!","Trading Places (1983)"],["Motion creates emotion.","Boiler Room (2000)"],["There is no such thing as a no-sale call.","Boiler Room (2000)"]];
 let qi=Math.random()*QUOTES.length|0;
 function quote(){const q=QUOTES[qi++%QUOTES.length],el=$('quote');el.innerHTML='“'+q[0]+'”<small>▲ '+q[1].toUpperCase()+'</small>';el.classList.remove('go');void el.offsetWidth;el.classList.add('go')}
-function renderPool(){const c=$('poolSel');c.innerHTML='';[['ctrl','Ctrl only'],['alt','Alt only'],['mixed','Mixed']].forEach(([k,n])=>{const b=document.createElement('button');b.textContent=n;b.className=k===poolKey?'on':'';
+function renderPlat(){const c=$('platSel');c.innerHTML='';[['win','⊞ Windows'],['mac','⌘ Mac / iPad']].forEach(([k,n])=>{const b=document.createElement('button');b.textContent=n;b.className=k===PLAT?'on':'';
+ b.onclick=()=>{setPlat(k)};c.appendChild(b)})}
+function setPlat(k){PLAT=k;localStorage.kwPlat=k;rebuildActive();renderPlat();renderPool();if(typeof buildMods==='function')buildMods();marquee&&marquee()}
+function renderPool(){const c=$('poolSel');c.innerHTML='';(PLAT==='mac'?[['ctrl','⌘ Command'],['alt','⌃ ⌥ Control/Option'],['mixed','Mixed']]:[['ctrl','Ctrl only'],['alt','Alt only'],['mixed','Mixed']]).forEach(([k,n])=>{const b=document.createElement('button');b.textContent=n;b.className=k===poolKey?'on':'';
  b.onclick=()=>{poolKey=k;localStorage.kwPool=k;renderPool()};c.appendChild(b)})}
 function renderSpeed(){['spdSel','spdPause'].forEach(id=>{const c=$(id);c.innerHTML='';Object.entries(SPEEDS).forEach(([k,v])=>{const b=document.createElement('button');b.textContent=v.n+' '+v.m+'x';b.className=k===speedKey?'on':'';
  b.onclick=()=>{speedKey=k;localStorage.kwSpeed=k;renderSpeed();if(st)hud()};c.appendChild(b)})});$('sSpd').textContent=SP().n+' '+SP().m+'x'}
@@ -297,12 +337,12 @@ const sfx={hit(c){tone(660+c*40,.12);tone(990+c*40,.12,'square',.06,.06)},miss()
 
 /* ---------- Marquee ---------- */
 function marquee(){const m=$('marquee');const sym=n=>n.replace(/[^A-Za-z ]/g,'').split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,4)+(n.length%3?'':'X');
- const tape=()=>SHORTCUTS.slice().sort(()=>Math.random()-.5).map(([n])=>{const v=(Math.random()*9-3+.01).toFixed(2),up=+v>0;return `<span class="sym">${sym(n)}</span> ${n} <span class="${up?'up':'dn'}">${up?'▲ +':'▼ '}${v}%</span>`}).join('');
+ const tape=()=>(ACTIVE.length?ACTIVE:SHORTCUTS).slice().sort(()=>Math.random()-.5).map(([n])=>{const v=(Math.random()*9-3+.01).toFixed(2),up=+v>0;return `<span class="sym">${sym(n)}</span> ${n} <span class="${up?'up':'dn'}">${up?'▲ +':'▼ '}${v}%</span>`}).join('');
  const a=tape(),b=tape();m.innerHTML=`<div class="tape t"><div>${a}${a}</div></div><div class="tape b"><div>${b}${b}</div></div>`}
 marquee();
 
 /* ---------- Game ---------- */
-function pool(){if(st&&st.daily)return SHORTCUTS.filter(s=>!RESERVED.has(s[1]));return SHORTCUTS.filter(s=>(!RESERVED.has(s[1])||kbLocked)&&(poolKey==='mixed'||(poolKey==='alt')===isAlt(s[1])))}
+function pool(){if(st&&st.daily)return BOTH().map(s=>[s[0],platCombo(s[1]),s[1]]);return ACTIVE.filter(s=>(!RESERVED.has(s[2])||kbLocked)&&(!RESERVED.has(s[1])||kbLocked)&&(poolKey==='mixed'||(poolKey==='alt')===isAlt(s[1])))}
 function pick(){const p=pool(),rnd=st&&st.rng?st.rng:Math.random;let s;do{s=p[rnd()*p.length|0]}while(st&&st.last===s[1]&&p.length>1);if(st)st.last=s[1];return s}
 function start(opt={}){document.querySelectorAll('.piece').forEach(e=>e.remove());seqCancel&&seqCancel();
  const dn=opt.daily||0,ds=dailyStore();
@@ -313,7 +353,7 @@ function start(opt={}){document.querySelectorAll('.piece').forEach(e=>e.remove()
  ['ovStart','ovEnd','ovPause'].forEach(o=>$(o).classList.add('hidden'));field.focus();spawn();hud();lastT=performance.now();requestAnimationFrame(loop)}
 function spawn(){const s=st.queue.shift();st.queue.push(pick());const el=document.createElement('div');el.className='piece';
  // slot reel: a strip of random names that spins down to the real one
- const strip=[...Array(5)].map(()=>SHORTCUTS[Math.random()*SHORTCUTS.length|0][0]);
+ const strip=[...Array(5)].map(()=>ACTIVE[Math.random()*ACTIVE.length|0][0]);
  el.innerHTML='<span class="reel">'+strip.map(n=>'<div style="opacity:.45">'+n+'</div>').join('')+'<div>'+s[0]+'</div></span>';
   const rl=el.querySelector('.reel');rl.onanimationend=()=>rl.classList.add('done');field.appendChild(el);st.pieces.push({el,name:s[0],combo:s[1],y:4,hint:0});sfx.spin();renderQueue()}
 function renderQueue(){$('qList').innerHTML=st.queue.map(q=>'<div>'+q[0]+'</div>').join('')}
@@ -387,7 +427,7 @@ async function lbFetch(d){if(!LEADERBOARD.endpoint)return;try{const u=LEADERBOAR
 async function lbPost(d){if(!LEADERBOARD.endpoint)return;try{await fetch(LEADERBOARD.endpoint,{method:'POST',headers:Object.assign({'Content-Type':'application/json'},LEADERBOARD.flavor==='supabase'?{Prefer:'return=minimal'}:{},LEADERBOARD.headers),
  body:JSON.stringify({daily:d,name:pname()||'anon',score:st.score,accuracy:acc(),jackpots:st.jackpots,combo:st.bestCombo})})}catch(e){}}
 function shareText(){const who=pname()||'I',sp=SP();const url=location.origin+location.pathname+'?c='+enc({n:pname(),s:st.score,d:st.daily||0,sp:st.daily?'normal':speedKey,a:acc(),j:st.jackpots,b:st.bestCombo});
- const t=`${who} scored ${fmtN(st.score)} on Keyboard Warrior (${st.daily?'Daily #'+st.daily+', ':''}${sp.n} ${sp.m}x, ${st.jackpots} jackpot${st.jackpots===1?'':'s'}, ${acc()}% accuracy, best combo x${st.bestCombo}) — beat me!`;return{t,url}}
+ const t=`${who} scored ${fmtN(st.score)} on Keyboard Warrior (${st.daily?'Daily #'+st.daily+', ':''}${IS_MAC()?'Mac, ':''}${sp.n} ${sp.m}x, ${st.jackpots} jackpot${st.jackpots===1?'':'s'}, ${acc()}% accuracy, best combo x${st.bestCombo}) — beat me!`;return{t,url}}
 function pause(v){if(!st||!st.running)return;renderSpeed();st.paused=v===undefined?!st.paused:v;$('ovPause').classList.toggle('hidden',!st.paused);$('bPause').textContent=st.paused?'▶':'⏸';if(!st.paused)lastT=performance.now()}
 // Priority: falling prompt (lowest matching) > any brick with that shortcut > wrong key.
 function submit(c){if(!st||!st.running||st.paused)return;const tg=target();if(!tg)return;
@@ -396,7 +436,7 @@ function submit(c){if(!st||!st.running||st.paused)return;const tg=target();if(!t
 
 /* ---------- Input ---------- */
 const MODS=['ControlLeft','ControlRight','AltLeft','AltRight','ShiftLeft','ShiftRight','MetaLeft','MetaRight','CapsLock'];
-const ALLOWED=new Set(SHORTCUTS.map(s=>s[1]));
+const ALLOWED={has:c=>ACTIVE.some(s=>s[1]===c)};
 /* ---- Alt KeyTip sequences ----
  * Alt pressed & released alone starts a buffer; letters append. Exact match -> submit; not a prefix of any
  * on-screen sequence -> wrong key; Esc or 2.5s idle cancels. Alt keydown/keyup are preventDefault'ed so
@@ -414,46 +454,48 @@ addEventListener('keydown',e=>{
  if(window.WF_ACTIVE)return;
  if(e.target&&e.target.tagName==='INPUT')return;
  const playing0=st&&st.running&&!st.paused;
- if(e.code==='AltLeft'||e.code==='AltRight'){if(playing0){e.preventDefault();if(!e.repeat){altDown=true;altUsed=false}}return}
+ if(e.code==='AltLeft'||e.code==='AltRight'){if(playing0){e.preventDefault();if(!e.repeat&&!IS_MAC()){altDown=true;altUsed=false}}return}
  if(altDown)altUsed=true;
  if(e.code==='Escape'){if(seq){e.preventDefault();seqCancel();return}if(st&&st.running){e.preventDefault();pause()}return}
  if(MODS.includes(e.code))return;
- if(seq&&playing0&&!e.ctrlKey&&!e.altKey){e.preventDefault();if(!e.repeat)seqKey(e.code);return}
- if((e.code==='Tab'||(e.code==='Slash'&&!e.ctrlKey&&!e.altKey))&&st&&st.running){e.preventDefault();if(!e.repeat)showHint();return}
- const c=(e.ctrlKey?'Ctrl+':'')+(e.altKey?'Alt+':'')+(e.shiftKey?'Shift+':'')+e.code;
+ if(seq&&playing0&&!e.ctrlKey&&!e.altKey&&!e.metaKey){e.preventDefault();if(!e.repeat)seqKey(e.code);return}
+ if((e.code==='Tab'||(e.code==='Slash'&&!e.ctrlKey&&!e.altKey&&!e.metaKey))&&st&&st.running){e.preventDefault();if(!e.repeat)showHint();return}
+ const c=evCombo(e);
  const playing=st&&st.running&&!st.paused;
  // Block browser defaults (Ctrl+S/P/F/D/...) while playing; Ctrl+N/W/T cannot be blocked unless keyboard is locked.
- if(playing&&(e.ctrlKey||e.altKey||/^F\d+$/.test(e.code)||e.code==='Space'))e.preventDefault();
+ if(playing&&(e.ctrlKey||e.altKey||e.metaKey||/^F\d+$/.test(e.code)||e.code==='Space'))e.preventDefault(); // keydown only: macOS drops keyup while ⌘ is held
  if(!playing){if((e.code==='Enter'||e.code==='Space')&&(!st||!st.running)&&$('ovStart').offsetParent){e.preventDefault();start()}return}
  if(e.repeat)return;
  // plain typing with no modifier on non-function keys is ignored unless it's a real shortcut (e.g. F2)
- if(!e.ctrlKey&&!e.altKey&&!ALLOWED.has(c)&&!/^F\d+$/.test(e.code))return;
+ if(!e.ctrlKey&&!e.altKey&&!e.metaKey&&!ALLOWED.has(c)&&!/^F\d+$/.test(e.code))return;
  submit(c)},{capture:true});
 addEventListener('keyup',e=>{if(window.WF_ACTIVE)return;if(e.code==='AltLeft'||e.code==='AltRight'){e.preventDefault();if(altDown&&!altUsed)seqStart();altDown=false}},{capture:true});
 addEventListener('blur',()=>{if(!window.WF_ACTIVE)pause(true)});
 
 /* Touch controls */
-const tm={Ctrl:false,Alt:false,Shift:false};
+const tm={Ctrl:false,Meta:false,Alt:false,Shift:false};
+const tmCombo=c=>(tm.Ctrl?'Ctrl+':'')+(tm.Meta?'Meta+':'')+(tm.Alt?'Alt+':'')+(tm.Shift?'Shift+':'')+c;let buildMods;
 (function buildTouch(){const T=$('touch');
  const keys=[['B','KeyB'],['C','KeyC'],['V','KeyV'],['X','KeyX'],['Z','KeyZ'],['Y','KeyY'],['S','KeyS'],['I','KeyI'],['U','KeyU'],['F','KeyF'],['H','KeyH'],['A','KeyA'],['P','KeyP'],['D','KeyD'],['R','KeyR'],['K','KeyK'],['L','KeyL'],['O','KeyO'],['N','KeyN'],
-  ['1','Digit1'],['4','Digit4'],['5','Digit5'],['9','Digit9'],['0','Digit0'],[';','Semicolon'],['=','Equal'],['`','Backquote'],['Space','Space'],['Home','Home'],['End','End'],['F2','F2'],['F4','F4'],['F5','F5'],['F7','F7'],['F11','F11'],['M','KeyM'],['W','KeyW'],["'",'Quote'],['Enter','Enter'],['↓','ArrowDown'],['←','ArrowLeft'],['→','ArrowRight'],['F1','F1'],['F8','F8']];
+  ['1','Digit1'],['4','Digit4'],['5','Digit5'],['9','Digit9'],['0','Digit0'],[';','Semicolon'],['=','Equal'],['`','Backquote'],['Space','Space'],['Home','Home'],['End','End'],['F2','F2'],['F4','F4'],['F5','F5'],['F7','F7'],['F11','F11'],['M','KeyM'],['W','KeyW'],["'",'Quote'],['Enter','Enter'],['↓','ArrowDown'],['←','ArrowLeft'],['→','ArrowRight'],['F1','F1'],['F8','F8'],['G','KeyG'],['J','KeyJ'],['8','Digit8']];
  const mr=document.createElement('div');mr.className='row';
- ['Ctrl','Alt','Shift'].forEach(m=>{const b=document.createElement('button');b.className='mod';b.textContent=m;b.onclick=()=>{tm[m]=!tm[m];b.classList.toggle('on',tm[m])};mr.appendChild(b)});
+ const modWrap=document.createElement('span');modWrap.style.display='contents';mr.appendChild(modWrap);
+ buildMods=()=>{modWrap.innerHTML='';Object.keys(tm).forEach(k=>tm[k]=false);(PLAT==='mac'?[['Meta','⌘'],['Alt','⌥'],['Ctrl','⌃'],['Shift','⇧']]:[['Ctrl','Ctrl'],['Alt','Alt'],['Shift','Shift']]).forEach(([m,l])=>{const b=document.createElement('button');b.className='mod';b.textContent=l;b.title=m;b.onclick=()=>{tm[m]=!tm[m];b.classList.toggle('on',tm[m])};modWrap.appendChild(b)})};buildMods();
  const hb=document.createElement('button');hb.textContent='💡';hb.title='Hint';hb.onclick=()=>{if(window.WF_ACTIVE)WF.touch('HINT');else showHint()};mr.appendChild(hb);
  const mb=document.createElement('button');mb.textContent='⋯';mb.title='More keys';mb.onclick=()=>{T.classList.toggle('more');mb.classList.toggle('on')};mr.appendChild(mb);T.appendChild(mr);
  const EXTRA=new Set(['Space','Home','End','F2','F4','F5','F7','F11','Enter','ArrowDown','ArrowLeft','ArrowRight','F1','F8']);
  const kr=document.createElement('div');kr.className='row';const xr=document.createElement('div');xr.className='row extra';
- keys.forEach(([l,c])=>{const b=document.createElement('button');b.textContent=l;b.onclick=()=>{if(window.WF_ACTIVE){WF.touch(c,tm.Ctrl,tm.Alt,tm.Shift);Object.keys(tm).forEach(k=>tm[k]=false);mr.querySelectorAll('.mod').forEach(x=>x.classList.remove('on'));return}if(c==='HINT'){showHint();return}
-  const chord=(tm.Ctrl?'Ctrl+':'')+(tm.Alt?'Alt+':'')+(tm.Shift?'Shift+':'')+c;
+ keys.forEach(([l,c])=>{const b=document.createElement('button');b.textContent=l;b.onclick=()=>{if(window.WF_ACTIVE){WF.touch(c,tm.Ctrl,tm.Alt,tm.Shift,tm.Meta);Object.keys(tm).forEach(k=>tm[k]=false);mr.querySelectorAll('.mod').forEach(x=>x.classList.remove('on'));return}if(c==='HINT'){showHint();return}
+  const chord=tmCombo(c);
   if(st&&st.running&&!st.paused){
-   if(seq&&!tm.Ctrl&&!tm.Alt&&!tm.Shift){seqKey(c);return}
+   if(seq&&!tm.Ctrl&&!tm.Alt&&!tm.Shift&&!tm.Meta){seqKey(c);return}
    // Alt alone + key: chord if it matches something on screen, otherwise it starts a KeyTip sequence
-   if(tm.Alt&&!tm.Ctrl&&!tm.Shift&&![...st.pieces,...st.bricks].some(p=>p.combo===chord)){seqStart();seqKey(c);Object.keys(tm).forEach(k=>tm[k]=false);mr.querySelectorAll('.mod').forEach(x=>x.classList.remove('on'));return}}
+   if(!IS_MAC()&&tm.Alt&&!tm.Ctrl&&!tm.Shift&&![...st.pieces,...st.bricks].some(p=>p.combo===chord)){seqStart();seqKey(c);Object.keys(tm).forEach(k=>tm[k]=false);mr.querySelectorAll('.mod').forEach(x=>x.classList.remove('on'));return}}
   submit(chord);
   Object.keys(tm).forEach(k=>tm[k]=false);mr.querySelectorAll('.mod').forEach(x=>x.classList.remove('on'))};(EXTRA.has(c)?xr:kr).appendChild(b)});T.appendChild(kr);T.appendChild(xr)})();
 
 /* Buttons */
-renderSpeed();renderPool();$('bStart').onclick=()=>start();$('bHint').onclick=showHint;$('bAgain').onclick=()=>{$('ovEnd').classList.add('hidden');start(st&&st.daily?{daily:st.daily}:{});dailyLabel()};$('bResume').onclick=()=>pause(false);$('bPause').onclick=()=>pause();
+rebuildActive();renderPlat();renderSpeed();renderPool();marquee();$('bStart').onclick=()=>start();$('bHint').onclick=showHint;$('bAgain').onclick=()=>{$('ovEnd').classList.add('hidden');start(st&&st.daily?{daily:st.daily}:{});dailyLabel()};$('bResume').onclick=()=>pause(false);$('bPause').onclick=()=>pause();
 const setMute=()=>{$('bMute').textContent=muted?'🔇':'🔊';localStorage.kwMute=muted?'1':'0'};setMute();$('bMute').onclick=()=>{muted=!muted;setMute()};
 if(localStorage.kwTheme==='light')document.body.classList.add('light');
 $('bTheme').onclick=()=>{document.body.classList.toggle('light');localStorage.kwTheme=document.body.classList.contains('light')?'light':'dark'};
@@ -626,6 +668,28 @@ def('Alt>KeyH>KeyD>KeyR','Delete rows',()=>{const g=sel(),n=g.r2-g.r1+1;shiftAxi
 def('Alt>KeyH>KeyD>KeyC','Delete columns',()=>{const g=sel(),n=g.c2-g.c1+1;shiftAxis('c',g.c1,n,true);return'Delete column(s) '+L(g.c1)+(n>1?'–'+L(g.c2):'')},{m:1,rep:1});
 def('Alt>KeyH>KeyV>KeyV','Paste values',()=>paste(true),{m:1});
 const SEQS=Object.keys(A).filter(isSeq);
+/* ---- Mac-only actions (Excel for Mac) ---- */
+def('Mac:Outline','Outline border',()=>{const g=sel();each(g,(r,c)=>{const x=ensure(r,c),o=x.ob||(x.ob={});if(r===g.r1)o.t=1;if(r===g.r2)o.b=1;if(c===g.c1)o.l=1;if(c===g.c2)o.r=1});return'Outline border → '+rs(g)},{m:1,rep:1});
+def('Mac:NoOutline','Remove outline borders',()=>{each(sel(),(r,c)=>{const x=cell(r,c);if(x)x.ob=null});return'Outline removed → '+rs(sel())},{m:1,rep:1});
+const fullRows=g=>g.c1===0&&g.c2===C-1,fullCols=g=>g.r1===0&&g.r2===R-1;
+def('Mac:Insert','Insert cells',()=>{const g=sel();if(fullRows(g))return A['Alt>KeyH>KeyI>KeyR'].f();if(fullCols(g))return A['Alt>KeyH>KeyI>KeyC'].f();
+ toast('In Excel this opens the <b>Insert</b> dialog. Select entire rows (<b>⇧Space</b>) or columns (<b>⌃Space</b>) first to insert them directly.');return null},{m:1,rep:1});
+def('Mac:Delete','Delete cells',()=>{const g=sel();if(fullRows(g))return A['Alt>KeyH>KeyD>KeyR'].f();if(fullCols(g))return A['Alt>KeyH>KeyD>KeyC'].f();
+ toast('In Excel this opens the <b>Delete</b> dialog. Select entire rows (<b>⇧Space</b>) or columns (<b>⌃Space</b>) first to delete them directly.');return null},{m:1,rep:1});
+def('Mac:RedoRepeat','Redo / Repeat',()=>redo.length?A['Ctrl+KeyY'].f():A['F4'].f(),{m:1});
+// Excel for Mac key -> simulated action (from Microsoft's macOS shortcut list)
+const MACWF={'Meta+KeyB':'Ctrl+KeyB','Meta+KeyI':'Ctrl+KeyI','Meta+KeyU':'Ctrl+KeyU','Meta+Shift+KeyX':'Ctrl+Digit5','Meta+KeyA':'Ctrl+KeyA','Meta+Shift+Space':'Ctrl+KeyA',
+ 'Meta+KeyC':'Ctrl+KeyC','Meta+KeyX':'Ctrl+KeyX','Meta+KeyV':'Ctrl+KeyV','Meta+KeyZ':'Ctrl+KeyZ','Meta+KeyY':'Mac:RedoRepeat','Meta+Shift+KeyZ':'Ctrl+KeyY',
+ 'Meta+KeyD':'Ctrl+KeyD','Meta+KeyR':'Ctrl+KeyR','Ctrl+KeyU':'F2','Meta+Shift+KeyF':'Ctrl+Shift+KeyL','Meta+Shift+KeyR':'Alt>KeyA>KeyS>KeyA',
+ 'Meta+Alt+Digit0':'Mac:Outline','Meta+Alt+Minus':'Mac:NoOutline','Ctrl+Shift+Equal':'Mac:Insert','Ctrl+Minus':'Mac:Delete','Meta+Minus':'Mac:Delete',
+ 'Ctrl+Meta+KeyV':'Alt>KeyH>KeyV>KeyV','Meta+KeyE':'Alt>KeyH>KeyA>KeyC','Meta+KeyL':'Alt>KeyH>KeyA>KeyL','Meta+Shift+KeyT':'Alt+Equal','Meta+KeyS':'Ctrl+KeyS'};
+for(const d of['Up','Down','Left','Right']){MACWF['Meta+Arrow'+d]='Ctrl+Arrow'+d;MACWF['Meta+Shift+Arrow'+d]='Ctrl+Shift+Arrow'+d}
+const MHELP={'Meta+Digit1':['Format Cells dialog','Number formats here: ⌃⇧4 (currency), ⌃⇧5 (percent); font: ⌘B / ⌘I / ⌘U / ⌘⇧X'],'Meta+KeyF':['Find','Jump through data with ⌘+arrows'],
+ 'Ctrl+KeyH':['Replace','Select the cell and type over it (⌘Z undoes)'],'Ctrl+KeyG':['Go To dialog','Use ⌘+arrows (fn+⌃← for A1)'],'Meta+KeyK':['Insert hyperlink','Not needed for these tasks'],
+ 'Meta+KeyP':['Print','Not needed here'],'Meta+KeyO':['Open','This sheet is already open'],'Meta+Shift+KeyK':['Group','Not needed for these tasks'],'Meta+Shift+KeyJ':['Ungroup','Not needed'],
+ 'Meta+Shift+Digit8':['Select visible cells','Not needed'],'Meta+Shift+KeyL':['Modify Cell Style','Use ⌘B / ⌃⇧4 / ⌃⇧5'],'Alt+ArrowDown':['Open filter list','Filtering by value isn\'t simulated; ⌘⇧F toggles filters'],
+ 'Ctrl+Backquote':['Show formulas','The formula bar shows the active formula'],'Meta+Semicolon':['Insert time','—'],'Meta+KeyT':['Toggle absolute/relative reference','Not needed here'],
+ 'Meta+Alt+KeyR':['Minimize ribbon','—']};
 /* ---- tasks ---- */
 const all=(rg,p)=>{const g=parseRange(rg);for(let r=g.r1;r<=g.r2;r++)for(let c=g.c1;c<=g.c2;c++)if(!p(cell(r,c)||{},r,c))return false;return true};
 const near=(a,b)=>typeof a==='number'&&Math.abs(a-b)<1e-6*Math.max(1,Math.abs(b));
@@ -671,6 +735,21 @@ const TASKS=[
   {t:'Percent format on Limit used (D3:D10)',h:'Go to D3, Ctrl+Shift+↓, Ctrl+Shift+5',ok:()=>all('D3:D10',x=>x.fmt==='pct')},
   {t:'Hide the Internal code column (C)',h:'Select a cell in C, Ctrl+0',ok:()=>S.colHidden[2]&&val(1,2)==='Internal code'}]}];
 /* ---- state/snapshots/log ---- */
+const outlined=rg=>{const g=parseRange(rg);for(let c=g.c1;c<=g.c2;c++){if(!((cell(g.r1,c)||{}).ob||{}).t||!((cell(g.r2,c)||{}).ob||{}).b)return false}for(let r=g.r1;r<=g.r2;r++){if(!((cell(r,g.c1)||{}).ob||{}).l||!((cell(r,g.c2)||{}).ob||{}).r)return false}return true};
+const G=(t,i,h)=>Object.assign({},t.goals[i],{h});
+(function macTasks(){const[T1,T2,T3,T4,T5]=TASKS;
+ T1.mac={par:31,path:['⇧→ ×3','⌘B','↓','→','⌘↓','↓','type =SUM(B2:B7)','Return','↑','⇧→ ×2','⌘R','⌘↑','↓','⇧⌘↓','⇧⌘→','⌃⇧4','⌘A','⌘⌥0'],
+  goals:[G(T1,0,'⇧→ ×3, then ⌘B'),G(T1,1,'AutoSum (⌘⇧T) is reserved by browsers: in B8 type =SUM(B2:B7), Return, select B8:D8, ⌘R'),G(T1,2,'Select B2:D7 (⇧⌘↓ / ⇧⌘→) then ⌃⇧4'),
+   {t:'Outline border around A1:D8',h:'⌘A (current region) then ⌘⌥0',ok:()=>outlined('A1:D8')}],note:'Freeze panes and AutoFit have no Excel for Mac shortcut, so they\'re skipped in Mac mode.'};
+ T2.mac={par:11,path:['⌘⇧R','⌘⇧F','→ ×4','↓','⇧⌘↓','⌃⇧5','→','⌃0'],goals:[G(T2,0,'From A1: ⌘⇧R (Sort; simulated as A→Z on the active column)'),G(T2,1,'⌘⇧F'),G(T2,2,'Go to E2, ⇧⌘↓, ⌃⇧5'),G(T2,3,'Select a cell in F, ⌃0')]};
+ T3.mac={par:22,path:['↓','⇧→ ×3','⌘B','↓','→ ×3','⇧↓ ×5','⌘D','← ×2','⇧⌘↓','⇧→','⌃⇧4','⌘A','⌘⌥0'],
+  goals:[{t:'Bold the header row A2:D2',h:'Select A2:D2 then ⌘B',ok:()=>all('A2:D2',x=>x.b)},G(T3,2,'Select D3:D8 then ⌘D'),G(T3,3,'Select B3:C8 then ⌃⇧4'),
+   {t:'Outline border around the table',h:'⌘A then ⌘⌥0',ok:()=>outlined('A1:D8')||outlined('A2:D8')}],note:'Merge & Center and fill color have no Excel for Mac shortcut, so they\'re skipped in Mac mode.'};
+ T4.mac={par:18,path:['→ ×3','↓','⇧↓ ×7','⌘D','⌘C','⌃⌘V','⌃⇧4','→','⌃Space','⌃−'],goals:[G(T4,0,'Select D2:D9 then ⌘D'),G(T4,1,'⌘C then ⌃⌘V (Paste Special; simulated as Values)'),G(T4,2,'⌃⇧4'),G(T4,3,'Go to E2, ⌃Space (whole column), ⌃− (delete)')]};
+ T5.mac={par:23,path:['⌘U','↓','⇧→ ×4','⌘B','↓ ×4','⇧Space','⌘⇧X','↑ ×3','→ ×3','⇧⌘↓','⌃⇧5','←','⌃0'],goals:[G(T5,0,'⌘U on A1'),G(T5,1,'Select A2:E2 then ⌘B'),G(T5,2,'Go to its row, ⇧Space, ⌘⇧X'),G(T5,3,'Go to D3, ⇧⌘↓, ⌃⇧5'),G(T5,4,'Select a cell in C, ⌃0')]};
+ TASKS.forEach(t=>{t.win={par:t.par,path:t.path,goals:t.goals}})})();
+function view(t){const v=IS_MAC()?t.mac:t.win;t.par=v.par;t.path=v.path;t.goals=v.goals;t.note=IS_MAC()?(t.mac.note||''):'';return t}
+const bestKey=t=>t.id+(IS_MAC()?'-mac':'');
 const snap=()=>JSON.stringify({S,act,ext,selG});
 function restore(s){const o=JSON.parse(s);S=o.S;act=o.act;ext=o.ext;selG=o.selG}
 const elapsed=()=>done?tEnd:timerOn?(performance.now()-t0)/1000:0;
@@ -679,9 +758,9 @@ function tick(){if(done||replaying)return;keys++;if(!timerOn){timerOn=true;t0=pe
 function rec(k,n,eff,bad){log.push({t:+elapsed().toFixed(2),keys:k,action:n,effect:eff||'(no change)',bad:!!bad});snaps.push(snap());
  const d=document.createElement('div');if(bad)d.className='bad';d.innerHTML=`<span class="t">${fmtT(log[log.length-1].t)}</span><span class="k">${esc(k)}</span><span class="e">${esc(n)} · ${esc(eff||'(no change)')}</span>`;
  const lg=$('wfLog');lg.appendChild(d);lg.scrollTop=lg.scrollHeight}
-function run(combo){const a=A[combo];if(!a){unsupported(combo);after();return}
+function run(combo,shown){const a=A[combo];if(!a){unsupported(shown||combo);after();return}
  const before=a.m?snap():null,eff=a.f();if(a.m&&eff){undo.push(before);redo=[];if(a.rep)lastRep=combo}
- used.add(pretty(combo));rec(pretty(combo),a.n,eff,false);after()}
+ used.add(pretty(shown||combo));rec(pretty(shown||combo),a.n,eff,false);after()}
 function commit(){const{r,c,buf,n,f2}=editing;editing=null;const before=snap(),x=ensure(r,c),prev=x.f||x.v;
  if(buf.startsWith('=')){x.f=buf.toUpperCase();x.v=''}else{x.f=null;const t=buf.trim(),nm=parseFloat(t.replace(/[$,%]/g,''));
   if(t!==''&&!isNaN(nm)&&/^[-$\d.,%() ]+$/.test(t)){x.v=/%$/.test(t)?nm/100:nm;if(/%$/.test(t))x.fmt='pct';if(/\$/.test(t))x.fmt='cur'}else x.v=t}
@@ -701,7 +780,7 @@ const HELP={'Ctrl+Digit1':['Format Cells dialog','Number formats here: Ctrl+Shif
  'Ctrl+Backquote':['Show formulas','The formula bar shows the active cell\'s formula'],'Alt+F8':['Macros dialog','No macros in this sheet'],'Alt+F11':['VBA editor','No macros in this sheet'],
  'Ctrl+Semicolon':['Insert date','—'],'Ctrl+Shift+KeyF':['Format Cells › Font','Use Ctrl+B / I / U'],'Ctrl+Shift+Digit7':['Outline border','Use Alt › H › B › A for all borders'],
  'Ctrl+Shift+Digit1':['Number format','Use Ctrl+Shift+4 (currency) or Ctrl+Shift+5 (percent)']};
-function unsupported(combo){const h=HELP[combo];rec(pretty(combo),'Unsupported here',h?h[0]+' in Excel':'not part of this simulated sheet',true);
+function unsupported(combo){const h=(IS_MAC()?MHELP:HELP)[combo];rec(pretty(combo),'Unsupported here',h?h[0]+' in Excel':'not part of this simulated sheet',true);
  toast('<b>'+esc(pretty(combo))+'</b>'+(h?' — in Excel: '+esc(h[0])+'.<br>Here: '+esc(h[1]):' isn\'t part of this simulated sheet.<br>Press F1 for the next suggested shortcut.'))}
 /* ---- KeyTip sequences ---- */
 let wseq=null,wseqT=0;
@@ -720,11 +799,13 @@ function handle(code,m){
   const mv={Enter:m.shift?[-1,0]:[1,0],Tab:m.shift?[0,-1]:[0,1]};if(!editing.f2)Object.assign(mv,D);
   if(mv[code]){commit();goto(step(act,...mv[code]));after();return}
   if(code==='Backspace'){editing.buf=editing.buf.slice(0,-1);render();return}
-  if(m.key&&m.key.length===1&&!m.ctrl&&!m.alt){editing.buf+=m.key;editing.n++;render();return}return}
- const combo=(m.ctrl?'Ctrl+':'')+(m.alt?'Alt+':'')+(m.shift?'Shift+':'')+code;
- if(A[combo]){run(combo);return}
+  if(m.key&&m.key.length===1&&!m.ctrl&&!m.alt&&!m.meta){editing.buf+=m.key;editing.n++;render();return}return}
+ const combo=(m.ctrl?'Ctrl+':'')+(m.meta?'Meta+':'')+(m.alt?'Alt+':'')+(m.shift?'Shift+':'')+code;
+ if(IS_MAC()){if(MACWF[combo]){run(MACWF[combo],combo);return}if(A[combo]&&!m.meta&&!m.alt&&!isSeq(combo)){run(combo);return}
+  if(m.meta||m.ctrl||m.alt){unsupported(combo);return}}
+ else if(A[combo]&&!m.meta){run(combo);return}
  if(code==='Backspace'&&!m.ctrl&&!m.alt){editing={r:act.r,c:act.c,buf:'',n:0};goto(act);render();return}
- if(!m.ctrl&&!m.alt&&m.key&&m.key.length===1){editing={r:act.r,c:act.c,buf:m.key,n:1};goto(act);render();return}
+ if(!m.ctrl&&!m.alt&&!m.meta&&m.key&&m.key.length===1){editing={r:act.r,c:act.c,buf:m.key,n:1};goto(act);render();return}
  unsupported(combo)}
 let altDown=false,altUsed=false;
 const blocked=()=>!window.WF_ACTIVE||replaying||done||!task||!$('wfMenu').classList.contains('hidden')||!$('wfEnd').classList.contains('hidden');
@@ -734,8 +815,8 @@ addEventListener('keydown',e=>{if(!window.WF_ACTIVE)return;if(blocked()){if(e.co
  if(e.code==='AltLeft'||e.code==='AltRight'){if(!e.repeat){altDown=true;altUsed=false}return}
  if(altDown)altUsed=true;
  if(['ControlLeft','ControlRight','ShiftLeft','ShiftRight','MetaLeft','MetaRight','CapsLock'].includes(e.code))return;
- tick();handle(e.code,{ctrl:e.ctrlKey,alt:e.altKey,shift:e.shiftKey,key:e.key})},true);
-addEventListener('keyup',e=>{if(!window.WF_ACTIVE)return;if(e.code==='AltLeft'||e.code==='AltRight'){e.preventDefault();e.stopPropagation();if(altDown&&!altUsed&&!blocked()&&!editing){tick();seqStart()}altDown=false}},true);
+ tick();handle(e.code,{ctrl:e.ctrlKey,alt:e.altKey,shift:e.shiftKey,meta:e.metaKey,key:e.key})},true);
+addEventListener('keyup',e=>{if(!window.WF_ACTIVE)return;if(e.code==='AltLeft'||e.code==='AltRight'){e.preventDefault();e.stopPropagation();if(altDown&&!altUsed&&!IS_MAC()&&!blocked()&&!editing){tick();seqStart()}altDown=false}},true);
 /* ---- render ---- */
 function render(){const g=sel(),one=single(g);let h='<colgroup><col style="width:36px">';
  for(let c=0;c<C;c++)if(!S.colHidden[c])h+=`<col style="width:${S.colW[c]}px">`;h+='</colgroup><tr><th class="rh"></th>';
@@ -744,7 +825,7 @@ function render(){const g=sel(),one=single(g);let h='<colgroup><col style="width
  for(let r=0;r<R;r++){if(S.rowHidden[r])continue;h+=`<tr><th class="rh ${r>=g.r1&&r<=g.r2?'hsel':''}">${r+1}</th>`;
   for(let c=0;c<C;c++){if(S.colHidden[c]||cov.has(K(r,c)))continue;const x=cell(r,c)||{},v=val(r,c),mg=S.merges.find(m=>m.r1===r&&m.c1===c);let span='';
    if(mg){let cs=0,rn=0;for(let k=mg.c1;k<=mg.c2;k++)if(!S.colHidden[k])cs++;for(let k=mg.r1;k<=mg.r2;k++)if(!S.rowHidden[k])rn++;span=` colspan="${cs}" rowspan="${rn}"`}
-   const cl=[];if(typeof v==='number'){cl.push('num');if(v<0)cl.push('neg')}if(!one&&r>=g.r1&&r<=g.r2&&c>=g.c1&&c<=g.c2)cl.push('sel');if(r===act.r&&c===act.c)cl.push('act');if(x.bd)cl.push('bd');if(x.fill)cl.push('fl');
+   const cl=[];if(typeof v==='number'){cl.push('num');if(v<0)cl.push('neg')}if(!one&&r>=g.r1&&r<=g.r2&&c>=g.c1&&c<=g.c2)cl.push('sel');if(r===act.r&&c===act.c)cl.push('act');if(x.bd)cl.push('bd');if(x.ob){if(x.ob.t)cl.push('obt');if(x.ob.b)cl.push('obb');if(x.ob.l)cl.push('obl');if(x.ob.r)cl.push('obr')}if(x.fill)cl.push('fl');
    if(S.freeze){if(r===S.freeze.r-1)cl.push('fzr');if(c===S.freeze.c-1)cl.push('fzc')}
    const st=[];if(x.b)st.push('font-weight:700');if(x.i)st.push('font-style:italic');const dec=[x.u?'underline':'',x.s?'line-through':''].filter(Boolean).join(' ');if(dec)st.push('text-decoration:'+dec);if(x.al)st.push('text-align:'+x.al);
    let t=esc(disp(r,c));if(editing&&editing.r===r&&editing.c===c)t=esc(editing.buf)+'<span class="cur">|</span>';
@@ -760,16 +841,16 @@ function after(){render();check()}
 function showHint(){const g=task&&task.goals.find(g=>!g.ok());if(!g)return;hints++;const el=$('wfHint');el.classList.remove('hidden');el.innerHTML='💡 <b>'+esc(g.t)+'</b><br>'+esc(g.h);rec('F1','Hint',g.h)}
 /* ---- load / menu / finish ---- */
 const bestAll=()=>{try{return JSON.parse(localStorage.kwWF||'{}')}catch(_){return{}}};
-function load(i){task=TASKS[i];task.i=i;S=blank();task.data.forEach((row,r)=>row.forEach((v,c)=>{if(v==null)return;S.cells[K(r,c)]=typeof v==='string'&&v[0]==='='?{v:'',f:v}:{v}}));
+function load(i){task=view(TASKS[i]);task.i=i;S=blank();task.data.forEach((row,r)=>row.forEach((v,c)=>{if(v==null)return;S.cells[K(r,c)]=typeof v==='string'&&v[0]==='='?{v:'',f:v}:{v}}));
  act={r:0,c:0};ext={r:0,c:0};selG=null;editing=null;clip=null;undo=[];redo=[];log=[];snaps=[snap()];keys=0;timerOn=false;done=false;tEnd=0;lastRep=null;hints=0;used=new Set();seqCancel();
- $('wfTitle').textContent=task.name;$('wfBrief').textContent=task.brief;$('wfPar').textContent=task.par;$('wfTime').textContent='0:00.0';$('wfTab').textContent=task.tab;$('wfHint').classList.add('hidden');
+ $('wfTitle').textContent=task.name+(IS_MAC()?' ⌘':'');$('wfBrief').textContent=task.brief+(task.note?' '+task.note:'');$('wfPar').textContent=task.par;$('wfTime').textContent='0:00.0';$('wfTab').textContent=task.tab;$('wfHint').classList.add('hidden');
  $('wfChecks').innerHTML=task.goals.map(g=>'<li>'+esc(g.t)+'</li>').join('');$('wfLog').innerHTML='';$('wfMenu').classList.add('hidden');$('wfEnd').classList.add('hidden');render();check()}
-function menu(){const b=bestAll();$('wfTasks').innerHTML='';TASKS.forEach((t,i)=>{const x=b[t.id],btn=document.createElement('button');btn.className='tcard';
+function menu(){const b=bestAll();$('wfTasks').innerHTML='';TASKS.forEach((t,i)=>{view(t);const x=b[bestKey(t)],btn=document.createElement('button');btn.className='tcard';
  btn.innerHTML=`<b>${i+1}. ${esc(t.name)}</b><span class="note">${esc(t.brief)}</span><small>${t.goals.length} goals · par ${t.par} keys${x?' · best '+fmtT(x.time)+' / '+x.keys+' keys ('+x.grade+')':''}</small>`;btn.onclick=()=>load(i);$('wfTasks').appendChild(btn)});
  $('wfMenu').classList.remove('hidden');$('wfEnd').classList.add('hidden')}
 const grade=e=>e>=90?'A':e>=75?'B':e>=60?'C':e>=45?'D':'F';
-function finish(){sfx.jackpot();const t=tEnd,eff=Math.min(100,Math.round(100*task.par/Math.max(1,keys))),gr=grade(eff),b=bestAll(),prev=b[task.id];let nb=false;
- if(!prev||t<prev.time){b[task.id]={time:t,keys,grade:gr};localStorage.kwWF=JSON.stringify(b);nb=true}
+function finish(){sfx.jackpot();const t=tEnd,eff=Math.min(100,Math.round(100*task.par/Math.max(1,keys))),gr=grade(eff),b=bestAll(),prev=b[bestKey(task)];let nb=false;
+ if(!prev||t<prev.time){b[bestKey(task)]={time:t,keys,grade:gr};localStorage.kwWF=JSON.stringify(b);nb=true}
  const sc=[...used].filter(u=>u!=='Typing');const acts=log.filter(l=>!l.bad&&l.action!=='Hint');
  $('wfEnd').innerHTML=`<h2>${nb?'🏆 New best — ':''}Task complete</h2><div class="grade">${gr}</div>
  <table><tr><td>Time</td><td><b>${fmtT(t)}</b>${prev&&!nb?' (best '+fmtT(prev.time)+')':''}</td></tr><tr><td>Keystrokes</td><td><b>${keys}</b> vs par ${task.par}</td></tr><tr><td>Mouse-free efficiency</td><td><b>${eff}%</b></td></tr><tr><td>Hints used</td><td>${hints}</td></tr><tr><td>Logged actions</td><td>${log.length} (${log.filter(l=>l.bad).length} invalid)</td></tr></table>
@@ -791,11 +872,11 @@ function exit(){window.WF_ACTIVE=false;document.body.classList.remove('wfmode');
 setInterval(()=>{if(window.WF_ACTIVE&&timerOn&&!done)$('wfTime').textContent=fmtT(elapsed());else if(window.WF_ACTIVE&&done)$('wfTime').textContent=fmtT(tEnd)},100);
 $('bWorkflow').onclick=enter;$('wfBExit').onclick=exit;$('wfBExit2').onclick=exit;$('wfBMenu').onclick=menu;$('wfBReset').onclick=()=>task&&load(task.i);$('wfBHint').onclick=showHint;
 /* touch: best effort */
-function touch(code,ctrl,alt,shift){if(!window.WF_ACTIVE||blocked())return;if(code==='HINT'){showHint();return}tick();
+function touch(code,ctrl,alt,shift,meta){if(!window.WF_ACTIVE||blocked())return;if(code==='HINT'){showHint();return}tick();
  const keyFor=c=>/^Key/.test(c)?c.slice(3).toLowerCase():/^Digit/.test(c)?c.slice(5):({Semicolon:';',Equal:'=',Backquote:'`',Quote:"'",Space:' ',Slash:'/',Period:'.',Minus:'-'}[c]||'');
  if(wseq){handle(code,{});return}
- if(alt&&!ctrl&&!shift&&!A['Alt+'+code]){seqStart();handle(code,{});return}
- handle(code,{ctrl,alt,shift,key:keyFor(code)})}
+ if(!IS_MAC()&&alt&&!ctrl&&!shift&&!A['Alt+'+code]){seqStart();handle(code,{});return}
+ handle(code,{ctrl,alt,shift,meta,key:keyFor(code)})}
 (function(){const T=$('touch');if(!T)return;const row=document.createElement('div');row.className='row wfOnly';
  [['↑','ArrowUp'],['Tab','Tab'],['Esc','Escape'],['Del','Delete'],['⌫','Backspace'],['$','Digit4'],['%','Digit5'],['.','Period']].forEach(([l,c])=>{const b=document.createElement('button');b.textContent=l;b.onclick=()=>touch(c,false,false,false);row.appendChild(b)});T.insertBefore(row,T.children[1]||null)})();
 return{touch,load,menu,enter,exit,handle,run,get S(){return S},get keys(){return keys},get log(){return log},val,cell,TASKS,get done(){return done},snapCount:()=>snaps.length,get act(){return act},sel}})();
