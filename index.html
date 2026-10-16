@@ -76,6 +76,10 @@ button:active{transform:scale(.95)}
 .keys{position:absolute;right:8px;top:50%;transform:translateY(-50%);display:flex;gap:3px;align-items:center}
 kbd{font:700 12px/1 var(--mono);padding:5px 6px;border-radius:4px;background:linear-gradient(#f4ecd8,#cfc4a8);color:#111;border:1px solid #8a7d5c;box-shadow:0 2px 0 #6a5f4d}
 .piece.brick .hint{display:none}
+.sep{font-style:normal;color:var(--gold);margin:0 1px;font-weight:900}
+#seq{position:absolute;right:8px;top:8px;z-index:3;pointer-events:none;background:#000c;border:1px solid var(--gold);border-radius:4px;padding:5px 8px;display:flex;align-items:center;gap:3px;font:11px var(--mono);color:#d4af37}
+#seq::after{content:'';width:8px;height:14px;background:#19d47a;animation:cur .8s steps(1) infinite}
+@keyframes cur{50%{opacity:0}}
 @media (max-width:700px){.piece{min-width:94%}.piece.brick .reel{font-size:12px}kbd{font-size:10px;padding:4px}}
 .piece.target.brick{border-color:var(--gold)}
 .hint{position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:12px;background:var(--gold);color:#1a0f30;padding:2px 6px;border-radius:6px;z-index:2}
@@ -87,8 +91,8 @@ kbd{font:700 12px/1 var(--mono);padding:5px 6px;border-radius:4px;background:lin
 <button id="bHint" title="Hint (Tab or /)">💡</button><button id="bPause" title="Pause (Esc)">⏸</button><button id="bMute" title="Mute">🔊</button><button id="bTheme" title="Theme">🌓</button><button id="bFs" title="Fullscreen (enables Ctrl+N)">⛶</button></header>
 <div id="hud"><div class="stat"><b id="sScore">0</b><span>Score</span></div><div class="stat"><b id="sCombo">x0</b><span>Combo</span></div><div class="stat"><b id="sTime">60</b><span>Time · <i id="sSpd">1x</i></span></div><div class="stat"><b id="sStack"><i id="stackBar"></i><em id="sPct">0%</em></b><span>Stack</span></div></div>
 <div id="main">
- <div id="field"><div id="flash"></div><div id="quote"></div><div id="combo"></div><div id="floor"></div>
-  <div id="ovStart" class="overlay"><h2>KEYBOARD WARRIOR</h2><p>Excel (Windows) shortcut speedrun. Actions fall — type the real shortcut before they land.<br>Missed prompts land and <b>stack up</b> like Tetris bricks. Stack hits the top = game over. 60 seconds. 5 clean hits in a row = JACKPOT.<br>Stuck? <b>Tab</b> or <b>/</b> (or 💡) for a hint: 1st shows the modifier, 2nd the full keys — hinted clears score less and don't build combo. Landed bricks show their keys — type any brick's shortcut to sell it off the stack.</p><div class="spd" id="spdSel"></div><button class="big" id="bStart">OPEN THE MARKET ▶</button><p class="note">Best: <span id="best0">0</span>. Browsers block Ctrl+N/W/T, so Ctrl+N only shows up in fullscreen mode (⛶) where the keyboard can be locked. Click the field first so it has keyboard focus.</p></div>
+ <div id="field"><div id="flash"></div><div id="quote"></div><div id="seq" class="hidden"></div><div id="combo"></div><div id="floor"></div>
+  <div id="ovStart" class="overlay"><h2>KEYBOARD WARRIOR</h2><p>Excel (Windows) shortcut speedrun. Actions fall — type the real shortcut before they land.<br>Missed prompts land and <b>stack up</b> like Tetris bricks. Stack hits the top = game over. 60 seconds. 5 clean hits in a row = JACKPOT.<br>Stuck? <b>Tab</b> or <b>/</b> (or 💡) for a hint: 1st shows the modifier, 2nd the full keys — hinted clears score less and don't build combo. <b>Alt KeyTips</b>: tap Alt alone, release, then type the letters (Alt › H › O › I). Landed bricks show their keys — type any brick's shortcut to sell it off the stack.</p><div class="spd" id="poolSel"></div><div class="spd" id="spdSel"></div><button class="big" id="bStart">OPEN THE MARKET ▶</button><p class="note">Best: <span id="best0">0</span>. Browsers block Ctrl+N/W/T, so Ctrl+N only shows up in fullscreen mode (⛶) where the keyboard can be locked. Click the field first so it has keyboard focus.</p></div>
   <div id="ovPause" class="overlay hidden"><h2>TRADING HALTED</h2><div class="spd" id="spdPause"></div><button class="big" id="bResume">RESUME</button><p class="note">Esc to resume</p></div>
   <div id="ovEnd" class="overlay hidden"><h2 id="endTitle">ROUND OVER</h2>
    <div>Score <b id="eScore" style="font-size:28px;color:#19d47a;font-family:var(--mono)">0</b> · Best combo <b id="eCombo">0</b> · Hints used <b id="eHints">0</b> · Speed <b id="eSpd"></b> · High score <b id="eBest">0</b></div>
@@ -125,10 +129,24 @@ const SHORTCUTS = [
  ['Percent format','Ctrl+Shift+Digit5'],['Insert new sheet','Shift+F11'],['Go To dialog','F5'],['Spell check','F7'],
  ['Jump to last used cell','Ctrl+End'],['Select entire column','Ctrl+Space'],['Select entire row','Shift+Space'],
  ['Show formulas','Ctrl+Backquote'],['Open workbook','Ctrl+KeyO'],
+ ['New line in cell','Alt+Enter'],['Open dropdown / filter list','Alt+ArrowDown'],['Insert chart (embedded)','Alt+F1'],
+ ['Group rows/columns','Alt+Shift+ArrowRight'],['Ungroup rows/columns','Alt+Shift+ArrowLeft'],['Macros dialog','Alt+F8'],['Open VBA editor','Alt+F11'],
+ ['Select visible cells only','Alt+Semicolon'],['Style dialog','Alt+Quote'],
+ // Sequential ribbon KeyTips: press & release Alt, then the letters (format "Alt>KeyH>KeyO>KeyI")
+ ['AutoFit column width','Alt>KeyH>KeyO>KeyI'],['AutoFit row height','Alt>KeyH>KeyO>KeyA'],['All borders','Alt>KeyH>KeyB>KeyA'],
+ ['Fill color','Alt>KeyH>KeyH'],['Merge & Center','Alt>KeyH>KeyM>KeyC'],['Freeze panes','Alt>KeyW>KeyF>KeyF'],['Sort A to Z','Alt>KeyA>KeyS>KeyA'],
+ ['Delete columns','Alt>KeyH>KeyD>KeyC'],['Insert rows','Alt>KeyH>KeyI>KeyR'],['Paste values','Alt>KeyH>KeyV>KeyV'],
  ['New workbook','Ctrl+KeyN'] // reserved by browsers -> only in fullscreen w/ Keyboard Lock
 ].filter(s=>!s[1].endsWith('_SAFE')); // Ctrl+T (Create table) excluded: browsers can't intercept it
 const RESERVED = new Set(['Ctrl+KeyN']);
-const LABEL = c=>c.replace(/Key([A-Z])/,'$1').replace(/Digit(\d)/,'$1').replace('Semicolon',';').replace('Equal','=').replace('Backquote','`');
+const LABEL = c=>c.replace(/Key([A-Z])/g,'$1').replace(/Digit(\d)/g,'$1').replace(/Semicolon/g,';').replace(/Equal/g,'=').replace(/Backquote/g,'`').replace(/Quote/g,"'").replace(/ArrowDown/g,'↓').replace(/ArrowLeft/g,'←').replace(/ArrowRight/g,'→');
+const isSeq=c=>c.includes('>');
+const TOKENS=c=>LABEL(c).split(isSeq(c)?'>':'+');
+const SEP=c=>isSeq(c)?' › ':' + ';
+const CAPS=c=>TOKENS(c).map(k=>'<kbd>'+k+'</kbd>').join(isSeq(c)?'<i class="sep">›</i>':'');
+/* Pool filter: 'ctrl' = everything without Alt, 'alt' = Alt chords + KeyTip sequences, 'mixed' = all */
+let poolKey=['ctrl','alt','mixed'].includes(localStorage.kwPool)?localStorage.kwPool:'mixed';
+const isAlt=c=>c.startsWith('Alt');
 
 const $=id=>document.getElementById(id);
 /* Speed levels: f scales fall speed & spawn rate, m is the score multiplier. Normal is ~17% slower than v1. */
@@ -141,6 +159,8 @@ const QUOTES=[["Greed, for lack of a better word, is good.","Wall Street (1987)"
 ["Looking good, Billy Ray! Feeling good, Louis!","Trading Places (1983)"],["Sell, Mortimer! Sell!","Trading Places (1983)"],["Turn those machines back on!","Trading Places (1983)"],["Motion creates emotion.","Boiler Room (2000)"],["There is no such thing as a no-sale call.","Boiler Room (2000)"]];
 let qi=Math.random()*QUOTES.length|0;
 function quote(){const q=QUOTES[qi++%QUOTES.length],el=$('quote');el.innerHTML='“'+q[0]+'”<small>▲ '+q[1].toUpperCase()+'</small>';el.classList.remove('go');void el.offsetWidth;el.classList.add('go')}
+function renderPool(){const c=$('poolSel');c.innerHTML='';[['ctrl','Ctrl only'],['alt','Alt only'],['mixed','Mixed']].forEach(([k,n])=>{const b=document.createElement('button');b.textContent=n;b.className=k===poolKey?'on':'';
+ b.onclick=()=>{poolKey=k;localStorage.kwPool=k;renderPool()};c.appendChild(b)})}
 function renderSpeed(){['spdSel','spdPause'].forEach(id=>{const c=$(id);c.innerHTML='';Object.entries(SPEEDS).forEach(([k,v])=>{const b=document.createElement('button');b.textContent=v.n+' '+v.m+'x';b.className=k===speedKey?'on':'';
  b.onclick=()=>{speedKey=k;localStorage.kwSpeed=k;renderSpeed();if(st)hud()};c.appendChild(b)})});$('sSpd').textContent=SP().n+' '+SP().m+'x'}
 const field=$('field'); let st=null, muted=localStorage.kwMute==='1', kbLocked=false;
@@ -161,7 +181,7 @@ function marquee(){const m=$('marquee');const sym=n=>n.replace(/[^A-Za-z ]/g,'')
 marquee();
 
 /* ---------- Game ---------- */
-function pool(){return SHORTCUTS.filter(s=>!RESERVED.has(s[1])||kbLocked)}
+function pool(){return SHORTCUTS.filter(s=>(!RESERVED.has(s[1])||kbLocked)&&(poolKey==='mixed'||(poolKey==='alt')===isAlt(s[1])))}
 function pick(){const p=pool();let s;do{s=p[Math.random()*p.length|0]}while(st&&st.last===s[1]&&p.length>1);if(st)st.last=s[1];return s}
 function start(){document.querySelectorAll('.piece').forEach(e=>e.remove());
  st={score:0,combo:0,bestCombo:0,hints:0,bricks:[],time:60,pieces:[],queue:[],spawnT:0,running:true,paused:false,last:null,missed:[]};
@@ -191,10 +211,10 @@ function target(){return st.pieces.reduce((a,p)=>!a||p.y>a.y?p:a,null)||topBrick
 function markTarget(){const tg=target();[...st.pieces,...st.bricks].forEach(p=>p.el.classList.toggle('target',p===tg))}
 function stackPct(){return Math.min(100,Math.round(100*st.bricks.length*PITCH/(field.clientHeight-8-PITCH)))}
 function land(p){const i=st.pieces.indexOf(p);if(i>=0)st.pieces.splice(i,1);if(!st.missed.includes(p.name+' = '+LABEL(p.combo)))st.missed.push(p.name+' = '+LABEL(p.combo));
- p.el.classList.remove('shake');p.el.classList.add('brick');if(!p.el.querySelector('.keys'))p.el.insertAdjacentHTML('beforeend','<span class="keys">'+LABEL(p.combo).split('+').map(k=>'<kbd>'+k+'</kbd>').join('')+'</span>');st.bricks.push(p);layoutBricks();sfx.land();
+ p.el.classList.remove('shake');p.el.classList.add('brick');if(!p.el.querySelector('.keys'))p.el.insertAdjacentHTML('beforeend','<span class="keys">'+CAPS(p.combo)+'</span>');st.bricks.push(p);layoutBricks();sfx.land();
  if(stackTop()<PITCH+4){hud();end('STACK OVERFLOW!')}}
 function showHint(){if(!st||!st.running||st.paused)return;const tg=target();if(!tg||tg.hint>=2)return;tg.hint++;st.hints++;
- const parts=LABEL(tg.combo).split('+'),txt=tg.hint===1?(parts.length>1?parts.slice(0,-1).join(' + ')+' + ?':'(no modifier) ?'):parts.join(' + ');
+ const parts=TOKENS(tg.combo),sp=SEP(tg.combo),txt=tg.hint===1?(isSeq(tg.combo)?parts.slice(0,2).join(sp)+sp+'…':parts.length>1?parts.slice(0,-1).join(sp)+' + ?':'(no modifier) ?'):parts.join(sp);
  let h=tg.el.querySelector('.hint');if(!h){h=document.createElement('span');h.className='hint';tg.el.appendChild(h)}h.textContent='💡 '+txt;tone(880,.08,'triangle',.06);hud()}
 function hud(){$('sScore').textContent=st.score;$('sCombo').textContent='x'+st.combo;$('sTime').textContent=Math.ceil(st.time);
  $('stackBar').style.setProperty('--h',stackPct()+'%');$('sPct').textContent=stackPct()+'%';$('sPct').style.color=stackPct()>65?'var(--red)':'';$('sTime').style.color=st.time<10?'var(--red)':''}
@@ -214,7 +234,7 @@ function coins(el,n,rain){const fr=field.getBoundingClientRect(),r=el.getBoundin
   c.style.left=x+'px';c.style.top=y+'px';field.appendChild(c);const a=Math.random()*Math.PI*2,d=60+Math.random()*120;
   const to=rain?`translate(${(Math.random()-.5)*80}px,${fr.height+40}px)`:`translate(${Math.cos(a)*d}px,${Math.sin(a)*d+80}px)`;
   c.animate([{transform:'translate(0,0) scale(1)',opacity:1},{transform:to+' scale(.6) rotate(720deg)',opacity:0}],{duration:rain?1400+Math.random()*600:700,easing:'cubic-bezier(.2,.6,.4,1)'}).onfinish=()=>c.remove()}}
-function end(why){if(!st.running)return;st.running=false;setTimeout(()=>document.querySelectorAll('.piece').forEach(e=>e.remove()),900);sfx.end();
+function end(why){if(!st.running)return;seqCancel();st.running=false;setTimeout(()=>document.querySelectorAll('.piece').forEach(e=>e.remove()),900);sfx.end();
  const nb=st.score>best;if(nb){best=st.score;localStorage.kwBest=best}$('endTitle').textContent=(why||'TIME!')+(nb?' 🏆 NEW HIGH SCORE!':'');
  $('eScore').textContent=st.score;$('eCombo').textContent=st.bestCombo;$('eHints').textContent=st.hints;$('eSpd').textContent=SP().n+' ('+SP().m+'x)';$('eBest').textContent=best;$('best0').textContent=best;$('shareMsg').textContent='';
  $('missed').textContent=st.missed.length?'Missed: '+st.missed.slice(-4).join(' · '):'';$('ovEnd').classList.remove('hidden');hud();showInterstitial()}
@@ -227,9 +247,26 @@ function submit(c){if(!st||!st.running||st.paused)return;const tg=target();if(!t
 /* ---------- Input ---------- */
 const MODS=['ControlLeft','ControlRight','AltLeft','AltRight','ShiftLeft','ShiftRight','MetaLeft','MetaRight','CapsLock'];
 const ALLOWED=new Set(SHORTCUTS.map(s=>s[1]));
+/* ---- Alt KeyTip sequences ----
+ * Alt pressed & released alone starts a buffer; letters append. Exact match -> submit; not a prefix of any
+ * on-screen sequence -> wrong key; Esc or 2.5s idle cancels. Alt keydown/keyup are preventDefault'ed so
+ * Chrome/Edge don't focus the browser menu and Firefox doesn't show its menu bar. */
+let seq=null,seqTimer=0,altDown=false,altUsed=false;
+function seqShow(){const el=$('seq');if(!seq){el.classList.add('hidden');return}el.classList.remove('hidden');el.innerHTML=CAPS(seq.join('>'))}
+function seqCancel(){seq=null;clearTimeout(seqTimer);seqShow()}
+function seqStart(){if(!st||!st.running||st.paused)return;seq=['Alt'];seqShow();clearTimeout(seqTimer);seqTimer=setTimeout(seqCancel,2500)}
+function seqKey(code){seq.push(code);const cand=seq.join('>');clearTimeout(seqTimer);
+ const live=[...st.pieces,...st.bricks].map(p=>p.combo).filter(isSeq);
+ if(live.includes(cand)){seqCancel();submit(cand);return}
+ if(live.some(c=>c.startsWith(cand+'>'))){seqShow();seqTimer=setTimeout(seqCancel,2500);return}
+ seqCancel();submit(cand)}
 addEventListener('keydown',e=>{
- if(e.code==='Escape'){if(st&&st.running){e.preventDefault();pause()}return}
+ const playing0=st&&st.running&&!st.paused;
+ if(e.code==='AltLeft'||e.code==='AltRight'){if(playing0){e.preventDefault();if(!e.repeat){altDown=true;altUsed=false}}return}
+ if(altDown)altUsed=true;
+ if(e.code==='Escape'){if(seq){e.preventDefault();seqCancel();return}if(st&&st.running){e.preventDefault();pause()}return}
  if(MODS.includes(e.code))return;
+ if(seq&&playing0&&!e.ctrlKey&&!e.altKey){e.preventDefault();if(!e.repeat)seqKey(e.code);return}
  if((e.code==='Tab'||(e.code==='Slash'&&!e.ctrlKey&&!e.altKey))&&st&&st.running){e.preventDefault();if(!e.repeat)showHint();return}
  const c=(e.ctrlKey?'Ctrl+':'')+(e.altKey?'Alt+':'')+(e.shiftKey?'Shift+':'')+e.code;
  const playing=st&&st.running&&!st.paused;
@@ -240,22 +277,28 @@ addEventListener('keydown',e=>{
  // plain typing with no modifier on non-function keys is ignored unless it's a real shortcut (e.g. F2)
  if(!e.ctrlKey&&!e.altKey&&!ALLOWED.has(c)&&!/^F\d+$/.test(e.code))return;
  submit(c)},{capture:true});
-addEventListener('keyup',e=>{if(e.code==='AltLeft'||e.code==='AltRight')e.preventDefault()});
+addEventListener('keyup',e=>{if(e.code==='AltLeft'||e.code==='AltRight'){e.preventDefault();if(altDown&&!altUsed)seqStart();altDown=false}},{capture:true});
 addEventListener('blur',()=>pause(true));
 
 /* Touch controls */
 const tm={Ctrl:false,Alt:false,Shift:false};
 (function buildTouch(){const T=$('touch');
  const keys=[['B','KeyB'],['C','KeyC'],['V','KeyV'],['X','KeyX'],['Z','KeyZ'],['Y','KeyY'],['S','KeyS'],['I','KeyI'],['U','KeyU'],['F','KeyF'],['H','KeyH'],['A','KeyA'],['P','KeyP'],['D','KeyD'],['R','KeyR'],['K','KeyK'],['L','KeyL'],['O','KeyO'],['N','KeyN'],
-  ['1','Digit1'],['4','Digit4'],['5','Digit5'],['9','Digit9'],['0','Digit0'],[';','Semicolon'],['=','Equal'],['`','Backquote'],['Space','Space'],['Home','Home'],['End','End'],['F2','F2'],['F4','F4'],['F5','F5'],['F7','F7'],['F11','F11'],['💡 Hint','HINT']];
+  ['1','Digit1'],['4','Digit4'],['5','Digit5'],['9','Digit9'],['0','Digit0'],[';','Semicolon'],['=','Equal'],['`','Backquote'],['Space','Space'],['Home','Home'],['End','End'],['F2','F2'],['F4','F4'],['F5','F5'],['F7','F7'],['F11','F11'],['M','KeyM'],['W','KeyW'],["'",'Quote'],['Enter','Enter'],['↓','ArrowDown'],['←','ArrowLeft'],['→','ArrowRight'],['F1','F1'],['F8','F8'],['💡 Hint','HINT']];
  const mr=document.createElement('div');mr.className='row';
  ['Ctrl','Alt','Shift'].forEach(m=>{const b=document.createElement('button');b.className='mod';b.textContent=m;b.onclick=()=>{tm[m]=!tm[m];b.classList.toggle('on',tm[m])};mr.appendChild(b)});T.appendChild(mr);
  const kr=document.createElement('div');kr.className='row';
- keys.forEach(([l,c])=>{const b=document.createElement('button');b.textContent=l;b.onclick=()=>{if(c==='HINT'){showHint();return}submit((tm.Ctrl?'Ctrl+':'')+(tm.Alt?'Alt+':'')+(tm.Shift?'Shift+':'')+c);
+ keys.forEach(([l,c])=>{const b=document.createElement('button');b.textContent=l;b.onclick=()=>{if(c==='HINT'){showHint();return}
+  const chord=(tm.Ctrl?'Ctrl+':'')+(tm.Alt?'Alt+':'')+(tm.Shift?'Shift+':'')+c;
+  if(st&&st.running&&!st.paused){
+   if(seq&&!tm.Ctrl&&!tm.Alt&&!tm.Shift){seqKey(c);return}
+   // Alt alone + key: chord if it matches something on screen, otherwise it starts a KeyTip sequence
+   if(tm.Alt&&!tm.Ctrl&&!tm.Shift&&![...st.pieces,...st.bricks].some(p=>p.combo===chord)){seqStart();seqKey(c);Object.keys(tm).forEach(k=>tm[k]=false);mr.querySelectorAll('.mod').forEach(x=>x.classList.remove('on'));return}}
+  submit(chord);
   Object.keys(tm).forEach(k=>tm[k]=false);mr.querySelectorAll('.mod').forEach(x=>x.classList.remove('on'))};kr.appendChild(b)});T.appendChild(kr)})();
 
 /* Buttons */
-renderSpeed();$('bStart').onclick=start;$('bHint').onclick=showHint;$('bAgain').onclick=()=>{$('ovEnd').classList.add('hidden');start()};$('bResume').onclick=()=>pause(false);$('bPause').onclick=()=>pause();
+renderSpeed();renderPool();$('bStart').onclick=start;$('bHint').onclick=showHint;$('bAgain').onclick=()=>{$('ovEnd').classList.add('hidden');start()};$('bResume').onclick=()=>pause(false);$('bPause').onclick=()=>pause();
 const setMute=()=>{$('bMute').textContent=muted?'🔇':'🔊';localStorage.kwMute=muted?'1':'0'};setMute();$('bMute').onclick=()=>{muted=!muted;setMute()};
 if(localStorage.kwTheme==='light')document.body.classList.add('light');
 $('bTheme').onclick=()=>{document.body.classList.toggle('light');localStorage.kwTheme=document.body.classList.contains('light')?'light':'dark'};
@@ -276,5 +319,5 @@ if(ADS.publisherId){const s=document.createElement('script');s.async=true;s.cros
 adUnit($('banner'),ADS.bannerSlot,'🎰 Your banner here');
 function showInterstitial(){adUnit($('inter'),ADS.interstitialSlot,'✨ Between-round sponsor')}
 showInterstitial();
-if(location.hash.startsWith("#demo")){if(location.hash==="#demo-light")document.body.classList.add("light");document.head.insertAdjacentHTML("beforeend","<style>.reel{animation:none}.reel div:not(:last-child){display:none}</style>");start();spawn();spawn();spawn();spawn();land(st.pieces[3]);land(st.pieces[2]);const fh=field.clientHeight;st.pieces.forEach((p,i)=>{p.y=fh*.42-i*fh*.3;p.el.style.top=p.y+"px"});st.score=1350;st.combo=4;markTarget();showHint();hud();comboText("COMBO x4");coins(st.pieces[1].el,20);quote()} // test/demo only
+if(location.hash.startsWith("#demo")){if(location.hash==="#demo-light")document.body.classList.add("light");document.head.insertAdjacentHTML("beforeend","<style>.reel{animation:none}.reel div:not(:last-child){display:none}</style>");start();spawn();spawn();spawn();spawn();st.pieces[3].combo="Alt>KeyH>KeyO>KeyI";st.pieces[3].el.querySelector(".reel div:last-child").textContent="AutoFit column width";land(st.pieces[3]);land(st.pieces[2]);const fh=field.clientHeight;st.pieces.forEach((p,i)=>{p.y=fh*.42-i*fh*.3;p.el.style.top=p.y+"px"});st.score=1350;st.combo=4;markTarget();showHint();hud();comboText("COMBO x4");coins(st.pieces[1].el,20);quote();seq=["Alt","KeyW","KeyF"];seqShow()} // test/demo only
 </script></body></html>
