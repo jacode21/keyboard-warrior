@@ -173,6 +173,43 @@ body.light #wfGrid td{background:#fffdf6}
 .paths div{background:#0a1729;border:1px solid #d4af3755;padding:6px;max-height:120px;overflow:auto}
 .wfOnly{display:none!important}body.wfmode .wfOnly{display:flex!important}
 @media (max-width:980px){#wf{flex-direction:column;overflow:auto}#wfLeft,#wfRight{width:auto}#wfRight{min-height:150px;max-height:200px}#wfCenter{min-height:360px}#wfLeft{max-height:none}}
+/* ===== KEYBOARD HERO ===== */
+#hero{position:fixed;inset:0;z-index:60;background:radial-gradient(ellipse at 50% 0,#0f2a1c,var(--bg) 70%);color:#e9efe6;display:flex;flex-direction:column;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);font-family:var(--serif);touch-action:none;overscroll-behavior:none}
+#hTop{display:flex;align-items:center;gap:8px;padding:6px 8px}
+#hTop button,#hero .hov button,#hStarB{min-height:44px;min-width:44px;border:1px solid #d4af37;background:#0b1626;color:#f3d77a;border-radius:8px;font:600 14px var(--mono);cursor:pointer;padding:0 12px}
+#hTick{flex:1;overflow:hidden;white-space:nowrap;font:13px var(--mono);color:#9fb6a6;border:1px solid #1f3a2c;border-radius:6px;padding:6px 8px;background:#020810}
+#hTick .up{color:#19d47a}#hTick .dn{color:#ff4d5e}
+#hHud{display:flex;gap:6px;padding:0 8px 6px;align-items:stretch}
+#hHud>div{flex:1;background:#0b1626;border:1px solid #1f3a2c;border-radius:8px;padding:4px 6px;text-align:center;min-width:0}
+#hHud b{display:block;font:700 22px var(--mono);color:#19d47a}#hHud i{font:10px var(--mono);color:#9fb6a6;letter-spacing:1px;font-style:normal}
+#hHud .hm{flex:1.4}#hPort,#hStar{height:14px;margin:6px 0 2px;border:1px solid #d4af37;border-radius:7px;overflow:hidden;background:#020810}
+#hPort span,#hStar span{display:block;height:100%;width:50%;background:linear-gradient(90deg,#ff4d5e,#d4af37 40%,#19d47a);transition:width .15s}
+#hStar span{background:linear-gradient(90deg,#3aa0ff,#9be7ff);width:0}#hStar.ready{box-shadow:0 0 10px #9be7ff}
+#hMult.x2{color:#9be7ff}#hMult.x3{color:#d4af37}#hMult.x4{color:#ff9f1a}
+#hStage{flex:1;position:relative;min-height:0}
+#hCv{position:absolute;inset:0;width:100%;height:100%;touch-action:none}
+#hero.starOn #hCv{filter:saturate(1.4) hue-rotate(-20deg)}
+#hCall{position:absolute;left:0;right:0;top:28%;text-align:center;font:900 34px var(--serif);color:#d4af37;text-shadow:0 0 18px #000,0 0 6px #d4af37;pointer-events:none;opacity:0}
+#hCall.go{animation:hcall 1.1s ease-out}@keyframes hcall{0%{opacity:0;transform:scale(.6)}15%{opacity:1;transform:scale(1.1)}70%{opacity:1}100%{opacity:0;transform:translateY(-30px)}}
+#hCount{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:900 96px var(--serif);color:#f3d77a;pointer-events:none;text-shadow:0 0 24px #000}
+#hPhrase{position:absolute;left:50%;top:12px;transform:translateX(-50%);display:flex;gap:6px;z-index:3}
+#hPhrase button{min-width:52px;min-height:52px;font:800 22px var(--mono);border:2px solid #d4af37;background:#1a1408;color:#f3d77a;border-radius:10px}
+#hStarB{position:absolute;right:8px;top:8px;z-index:3;display:none}#hStarB.ready{display:block;box-shadow:0 0 14px #9be7ff;color:#9be7ff;border-color:#9be7ff}
+#hero .hov{position:absolute;inset:0;z-index:5;background:#020810ee;display:flex;flex-direction:column;align-items:center;justify-content:safe center;gap:10px;overflow-y:auto;padding:16px;text-align:center}
+#hero .hov h2{font:900 34px var(--serif);color:#d4af37;margin:4px 0;letter-spacing:2px}
+.htk{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.htk button{display:flex;flex-direction:column;align-items:center;padding:8px 14px!important;min-width:170px!important}
+.htk button small{font:11px var(--mono);color:#9fb6a6}.htk button.on,#hDiff button.on{background:#d4af37!important;color:#0a1220!important}.htk button.on small{color:#0a1220}
+#hDiff{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+#hOpts{font:13px var(--mono);color:#9fb6a6;display:flex;gap:14px;flex-wrap:wrap;justify-content:center;align-items:center}
+#hOpts label{display:flex;align-items:center;gap:6px;min-height:44px}#hOpts input[type=checkbox]{width:22px;height:22px}
+#hPlay{font-size:20px!important;padding:0 28px!important;background:linear-gradient(#ffd76a,#c8961e)!important;color:#0a1220!important}
+#hRes table{font:15px var(--mono);border-collapse:collapse;margin:0 auto}#hRes td{padding:3px 12px;text-align:left}#hRes td+td{text-align:right;color:#f3d77a}
+.hstars{font-size:30px;color:#d4af37;letter-spacing:4px}.hgrade{font:900 64px var(--serif);color:#19d47a;line-height:1}
+#hLand{display:none;color:#ff9f1a;font:13px var(--mono)}
+@media (orientation:portrait) and (pointer:coarse){#hLand{display:block}}
+@media (max-width:700px){#hHud b{font-size:17px}#hero .hov h2{font-size:26px}#hCall{font-size:24px}.htk button{min-width:140px!important}}
+body.light #hero{background:radial-gradient(ellipse at 50% 0,#e8e0c8,#f4efe1 70%);color:#1d2a22}
 </style></head><body>
 <div id="marquee"></div>
 <div id="wrap">
@@ -181,7 +218,7 @@ body.light #wfGrid td{background:#fffdf6}
 <div id="hud"><div class="stat"><b id="sScore">0</b><span>Score</span></div><div class="stat"><b id="sCombo">x0</b><span>Combo</span></div><div class="stat"><b id="sTime">60</b><span>Time · <i id="sSpd">1x</i></span></div><div class="stat"><b id="sStack"><i id="stackBar"></i><em id="sPct">0%</em></b><span>Stack</span></div></div>
 <div id="main">
  <div id="field"><div id="flash"></div><div id="quote"></div><div id="seq" class="hidden"></div><div id="combo"></div><div id="floor"></div>
-  <div id="ovStart" class="overlay"><h2>KEYBOARD WARRIOR</h2><p style="margin:0">Excel shortcut speedrun: type the real shortcut before each action lands. 60s · missed prompts stack up · 5 clean hits = JACKPOT.</p><details class="note" style="max-width:560px;text-align:left"><summary style="cursor:pointer;text-align:center">How to play</summary><b>Wrong key?</b> The first miss on a prompt is a warning strike (✕, combo resets). A second wrong key on the same prompt slams it onto the stack. Missed prompts land as bricks; the stack hitting the top ends the round. <b>Hints:</b> Tab or / (or 💡): 1st shows the modifier, 2nd the full keys; hinted clears score less. <b>Alt KeyTips:</b> tap Alt, release, then the letters (Alt › H › O › I). <b>Bricks</b> show their keys; type any brick's shortcut to sell it off the stack. <b>Daily:</b> same sequence for everyone today; first run is official.</details><div id="chBanner" class="hidden"></div><div class="spd" id="platSel"></div><input id="pName" maxlength="20" placeholder="Your name (optional)" autocomplete="nickname"><div class="spd" id="poolSel"></div><div class="spd" id="spdSel"></div><div class="spd"><button class="big" id="bStart">🎰 ARCADE ▶</button><button class="big" id="bDaily" style="background:linear-gradient(#f4ecd8,#c9b98f)">📅 DAILY <span id="dailyN"></span></button><button class="big" id="bWorkflow" style="background:linear-gradient(#3be08f,#128a4f)">📊 WORKFLOW MODE</button></div><p class="note" style="margin:0">Arcade: speedrun falling prompts. Workflow: format real-looking sheets with a live keystroke tracker.</p><p class="note">Best: <span id="best0">0</span>. Browsers block Ctrl+N/W/T, so Ctrl+N only shows up in fullscreen mode (⛶) where the keyboard can be locked. Click the field first so it has keyboard focus.</p></div>
+  <div id="ovStart" class="overlay"><h2>KEYBOARD WARRIOR</h2><p style="margin:0">Excel shortcut speedrun: type the real shortcut before each action lands. 60s · missed prompts stack up · 5 clean hits = JACKPOT.</p><details class="note" style="max-width:560px;text-align:left"><summary style="cursor:pointer;text-align:center">How to play</summary><b>Wrong key?</b> The first miss on a prompt is a warning strike (✕, combo resets). A second wrong key on the same prompt slams it onto the stack. Missed prompts land as bricks; the stack hitting the top ends the round. <b>Hints:</b> Tab or / (or 💡): 1st shows the modifier, 2nd the full keys; hinted clears score less. <b>Alt KeyTips:</b> tap Alt, release, then the letters (Alt › H › O › I). <b>Bricks</b> show their keys; type any brick's shortcut to sell it off the stack. <b>Daily:</b> same sequence for everyone today; first run is official.</details><div id="chBanner" class="hidden"></div><div class="spd" id="platSel"></div><input id="pName" maxlength="20" placeholder="Your name (optional)" autocomplete="nickname"><div class="spd" id="poolSel"></div><div class="spd" id="spdSel"></div><div class="spd"><button class="big" id="bStart">🎰 ARCADE ▶</button><button class="big" id="bDaily" style="background:linear-gradient(#f4ecd8,#c9b98f)">📅 DAILY <span id="dailyN"></span></button><button class="big" id="bWorkflow" style="background:linear-gradient(#3be08f,#128a4f)">📊 WORKFLOW MODE</button><button class="big" id="bHero" style="background:linear-gradient(#ff6ad5,#7a2bd6);color:#fff">🎸 KEYBOARD HERO</button></div><p class="note" style="margin:0">Arcade: speedrun falling prompts. Workflow: format real-looking sheets with a live keystroke tracker. Keyboard Hero: rhythm game with original music.</p><p class="note">Best: <span id="best0">0</span>. Browsers block Ctrl+N/W/T, so Ctrl+N only shows up in fullscreen mode (⛶) where the keyboard can be locked. Click the field first so it has keyboard focus.</p></div>
   <div id="ovPause" class="overlay hidden"><h2>TRADING HALTED</h2><div class="spd" id="spdPause"></div><button class="big" id="bResume">RESUME</button><p class="note">Esc to resume</p></div>
   <div id="ovEnd" class="overlay hidden"><h2 id="endTitle">ROUND OVER</h2>
    <div id="eDaily" class="note"></div><div>Score <b id="eScore" style="font-size:28px;color:#19d47a;font-family:var(--mono)">0</b> · Best combo <b id="eCombo">0</b> · Jackpots <b id="eJack">0</b> · Accuracy <b id="eAcc">—</b> · Hints <b id="eHints">0</b> · Speed <b id="eSpd"></b> · High score <b id="eBest">0</b></div>
@@ -451,7 +488,7 @@ function seqKey(code){seq.push(code);const cand=seq.join('>');clearTimeout(seqTi
  if(live.some(c=>c.startsWith(cand+'>'))){seqShow();seqTimer=setTimeout(seqCancel,2500);return}
  seqCancel();submit(cand)}
 addEventListener('keydown',e=>{
- if(window.WF_ACTIVE)return;
+ if(window.WF_ACTIVE||window.HERO_ACTIVE)return;
  if(e.target&&e.target.tagName==='INPUT')return;
  const playing0=st&&st.running&&!st.paused;
  if(e.code==='AltLeft'||e.code==='AltRight'){if(playing0){e.preventDefault();if(!e.repeat&&!IS_MAC()){altDown=true;altUsed=false}}return}
@@ -469,8 +506,8 @@ addEventListener('keydown',e=>{
  // plain typing with no modifier on non-function keys is ignored unless it's a real shortcut (e.g. F2)
  if(!e.ctrlKey&&!e.altKey&&!e.metaKey&&!ALLOWED.has(c)&&!/^F\d+$/.test(e.code))return;
  submit(c)},{capture:true});
-addEventListener('keyup',e=>{if(window.WF_ACTIVE)return;if(e.code==='AltLeft'||e.code==='AltRight'){e.preventDefault();if(altDown&&!altUsed)seqStart();altDown=false}},{capture:true});
-addEventListener('blur',()=>{if(!window.WF_ACTIVE)pause(true)});
+addEventListener('keyup',e=>{if(window.WF_ACTIVE||window.HERO_ACTIVE)return;if(e.code==='AltLeft'||e.code==='AltRight'){e.preventDefault();if(altDown&&!altUsed)seqStart();altDown=false}},{capture:true});
+addEventListener('blur',()=>{if(!window.WF_ACTIVE&&!window.HERO_ACTIVE)pause(true)});
 
 /* Touch controls */
 const tm={Ctrl:false,Meta:false,Alt:false,Shift:false};
@@ -881,5 +918,218 @@ function touch(code,ctrl,alt,shift,meta){if(!window.WF_ACTIVE||blocked())return;
  [['↑','ArrowUp'],['Tab','Tab'],['Esc','Escape'],['Del','Delete'],['⌫','Backspace'],['$','Digit4'],['%','Digit5'],['.','Period']].forEach(([l,c])=>{const b=document.createElement('button');b.textContent=l;b.onclick=()=>touch(c,false,false,false);row.appendChild(b)});T.insertBefore(row,T.children[1]||null)})();
 return{touch,load,menu,enter,exit,handle,run,get S(){return S},get keys(){return keys},get log(){return log},val,cell,TASKS,get done(){return done},snapCount:()=>snaps.length,get act(){return act},sel}})();
 if(location.hash==='#workflow-demo'){WF.enter();WF.load(0);const seqs=['Ctrl+Home','Shift+ArrowRight','Shift+ArrowRight','Shift+ArrowRight','Ctrl+KeyB','ArrowDown','ArrowRight','Ctrl+Shift+ArrowRight','Ctrl+Shift+ArrowDown','Shift+ArrowDown','Alt+Equal','Shift+ArrowUp','Ctrl+Shift+Digit4'];seqs.forEach(c=>WF.run(c))}
+</script>
+<div id="hero" class="hidden">
+ <div id="hTop"><button id="hBack" title="Back to modes">← Modes</button><div id="hTick"></div><button id="hPauseB" title="Pause (Esc)">⏸</button></div>
+ <div id="hHud"><div><b id="hScore">0</b><i>SCORE</i></div><div><b id="hMult">1x</b><i>MULT</i></div><div><b id="hStreak">0</b><i>STREAK</i></div>
+  <div class="hm"><div id="hPort"><span></span></div><i>PORTFOLIO</i></div><div class="hm"><div id="hStar"><span></span></div><i>BULL MARKET</i></div></div>
+ <div id="hStage"><canvas id="hCv"></canvas><div id="hCount"></div><div id="hCall"></div><div id="hPhrase" class="hidden"></div><button id="hStarB">🐂 BULL MARKET 2x</button>
+  <div id="hMenu" class="hov"><h2>🎸 KEYBOARD HERO</h2>
+   <p style="margin:0;max-width:560px">Hit the notes as they cross the line. Hold the long ones, slam chords together, spell out <b>B-U-Y</b> / <b>S-E-L-L</b> phrase bars for bonus. Glowing <b>$</b> notes charge the Bull Market meter — Space/Enter for 2x.</p>
+   <div class="htk" id="hTracks"></div><div id="hDiff"></div>
+   <div id="hOpts"><label><input type="checkbox" id="hNoFail"> No-fail</label><label>Latency offset <input type="range" id="hOff" min="-200" max="200" step="5"> <span id="hOffV"></span> ms</label></div>
+   <p class="note" id="hKeys" style="margin:0"></p><p id="hLand">↻ Landscape recommended on phones/tablets</p>
+   <button id="hPlay">▶ PLAY</button><div style="font:12px var(--mono);color:#9fb6a6">Original music generated live with WebAudio · charts are fixed per track &amp; difficulty, so scores compare fairly.</div></div>
+  <div id="hPause" class="hov hidden"><h2>PAUSED</h2><button id="hResume">▶ Resume</button><button id="hRestart">↺ Restart</button><button id="hQuit">☰ Track list</button></div>
+  <div id="hRes" class="hov hidden"></div>
+ </div>
+</div>
+<script>
+/* ===== KEYBOARD HERO: rhythm mode. Original procedural WebAudio music; charts are deterministic (seeded) per track+difficulty.
+ * Timing is judged against AudioContext.currentTime (song clock), never frame time. ===== */
+const HERO=(()=>{
+const $=id=>document.getElementById(id);
+const TRACKS=[
+ {id:'bell',name:'Opening Bell',bpm:100,genre:'Lo-fi house',bars:32,seed:1001,root:45,prog:[[0,'m'],[8,'M'],[3,'M'],[10,'M']],dr:'house'},
+ {id:'bull',name:'Bull Run',bpm:128,genre:'Synthwave',bars:40,seed:2002,root:48,prog:[[0,'M'],[7,'M'],[9,'m'],[5,'M']],dr:'synth'},
+ {id:'margin',name:'Margin Call',bpm:150,genre:'Drum & bass',bars:48,seed:3003,root:50,prog:[[0,'m'],[8,'M'],[5,'m'],[7,'M']],dr:'dnb'}];
+const DIFFS=[{n:'Easy',lanes:3,scroll:1.9,drain:.05},{n:'Medium',lanes:4,scroll:1.6,drain:.06},{n:'Hard',lanes:5,scroll:1.35,drain:.07},{n:'Expert',lanes:5,scroll:1.15,drain:.08}];
+const LANEKEYS={3:['KeyD','KeyF','KeyJ'],4:['KeyD','KeyF','KeyJ','KeyK'],5:['KeyS','KeyD','KeyF','KeyJ','KeyK']};
+const COLORS=['#19d47a','#ff4d5e','#f3d77a','#3aa0ff','#ff9f1a'];
+const WORDS=['BUY','SELL','BID','ASK','IPO','BULL','BEAR','LONG','HOLD'];
+const WIN={perfect:.045,great:.09,good:.14};
+const PTS={perfect:100,great:80,good:50};
+const rng32=s=>{let a=s>>>0;return()=>{a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}};
+
+/* ---- chart generation (pure + deterministic) ---- */
+function genChart(ti,di){const T=TRACKS[ti],D=DIFFS[di],r=rng32(T.seed*10+di),spb=60/T.bpm,s16=spb/4,n=D.lanes,notes=[],phrases=[];
+ let prev=n>>1,blockUntil=-1,cid=0;
+ const P8=[.7,.55,.75,.8][di],P16=[0,0,.15,.25][di],PH=[.15,.18,.2,.2][di],PC=[0,.08,.15,.22][di];
+ for(let b=2;b<T.bars-1;b++){
+  if(b%8===5){phrases.push({t:b*16*s16,word:WORDS[Math.floor(r()*WORDS.length)],idx:0,done:false,failed:false});continue}
+  const star=((b-2)%8===2||(b-2)%8===3);
+  for(let st=0;st<16;st++){const step=b*16+st;if(step<blockUntil)continue;if((b+1)%8===5&&st>=12)continue;
+   const onBeat=st%4===0,on8=st%2===0;let p;
+   if(di===0)p=onBeat?P8:0;else if(on8)p=onBeat?Math.max(P8,.9):P8;else p=P16;
+   if(r()>=p)continue;
+   let lane=Math.max(0,Math.min(n-1,prev+Math.floor(r()*5)-2));if(!on8&&lane===prev)lane=(lane+1)%n;prev=lane;
+   const t=step*s16;
+   if(onBeat&&r()<PH&&st<=8){const beats=r()<.5?1:2;notes.push({t,lane,len:beats*spb,star,id:notes.length});blockUntil=step+beats*4+2;continue}
+   if(on8&&PC&&r()<PC){const k=(di===3&&r()<.35)?3:2,ls=new Set([lane]);while(ls.size<k)ls.add(Math.floor(r()*n));cid++;[...ls].sort().forEach(l=>notes.push({t,lane:l,len:0,star,chord:cid,id:notes.length}));blockUntil=step+2;continue}
+   notes.push({t,lane,len:0,star,id:notes.length})}}
+ notes.forEach(x=>{x.j=null});
+ return{notes,phrases,spb,len:T.bars*16*s16,lanes:n}}
+
+/* ---- audio ---- */
+let ac=null,master=null,noiseBuf=null;
+function ensureAC(){if(ac)return ac;const C=window.AudioContext||window.webkitAudioContext;if(!C)return null;ac=new C();
+ const comp=ac.createDynamicsCompressor();comp.connect(ac.destination);master=ac.createGain();master.gain.value=.5;master.connect(comp);
+ noiseBuf=ac.createBuffer(1,ac.sampleRate,ac.sampleRate);const d=noiseBuf.getChannelData(0);let s=7;for(let i=0;i<d.length;i++){s=(s*16807)%2147483647;d[i]=s/1073741823-1}return ac}
+const mtof=m=>440*Math.pow(2,(m-69)/12);
+function env(g,t,a,peak,dec){g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(peak,t+a);g.gain.exponentialRampToValueAtTime(0.0001,t+a+dec)}
+function osc(type,f,t,dur,peak,dest,fl){const o=ac.createOscillator(),g=ac.createGain();o.type=type;o.frequency.setValueAtTime(f,t);env(g,t,.005,peak,dur);
+ if(fl){const lp=ac.createBiquadFilter();lp.type='lowpass';lp.frequency.setValueAtTime(fl,t);o.connect(lp);lp.connect(g)}else o.connect(g);g.connect(dest||master);o.start(t);o.stop(t+dur+.05);return o}
+function kick(t){const o=ac.createOscillator(),g=ac.createGain();o.frequency.setValueAtTime(150,t);o.frequency.exponentialRampToValueAtTime(40,t+.12);env(g,t,.002,.9,.25);o.connect(g);g.connect(master);o.start(t);o.stop(t+.3)}
+function noise(t,dur,peak,type,f){const s=ac.createBufferSource(),fl=ac.createBiquadFilter(),g=ac.createGain();s.buffer=noiseBuf;fl.type=type;fl.frequency.value=f;env(g,t,.002,peak,dur);s.connect(fl);fl.connect(g);g.connect(master);s.start(t);s.stop(t+dur+.05)}
+const snare=t=>{noise(t,.16,.5,'bandpass',1800);osc('triangle',190,t,.08,.25)},hat=(t,o)=>noise(t,o?.12:.04,o?.18:.12,'highpass',8000);
+function chordAt(T,bar){const[c,q]=T.prog[Math.floor(bar/2)%4];return{root:T.root+c,third:q==='m'?3:4}}
+function playStep(T,step,t){const st=step%16,bar=Math.floor(step/16),ch=chordAt(T,bar),intro=bar<2,beatDur=60/T.bpm;
+ if(T.dr==='house'){if(st%4===0)kick(t);if(st===4||st===12)snare(t);if(st%4===2)hat(t,true);if(!intro&&st%4===2)osc('sawtooth',mtof(ch.root-12),t,beatDur*.4,.22,null,500)}
+ else if(T.dr==='synth'){if(st===0||st===8||st===10)kick(t);if(st===4||st===12)snare(t);if(st%2===0)hat(t);if(!intro&&st%2===0)osc('sawtooth',mtof(ch.root-12+(st%4?12:0)),t,beatDur*.35,.18,null,700)}
+ else{if(st===0||st===10)kick(t);if(st===4||st===12)snare(t);hat(t,st%4===2);if(!intro&&(st===0||st===6||st===10))osc('square',mtof(ch.root-24),t,beatDur*1.2,.2,null,300)}
+ if(st===0&&bar%2===0)[0,ch.third,7].forEach(iv=>osc('triangle',mtof(ch.root+12+iv),t,beatDur*7.5,.06))}
+function pluck(lane,t){if(!ac||!H)return;const T=TRACKS[H.ti],bar=Math.floor((t||now())/(H.c.spb*4)),ch=chordAt(T,Math.max(0,bar)),iv=[0,ch.third,7,12,12+ch.third][lane]||0;
+ osc('square',mtof(ch.root+24+iv),ac.currentTime,.22,.12,null,2600);osc('sawtooth',mtof(ch.root+12+iv),ac.currentTime,.3,.06,null,1200)}
+function buzz(){if(!ac)return;osc('sawtooth',90,ac.currentTime,.15,.15,null,400)}
+function chime(){if(!ac)return;[0,4,7,12].forEach((iv,i)=>osc('triangle',mtof(84+iv),ac.currentTime+i*.06,.25,.1))}
+
+/* ---- state ---- */
+let H=null,clock=()=>ac?ac.currentTime:performance.now()/1000,sel={ti:+localStorage.kwHeroT||0,di:localStorage.kwHeroD==null?1:+localStorage.kwHeroD};
+let off=+localStorage.kwHeroOff||0,noFail=localStorage.kwHeroNF==='1',schedTimer=0,raf=0,parts=[];
+const now=()=>H?clock()-H.t0-off/1000:0;
+const total=()=>H.c.notes.length;
+const mult=()=>Math.min(4,1+Math.floor(H.streak/10))*(H.starOn?2:1);
+function start(ti=sel.ti,di=sel.di,opts={}){const c=genChart(ti,di);if(!opts.noAudio){ensureAC();if(ac&&ac.state!=='running')ac.resume()}
+ H={ti,di,c,t0:clock()+(opts.lead==null?3:opts.lead),score:0,streak:0,maxStreak:0,cnt:{perfect:0,great:0,good:0,miss:0},port:.5,star:0,starOn:false,starEnd:0,
+  hold:{},press:{},failed:false,done:false,paused:false,step:0,audio:!opts.noAudio&&!!ac,phr:0,missPtr:0,over:0};
+ ['hMenu','hPause','hRes'].forEach(id=>$(id).classList.add('hidden'));$('hPhrase').classList.add('hidden');$('hero').classList.remove('starOn');
+ parts=[];size();hud();if(H.audio){clearInterval(schedTimer);schedTimer=setInterval(sched,25);sched()}cancelAnimationFrame(raf);raf=requestAnimationFrame(loop);return H}
+function sched(){if(!H||H.done||H.paused||!ac)return;const T=TRACKS[H.ti],s16=H.c.spb/4,end=H.c.len/s16;
+ while(H.step<end&&H.t0+H.step*s16<ac.currentTime+.15){playStep(T,H.step,Math.max(ac.currentTime,H.t0+H.step*s16));H.step++}}
+function laneOf(code){return LANEKEYS[H.c.lanes].indexOf(code)}
+function activePhrase(t){return H.c.phrases.find(p=>!p.done&&!p.failed&&t>=p.t-.15&&t<=p.t+4*H.c.spb-.15)}
+function call(txt){const e=$('hCall');e.textContent=txt;e.classList.remove('go');void e.offsetWidth;e.classList.add('go')}
+function judgeHit(n,t,lane){const d=Math.abs(n.t-t),k=d<=WIN.perfect?'perfect':d<=WIN.great?'great':'good';n.j=k;H.cnt[k]++;H.streak++;H.maxStreak=Math.max(H.maxStreak,H.streak);
+ H.score+=PTS[k]*mult();H.port=Math.min(1,H.port+({perfect:.03,great:.02,good:.01})[k]);
+ if(n.star){H.star=Math.min(1,H.star+.125);if(H.starOn)H.starEnd+=H.c.spb*2}
+ if(n.len>0)H.hold[lane]={n,t0:t};pluck(lane,t);spark(lane,k);
+ if(H.streak%50===0)call(H.streak+' NOTE STREAK! 🐂');else if(H.streak%10===0&&H.streak<=30)call((H.streak/10+1)+'x MULTIPLIER');return k}
+function miss(n){n.j='miss';H.cnt.miss++;if(H.streak>=10)call('STREAK BROKEN 📉');H.streak=0;H.port=Math.max(0,H.port-DIFFS[H.di].drain);buzz();if(H.port<=0&&!noFail)fail()}
+function down(lane,t=now()){if(!H||H.done||H.paused)return null;H.press[lane]=t;
+ let best=null;for(const n of H.c.notes){if(n.j||n.lane!==lane)continue;const d=Math.abs(n.t-t);if(d<=WIN.good&&(!best||n.t<best.t))best=n;if(n.t>t+WIN.good)break}
+ if(!best){H.over++;H.port=Math.max(0,H.port-.01);buzz();if(H.port<=0&&!noFail)fail();return 'over'}
+ return judgeHit(best,t,lane)}
+function sustainPts(h,t){const held=Math.max(0,Math.min(t,h.n.t+h.n.len)-h.n.t);return Math.round(held/H.c.spb*25)*mult()}
+function up(lane,t=now()){if(!H)return;delete H.press[lane];const h=H.hold[lane];if(!h)return;delete H.hold[lane];H.score+=sustainPts(h,t);
+ h.n.held=Math.min(1,(t-h.n.t)/h.n.len);if(t<h.n.t+h.n.len-.12)h.n.broken=true}
+function letter(ch,t=now()){const p=activePhrase(t);if(!p)return false;
+ if(ch===p.word[p.idx]){p.idx++;if(ac)osc('triangle',mtof(72+p.idx*2),ac.currentTime,.12,.12);
+  if(p.idx===p.word.length){p.done=true;H.phr++;H.score+=250*p.word.length*mult();H.star=Math.min(1,H.star+.25);chime();call(p.word+' ORDER FILLED! 💰')}}
+ else{p.idx=0;buzz()}renderPhrase(t);return true}
+function activateStar(t=now()){if(!H||H.starOn||H.star<.5||H.done||H.paused)return false;H.starOn=true;H.starEnd=t+H.star*H.c.spb*16;$('hero').classList.add('starOn');call('🐂 BULL MARKET! 2x');chime();return true}
+function update(t){if(!H||H.done)return;const c=H.c;
+ for(const n of c.notes){if(n.j)continue;if(n.t>t-WIN.good)break;miss(n);if(H.done)return}
+ for(const l in H.hold){const h=H.hold[l];if(t>=h.n.t+h.n.len){H.score+=sustainPts(h,t);h.n.held=1;delete H.hold[l]}}
+ if(H.starOn){H.star=Math.max(0,(H.starEnd-t)/(H.c.spb*16));if(t>=H.starEnd){H.starOn=false;H.star=0;$('hero').classList.remove('starOn')}}
+ c.phrases.forEach(p=>{if(!p.done&&!p.failed&&t>p.t+4*c.spb-.15){p.failed=true;H.streak=0}});
+ renderPhrase(t);if(t>c.len+.5)finish()}
+function fail(){if(!H||H.done)return;H.failed=true;call('MARGIN CALLED 📉');finish()}
+function finish(){if(H.done)return;H.done=true;clearInterval(schedTimer);if(master&&ac){master.gain.setTargetAtTime(0,ac.currentTime,.3);setTimeout(()=>{if(master)master.gain.value=.5},1500)}
+ H.res=results();const h=H;setTimeout(()=>{if(H===h&&window.HERO_ACTIVE)showResults()},H.failed?900:300)}
+function results(){const t=total(),c=H.cnt,acc=t?(c.perfect+c.great*.75+c.good*.5)/t:0,pct=Math.round(acc*100);
+ const grade=H.failed?'F':pct>=95?'S':pct>=90?'A':pct>=80?'B':pct>=70?'C':pct>=60?'D':'F',stars=H.failed?0:pct>=95?5:pct>=88?4:pct>=75?3:pct>=60?2:1;
+ return{score:H.score,acc:pct,grade,stars,maxStreak:H.maxStreak,cnt:Object.assign({},c),phr:H.phr,phrN:H.c.phrases.length,failed:H.failed,notes:t}}
+const bests=()=>{try{return JSON.parse(localStorage.kwHeroBest||'{}')}catch(e){return{}}};
+function shareText(r=H.res){const n=(localStorage.kwName||'').trim(),url=location.origin+location.pathname+'?mode=hero';
+ return{t:`${n||'I'} scored ${r.score.toLocaleString()} on Keyboard Hero — ${TRACKS[H.ti].name} (${DIFFS[H.di].n}, ${r.acc}% accuracy, ${'★'.repeat(r.stars)||'0★'}, max streak ${r.maxStreak}${noFail?', no-fail':''}) — beat me!`,url}}
+function showResults(){const r=H.res,key=TRACKS[H.ti].id+'-'+H.di,b=bests(),prev=b[key];let nb=false;
+ if(!r.failed&&(!prev||r.score>prev.score)){b[key]={score:r.score,acc:r.acc,stars:r.stars,nf:noFail};localStorage.kwHeroBest=JSON.stringify(b);nb=!!prev||r.score>0}
+ const el=$('hRes');el.innerHTML=`<h2>${r.failed?'MARGIN CALLED':nb?'🏆 NEW HIGH SCORE':'CLOSING BELL'}</h2><div style="font:14px var(--mono);color:#9fb6a6">${TRACKS[H.ti].name} · ${DIFFS[H.di].n}${noFail?' · no-fail':''}</div>
+ <div class="hgrade">${r.grade}</div><div class="hstars">${'★'.repeat(r.stars)}${'☆'.repeat(5-r.stars)}</div><div style="font:800 32px var(--mono);color:#19d47a">${r.score.toLocaleString()}</div>
+ <table><tr><td>Accuracy</td><td>${r.acc}%</td></tr><tr><td>Max streak</td><td>${r.maxStreak}</td></tr><tr><td>Perfect</td><td>${r.cnt.perfect}</td></tr><tr><td>Great</td><td>${r.cnt.great}</td></tr><tr><td>Good</td><td>${r.cnt.good}</td></tr><tr><td>Miss</td><td>${r.cnt.miss}</td></tr><tr><td>Phrases filled</td><td>${r.phr}/${r.phrN}</td></tr><tr><td>Best</td><td>${(b[key]||prev)?(b[key]||prev).score.toLocaleString():'—'}</td></tr></table>
+ <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center"><button id="hRetry">↺ Retry</button><button id="hList">☰ Tracks</button><button id="hShare">📣 Share</button></div><div id="hShareMsg" style="font:12px var(--mono);color:#9fb6a6;max-width:520px"></div>`;
+ el.classList.remove('hidden');$('hRetry').onclick=()=>start();$('hList').onclick=menu;
+ $('hShare').onclick=async()=>{const{t,url}=shareText(),full=t+' '+url;window.KW_LAST_SHARE=full;
+  if(navigator.share){try{await navigator.share({title:'Keyboard Hero',text:t,url});$('hShareMsg').textContent='Shared!';return}catch(e){if(e&&e.name==='AbortError')return}}
+  try{await navigator.clipboard.writeText(full)}catch(e){const ta=document.createElement('textarea');ta.value=full;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove()}
+  $('hShareMsg').textContent='Copied! "'+full+'"'}}
+function pause(){if(!H||H.done||H.paused)return;H.paused=true;H.pauseClock=clock();if(ac&&H.audio)ac.suspend();Object.keys(H.hold).forEach(l=>up(+l));$('hPause').classList.remove('hidden')}
+function resume(){if(!H||!H.paused)return;$('hPause').classList.add('hidden');let n=3;const cd=$('hCount');const tick=()=>{if(!H||!H.paused)return;if(n===0){cd.textContent='';
+ if(!H.audio){H.t0+=clock()-H.pauseClock}if(ac&&H.audio)ac.resume();H.paused=false;return}cd.textContent=n--;setTimeout(tick,600)};tick()}
+
+/* ---- render ---- */
+let cv,ctx,W=0,HH=0,dpr=1;
+function size(){cv=$('hCv');const r=cv.getBoundingClientRect();dpr=Math.min(2,devicePixelRatio||1);W=r.width;HH=r.height;cv.width=W*dpr;cv.height=HH*dpr;ctx=cv.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0)}
+function geom(){const n=H.c.lanes,lw=Math.min(W*.92/n,120),x0=(W-lw*n)/2,sy=HH-Math.max(70,Math.min(110,HH*.16));return{n,lw,x0,sy,pps:(sy+20)/DIFFS[H.di].scroll}}
+function spark(lane,k){if(!W)return;const g=geom(),x=g.x0+(lane+.5)*g.lw;for(let i=0;i<(k==='perfect'?18:10);i++)parts.push({x,y:g.sy,vx:(Math.random()-.5)*360,vy:-Math.random()*380-60,life:.6,c:k==='perfect'?'#f3d77a':COLORS[lane]})}
+function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath()}
+let lastFrame=0;
+function draw(t){if(!ctx||!H)return;const g=geom(),{n,lw,x0,sy,pps}=g,light=document.body.classList.contains('light');ctx.clearRect(0,0,W,HH);
+ const hg=ctx.createLinearGradient(0,0,0,HH);hg.addColorStop(0,light?'#ece4cf00':'#02081000');hg.addColorStop(1,light?'#d9ceb0':'#0b1626');ctx.fillStyle=hg;ctx.fillRect(x0,0,lw*n,HH);
+ for(let i=0;i<=n;i++){ctx.fillStyle='#d4af3733';ctx.fillRect(x0+i*lw-1,0,2,HH)}
+ const spb=H.c.spb,b0=Math.floor((t-.5)/spb);for(let b=b0;b<b0+DIFFS[H.di].scroll/spb+3;b++){const y=sy-(b*spb-t)*pps;if(y<0||y>HH)continue;ctx.fillStyle=b%4===0?'#d4af3755':'#ffffff14';ctx.fillRect(x0,y,lw*n,b%4===0?2:1)}
+ for(let i=0;i<n;i++){const x=x0+(i+.5)*lw,pr=H.press[i]!=null;ctx.beginPath();ctx.arc(x,sy,lw*.34,0,7);ctx.fillStyle=pr?COLORS[i]:'#0b1626';ctx.fill();ctx.lineWidth=3;ctx.strokeStyle=COLORS[i];ctx.stroke();
+  ctx.fillStyle=pr?'#0a1220':'#e9efe6';ctx.font='700 16px monospace';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(LANEKEYS[n][i].slice(3),x,sy)}
+ const top=t+DIFFS[H.di].scroll+.1;
+ for(const p of H.c.phrases){if(p.done||p.failed||p.t>top||p.t+4*spb<t-.3)continue;const y=sy-(p.t-t)*pps;ctx.fillStyle='#d4af37cc';rr(x0+4,y-18,lw*n-8,36,10);ctx.fill();ctx.fillStyle='#0a1220';ctx.font='900 20px serif';
+  ctx.fillText('TYPE  '+[...p.word].map((c,i)=>i<p.idx?'✓':c).join('-'),x0+lw*n/2,y)}
+ const chords={};
+ for(const nt of H.c.notes){if(nt.t>top)break;const yH=sy-(nt.t-t)*pps,x=x0+(nt.lane+.5)*lw,c=COLORS[nt.lane];
+  if(nt.len>0){const yT=sy-(nt.t+nt.len-t)*pps;if(yT>HH)continue;const hold=H.hold[nt.lane]&&H.hold[nt.lane].n===nt,y1=hold?sy:yH;
+   if(!(nt.j&&!hold&&nt.j!=='miss'&&nt.held!==undefined)){ctx.fillStyle=nt.j==='miss'||nt.broken?'#555a':c+(hold?'ff':'99');ctx.fillRect(x-lw*.09,yT,lw*.18,Math.max(0,y1-yT))}}
+  if(nt.j&&nt.j!=='miss')continue;if(yH>HH+30||yH<-30)continue;
+  if(nt.chord){(chords[nt.chord]=chords[nt.chord]||[]).push([x,yH])}
+  ctx.beginPath();ctx.ellipse(x,yH,lw*.36,lw*.17,0,0,7);ctx.fillStyle=nt.j==='miss'?'#444':nt.star?'#9be7ff':c;ctx.shadowColor=nt.star?'#9be7ff':'transparent';ctx.shadowBlur=nt.star?18:0;ctx.fill();ctx.shadowBlur=0;
+  ctx.lineWidth=2;ctx.strokeStyle='#0a1220';ctx.stroke();if(nt.star){ctx.fillStyle='#0a1220';ctx.font='900 15px serif';ctx.fillText('$',x,yH+1)}}
+ Object.values(chords).forEach(a=>{if(a.length<2)return;ctx.strokeStyle='#ffffffaa';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(a[0][0],a[0][1]);a.forEach(p=>ctx.lineTo(p[0],p[1]));ctx.stroke()});
+ const dt=Math.min(.05,(performance.now()-lastFrame)/1000);lastFrame=performance.now();
+ parts=parts.filter(p=>(p.life-=dt)>0);parts.forEach(p=>{p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=900*dt;ctx.globalAlpha=Math.max(0,p.life/.6);ctx.fillStyle=p.c;ctx.fillRect(p.x,p.y,4,4)});ctx.globalAlpha=1;
+ if(t<0&&!H.paused){$('hCount').textContent=Math.ceil(-t)}else if(!H.paused&&$('hCount').textContent&&t>=0&&t<.5)$('hCount').textContent=''}
+function renderPhrase(t){const p=H&&activePhrase(t),el=$('hPhrase');if(!p||!matchMedia('(pointer:coarse)').matches){el.classList.add('hidden');el.dataset.w='';return}
+ const sig=p.word+p.idx;if(el.dataset.w===sig&&!el.classList.contains('hidden'))return;el.dataset.w=sig;el.classList.remove('hidden');
+ const letters=[...new Set([...p.word])];const r=rng32(p.t*1000|0);const pool=[...letters,'X'].sort(()=>r()-.5);
+ el.innerHTML=pool.map(c=>`<button data-c="${c}">${c}</button>`).join('');el.querySelectorAll('button').forEach(b=>b.onpointerdown=e=>{e.preventDefault();e.stopPropagation();letter(b.dataset.c)})}
+let tickTxt='';
+function hud(){if(!H)return;$('hScore').textContent=H.score.toLocaleString();const m=mult(),me=$('hMult');me.textContent=m+'x';me.className='x'+Math.min(4,Math.min(4,1+Math.floor(H.streak/10)));
+ $('hStreak').textContent=H.streak;$('hPort').firstChild.style.width=(H.port*100)+'%';$('hStar').firstChild.style.width=(H.star*100)+'%';
+ const ready=H.star>=.5&&!H.starOn;$('hStar').classList.toggle('ready',ready);$('hStarB').classList.toggle('ready',ready);
+ const pct=((H.port-.5)*20).toFixed(2),up=H.port>=.5,mood=H.port>.8?'🐂 CROWD GOING WILD':H.port>.5?'📈 BULLISH':H.port>.25?'😬 JITTERY':'🐻 PANIC SELLING';
+ const s=`<b>KBW</b> <span class="${up?'up':'dn'}">${up?'▲ +':'▼ '}${pct}%</span> · ${mood} · ${TRACKS[H.ti].name.toUpperCase()} ${TRACKS[H.ti].bpm} BPM · ${DIFFS[H.di].n.toUpperCase()}`;if(s!==tickTxt){$('hTick').innerHTML=s;tickTxt=s}}
+function loop(){if(!H)return;const t=now();if(!H.paused)update(t);draw(t);hud();if(!H.done||parts.length)raf=requestAnimationFrame(loop)}
+
+/* ---- menu ---- */
+function menu(){if(H){H.done=true;clearInterval(schedTimer)}const b=bests();$('hTracks').innerHTML='';TRACKS.forEach((T,i)=>{const bt=document.createElement('button'),x=b[T.id+'-'+sel.di];
+  bt.innerHTML=`<span>${T.name}</span><small>${T.bpm} BPM · ${T.genre}</small><small>${x?'Best '+x.score.toLocaleString()+' · '+'★'.repeat(x.stars):'No score yet'}</small>`;bt.className=i===sel.ti?'on':'';bt.onclick=()=>{sel.ti=i;localStorage.kwHeroT=i;menu()};$('hTracks').appendChild(bt)});
+ $('hDiff').innerHTML='';DIFFS.forEach((D,i)=>{const bt=document.createElement('button');bt.textContent=D.n+' · '+D.lanes+' lanes'+(i===3?' + chords':'');bt.className=i===sel.di?'on':'';bt.onclick=()=>{sel.di=i;localStorage.kwHeroD=i;menu()};$('hDiff').appendChild(bt)});
+ $('hKeys').textContent='Keys: '+LANEKEYS[DIFFS[sel.di].lanes].map(k=>k.slice(3)).join(' ')+' · Space/Enter = Bull Market · type the word on gold phrase bars · Esc = pause. Touch: tap the lanes (multi-touch chords, hold for sustains).';
+ $('hNoFail').checked=noFail;$('hOff').value=off;$('hOffV').textContent=off;['hPause','hRes'].forEach(id=>$(id).classList.add('hidden'));$('hMenu').classList.remove('hidden');$('hPhrase').classList.add('hidden');$('hCount').textContent=''}
+function enter(){if(window.WF_ACTIVE&&typeof WF!=='undefined')WF.exit();if(typeof st!=='undefined'&&st&&st.running)end('');window.HERO_ACTIVE=true;$('hero').classList.remove('hidden');size();menu()}
+function exit(){if(H){H.done=true;clearInterval(schedTimer)}if(ac&&ac.state==='suspended')ac.resume();H=null;window.HERO_ACTIVE=false;$('hero').classList.add('hidden')}
+
+/* ---- input ---- */
+addEventListener('keydown',e=>{if(!window.HERO_ACTIVE)return;if(e.target&&e.target.tagName==='INPUT'&&e.target.type!=='checkbox'&&e.target.type!=='range')return;
+ const playing=H&&!H.done&&$('hMenu').classList.contains('hidden');
+ if(e.code==='Escape'){e.preventDefault();if(playing){H.paused?resume():pause()}return}
+ if(!playing){if((e.code==='Enter'||e.code==='Space')&&!$('hMenu').classList.contains('hidden')){e.preventDefault();start()}return}
+ if(e.metaKey||e.ctrlKey||e.altKey)return; // never swallow OS/browser shortcuts
+ if(['Space','Enter','NumpadEnter'].includes(e.code)){e.preventDefault();if(!e.repeat)activateStar();return}
+ if(/^Key[A-Z]$/.test(e.code)){e.preventDefault();if(e.repeat||H.paused)return;const t=now();if(letter(e.code.slice(3),t))return;const l=laneOf(e.code);if(l>=0)down(l,t)}},true);
+addEventListener('keyup',e=>{if(!window.HERO_ACTIVE||!H)return;const l=laneOf(e.code);if(l>=0){e.preventDefault();up(l)}},true);
+addEventListener('blur',()=>{if(window.HERO_ACTIVE&&H&&!H.done)pause()});
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&window.HERO_ACTIVE&&H&&!H.done)pause()});
+addEventListener('resize',()=>{if(window.HERO_ACTIVE)size()});
+const ptr={};
+function setup(){const c=$('hCv');
+ c.addEventListener('pointerdown',e=>{if(!H||H.done||H.paused)return;e.preventDefault();const g=geom(),l=Math.floor((e.clientX-c.getBoundingClientRect().left-g.x0)/g.lw);if(l<0||l>=g.n)return;try{c.setPointerCapture(e.pointerId)}catch(_){}ptr[e.pointerId]=l;down(l)});
+ const rel=e=>{const l=ptr[e.pointerId];if(l==null)return;delete ptr[e.pointerId];if(!Object.values(ptr).includes(l))up(l)};
+ c.addEventListener('pointerup',rel);c.addEventListener('pointercancel',rel);c.addEventListener('contextmenu',e=>e.preventDefault());
+ $('hStarB').onclick=()=>activateStar();$('hPauseB').onclick=()=>{if(H&&!H.done)H.paused?resume():pause()};$('hBack').onclick=exit;
+ $('hResume').onclick=resume;$('hRestart').onclick=()=>start();$('hQuit').onclick=menu;$('hPlay').onclick=()=>start();
+ $('hNoFail').onchange=e=>{noFail=e.target.checked;localStorage.kwHeroNF=noFail?'1':'0'};
+ $('hOff').oninput=e=>{off=+e.target.value;localStorage.kwHeroOff=off;$('hOffV').textContent=off};
+ $('bHero').onclick=enter;if(/[?&]mode=hero/.test(location.search))enter()}
+setup();
+return{TRACKS,DIFFS,LANEKEYS,WIN,genChart,start,down,up,letter,activateStar,update,pause,resume,menu,enter,exit,results,shareText,
+ get H(){return H},setClock(f){clock=f},get noFail(){return noFail},set noFail(v){noFail=v},now}})();
 </script>
 </body></html>
