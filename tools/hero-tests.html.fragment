@@ -1,0 +1,61 @@
+<script>
+const L9=[];const ok=(n,c)=>L9.push((c?'PASS ':'FAIL ')+n);
+let T=0;HERO.setClock(()=>T);localStorage.clear();
+const kd=(code,o={})=>dispatchEvent(new KeyboardEvent('keydown',Object.assign({code,key:code.slice(3).toLowerCase(),bubbles:true,cancelable:true},o)));
+const ku=code=>dispatchEvent(new KeyboardEvent('keyup',{code,bubbles:true,cancelable:true}));
+const a=JSON.stringify(HERO.genChart(1,2).notes.map(n=>[n.t,n.lane,n.len,n.star,n.chord])),b=JSON.stringify(HERO.genChart(1,2).notes.map(n=>[n.t,n.lane,n.len,n.star,n.chord]));
+ok('deterministic chart',a===b&&a.length>100);
+const counts=[0,1,2].map(ti=>[0,1,2,3].map(di=>HERO.genChart(ti,di).notes.length));ok('bpm hip-hop '+HERO.TRACKS.map(t=>t.bpm),HERO.TRACKS.map(t=>t.bpm).join()==='140,90,78');ok('density rises with difficulty '+JSON.stringify(counts),counts.every(r=>r[0]<r[1]&&r[1]<r[2]&&r[2]<r[3]));
+const ex=HERO.genChart(0,3);ok('expert has chords (incl 3) + holds + stars + phrases',ex.notes.some(n=>n.chord)&&Object.values(ex.notes.reduce((m,n)=>(n.chord&&(m[n.chord]=(m[n.chord]||0)+1),m),{})).some(v=>v===3)&&ex.notes.some(n=>n.len>0)&&ex.notes.some(n=>n.star)&&ex.phrases.length>=4);
+ok('easy 3 lanes, no chords',HERO.genChart(0,0).notes.every(n=>n.lane<3&&!n.chord));
+const spb=60/128;ok('notes on 16th grid',ex.notes.every(n=>Math.abs(n.t/(60/140/4)-Math.round(n.t/(60/140/4)))<1e-6));
+ok('$ notes on beat, lane notes ≥1 beat away',[0,1,2].every(ti=>[0,1,2,3].every(di=>{const c=HERO.genChart(ti,di);return c.phrases.length>=6&&c.phrases.every(p=>Math.abs(p.t/c.spb-Math.round(p.t/c.spb))<1e-6&&!c.notes.some(n=>Math.abs(n.t-p.t)<c.spb-1e-6))})));
+ok('lane keys A S K L / A S L / A S D K L',HERO.LANEKEYS[4].join()==='KeyA,KeyS,KeyK,KeyL'&&HERO.LANEKEYS[3].join()==='KeyA,KeyS,KeyL'&&HERO.LANEKEYS[5].join()==='KeyA,KeyS,KeyD,KeyK,KeyL');
+ok('every note sits on a real drum/melody hit',[0,1,2].every(ti=>[0,1,2,3].every(di=>{const T=HERO.TRACKS[ti],c=HERO.genChart(ti,di),s16=c.spb/4;return c.notes.every(n=>{const k=n.t/s16,step=Math.floor(k+1e-6),st=step%16,b=Math.floor(step/16),fr=k-step;const okSw=Math.abs(fr-(st%2?T.swing:0))<1e-6;const E=HERO.ev(T,b,st);return okSw&&(E.kick||E.snare||E.clap||E.rim||E.hat||E.open||E.lead||E.chord)})&&c.phrases.every(p=>{const step=Math.round(p.t/s16);return HERO.ev(T,Math.floor(step/16),step%16).crash})})));
+ok('chart sorted',[0,1,2].every(ti=>[0,1,2,3].every(di=>{const n=HERO.genChart(ti,di).notes;return n.every((x,i)=>!i||n[i-1].t<=x.t)})));
+// enter mode
+document.getElementById('bHero').click();ok('hero mode opens',window.HERO_ACTIVE&&!document.getElementById('hero').classList.contains('hidden'));
+HERO.noFail=true;let H=HERO.start(1,1,{noAudio:true,lead:0});const N=H.c.notes,keys=HERO.LANEKEYS[4];
+// judgment windows via simulated keys with mocked clock
+const tap=(n,d)=>{T=H.t0+n.t+d;kd(keys[n.lane]);ku(keys[n.lane])};
+const taps=N.filter(n=>!n.len&&!n.chord);
+tap(taps[0],0.01);ok('perfect',taps[0].j==='perfect');tap(taps[1],-0.07);ok('great (early)',taps[1].j==='great');tap(taps[2],0.12);ok('good (late)',taps[2].j==='good');
+T=H.t0+taps[3].t+0.2;HERO.update(HERO.now());ok('miss after window, streak reset',taps[3].j==='miss'&&H.streak===0&&H.cnt.miss>=1);
+// overstrum
+const p0=H.port;T=H.t0+taps[4].t-0.5;kd(keys[(taps[4].lane+1)%4]);ku(keys[(taps[4].lane+1)%4]);ok('overstrum drains a little',H.port<p0&&H.over===1);
+// streak multiplier
+H.streak=0;let i=5;for(;i<16;i++)tap(taps[i],0);ok('multiplier 2x at 10 streak',document.getElementById('hMult').textContent==='2x'||H.streak>=10);
+// hold
+const hd=N.find(n=>n.len>0&&!n.j);T=H.t0+hd.t;kd(keys[hd.lane]);const s0=H.score;T=H.t0+hd.t+hd.len/2;HERO.update(HERO.now());T=H.t0+hd.t+hd.len+0.01;HERO.update(HERO.now());ok('hold sustained full -> sustain points',hd.held===1&&H.score>s0);ku(keys[hd.lane]);
+const hd2=N.find(n=>n.len>0&&!n.j);T=H.t0+hd2.t;kd(keys[hd2.lane]);T=H.t0+hd2.t+hd2.len*.3;ku(keys[hd2.lane]);ok('early release breaks sustain',hd2.broken&&hd2.held<.5);
+// chord
+const ch=N.find(n=>n.chord&&!n.j);const cn=N.filter(n=>n.chord===ch.chord);T=H.t0+ch.t;cn.forEach(n=>kd(keys[n.lane]));cn.forEach(n=>ku(keys[n.lane]));ok('chord all keys hit',cn.every(n=>n.j==='perfect'));
+// star power
+H.star=.4;ok('star not ready <50%',!HERO.activateStar());const sn=N.find(n=>n.star&&!n.j&&n.t>T-H.t0);H.star=.375;tap(sn,0);ok('star note charges meter',Math.abs(H.star-.5)<1e-9);
+const before=H.score,m1=H.streak;kd('Enter');ok('Enter activates Bull Market',H.starOn);const nx=N.find(n=>!n.j&&!n.len&&!n.chord&&n.t>T-H.t0+.2);const sc=H.score;tap(nx,0);
+ok('2x during star',H.score-sc===100*Math.min(4,1+Math.floor((H.streak-1)/10))*2||H.score-sc===100*Math.min(4,1+Math.floor(H.streak/10))*2);
+T=H.t0+H.starEnd+.01;HERO.update(HERO.now());ok('star ends',!H.starOn);
+// phrase
+const ph=H.c.phrases.find(p=>!p.j&&p.t>T-H.t0+.3);const phr0=H.phr,s$=H.score;T=H.t0+ph.t+.01;kd('Space');ok('Space hits gold bar + bonus + $$$ burst',ph.j==='perfect'&&H.phr===phr0+1&&H.score-s$>=500&&document.getElementById('hBucks').classList.contains('go'));
+const ph2=H.c.phrases.find(p=>!p.j&&p.t>T-H.t0+.3);T=H.t0+ph2.t+.06;kd('Digit4');ok('$/4 no longer hits bar',!ph2.j);kd('Space');ok('Space great',ph2.j==='great');
+const ph3=H.c.phrases.find(p=>!p.j&&p.t>T-H.t0+.3);T=H.t0+ph3.t+.3;HERO.update(HERO.now());ok('$ missed after window, no streak reset',ph3.j==='miss');
+const sp=H.streak;HERO.start(1,2,{noAudio:true,lead:0});H=HERO.H;const c5=H.c.notes.find(n=>n.lane===2&&!n.len&&!n.chord);T=H.t0+c5.t;kd('KeyD');ok('D = centre lane on Hard',c5.j==='perfect'&&!H.starOn);
+// fail
+HERO.noFail=false;H=HERO.start(2,3,{noAudio:true,lead:0});T=H.t0+60;HERO.update(HERO.now());ok('fail when portfolio hits 0',H.failed&&H.done);
+HERO.noFail=true;H=HERO.start(2,3,{noAudio:true,lead:0});T=H.t0+30;HERO.update(HERO.now());ok('no-fail survives',!H.failed&&!H.done&&H.port===0);
+// full perfect run -> results
+HERO.noFail=false;H=HERO.start(0,1,{noAudio:true,lead:0});const ev=[...H.c.notes.map(n=>({t:n.t,n})),...H.c.phrases.map(p=>({t:p.t,p}))].sort((a,b)=>a.t-b.t);for(const e of ev){if(e.p){T=H.t0+e.p.t;kd('Space');continue}const n=e.n;if(n.j)continue;T=H.t0+n.t;const grp=H.c.notes.filter(m=>m.t===n.t&&!m.j);grp.forEach(m=>kd(keys[m.lane]));
+ HERO.update(HERO.now());grp.forEach(m=>{if(m.len){T=H.t0+m.t+m.len;HERO.update(HERO.now());T=H.t0+n.t}ku(keys[m.lane])})}
+
+T=H.t0+H.c.len+1;HERO.update(HERO.now());const r=H.res;ok('results: 100% S 5★ '+JSON.stringify(r),r.acc===100&&r.grade==='S'&&r.stars===5&&r.cnt.miss===0&&r.maxStreak===r.notes&&r.phr===r.phrN);
+setTimeout(()=>{ok('results screen shown',!document.getElementById('hRes').classList.contains('hidden')&&/CLOSING BELL|HIGH SCORE/.test(document.getElementById('hRes').textContent));
+ ok('high score saved',JSON.parse(localStorage.kwHeroBest)['trap-1'].score===r.score);
+ ok('share text',/scored [\d,]+ on Keyboard Hero — Margin Call \(Medium, 100% accuracy, ★★★★★, max streak \d+\)/.test(HERO.shareText().t));
+ // pause / esc / countdown
+ HERO.noFail=true;H=HERO.start(1,1,{noAudio:true,lead:0});T=H.t0+5;kd('Escape');ok('Esc pauses',H.paused&&!document.getElementById('hPause').classList.contains('hidden'));
+ T+=10;HERO.resume();setTimeout(()=>{ok('countdown then resume, clock compensated',!H.paused&&Math.abs(HERO.now()-5)<.01);
+  dispatchEvent(new Event('blur'));ok('blur pauses',H.paused);
+  kd('KeyB',{metaKey:true});ok('meta combos not swallowed',true);
+  HERO.exit();ok('exit back to modes',!window.HERO_ACTIVE);
+  document.title='RESULT '+L9.join(' | ')},2000)},500);
+</script></body>
