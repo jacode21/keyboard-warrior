@@ -1,5 +1,5 @@
 // usage: node shots.js before|after
-const {chromium}=require('playwright');const tag=process.argv[2]||'before';const OUT='/workspace/keyboard-warrior/screenshots/polish/';
+const {chromium}=require('playwright');const tag=process.argv[2]||'before';const OUT=process.env.OUT||'/workspace/keyboard-warrior/screenshots/polish/';
 const BASE=process.env.BASE||'file:///workspace/keyboard-warrior/';const SITE=process.env.SITE??'site/';
 (async()=>{const b=await chromium.launch({executablePath:'/usr/bin/google-chrome'});const errs=[];
 for(const [dev,vp,mob] of [['desktop',{width:1366,height:860},false],['mobile',{width:390,height:844},true]]){
