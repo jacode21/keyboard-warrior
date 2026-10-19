@@ -57,3 +57,18 @@ Thematic copy pass ('80s trading floor), friendly-tight spacing (4/8 scale, 3px 
 - Record P&L is formatted.
 - The P&L-vs-record delta is hidden during a duel, so the ghost is the only comparison.
 - Deployed to production.
+
+## Round 4 (first 30 seconds on a phone + the share/duel loop)
+**Critique.**
+- On iPhone 13 the Back Office sheet collapsed under the job card, and then the job card slid under the keypad. A new player couldn't see the sheet and the step at the same time.
+- Phones showed keyboard chips ("Enter", "R", "F1") they can't press.
+- The front page said "Key in the real shortcut" to someone with no keys.
+- On the ticket, "Challenge a coworker" (the loop that brings people back) was the third of four identical stacked outline buttons.
+- The HUD printed P&L without separators ("2608").
+
+**Changes.**
+- Mobile Back Office: the sheet keeps its natural height (≈200px on iPhone 13), sheet tabs are hidden, and the NEXT step sits above the keypad.
+  New mobile test: sheet ≥150px and next step fully above the keypad.
+- Touch without a hardware keyboard hides all key chips, and the front page reads "Tap the real shortcut".
+- Mobile ticket: a full-width **Trade again**, then a full-width solid **Challenge a coworker**, then Share | Front page side by side. It opens the native share sheet as before.
+- HUD P&L uses thousands separators.
