@@ -40,6 +40,8 @@ const res=[];const ok=(n,c,x)=>{res.push((c?'ok ':'FAIL ')+n+(c?'':' '+JSON.stri
  await p.evaluate(()=>WF.load(0));await p.waitForTimeout(200);
  const wf=await p.evaluate(()=>{const t=document.getElementById('touch');const r=t.getBoundingClientRect();const keys=[...t.querySelectorAll('.full button')].filter(b=>getComputedStyle(b).display!=='none').length;return{disp:getComputedStyle(t).display,bottom:r.bottom,ih:innerHeight,keys}});
  ok(nm+' workflow keypad visible + fits',wf.disp!=='none'&&wf.keys>10&&wf.bottom<=wf.ih+2,wf);
+ const nx=await p.evaluate(()=>{const g=document.getElementById('wfGridWrap').getBoundingClientRect(),l=document.querySelector('#wfChecks li:not(.done)').getBoundingClientRect(),t=document.getElementById('touch').getBoundingClientRect();return{gridH:g.height,nextBottom:l.bottom,keypadTop:t.top}});
+ ok(nm+' workflow: sheet + next job step both visible above the keypad',nx.gridH>=150&&nx.nextBottom<=nx.keypadTop+1,nx);
  // tap Shift + → via keypad
  const moved=await p.evaluate(async()=>{const t=document.getElementById('touch');const k0=document.getElementById('wfKeys').textContent;t.classList.add('more');const r=[...t.querySelectorAll('.full button')].find(b=>b.dataset.c==='ArrowRight');r.click();await new Promise(z=>setTimeout(z,50));return{k0,k1:document.getElementById('wfKeys').textContent,name:document.getElementById('wfName').textContent}});
  ok(nm+' workflow: keypad drives the sheet',moved.k1!==moved.k0,moved);await ov('workflow task');
