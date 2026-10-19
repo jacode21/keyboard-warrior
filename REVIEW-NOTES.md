@@ -27,6 +27,6 @@ Thematic copy pass ('80s trading floor), friendly-tight spacing (4/8 scale, 3px 
 - Mobile Back Office hid three of the four arrow keys behind ⋯ (in a spreadsheet game!). It also showed a full job brief that the keypad then cut in half.
 
 **Changes.**
-- Chart rule: never 3+ notes in a row on one lane. A repeated pitch becomes a trill to the neighbouring lane. The rule is deterministic and uses no extra RNG, so charts stay derived from the music and note counts barely move: e.g. Margin Call Normal 224→228, Short Squeeze Hard 309→308.
+- Chart rule: never 3+ notes in a row on one lane. A repeated pitch becomes a trill to the neighbouring lane. The rule is deterministic and uses no extra RNG, so charts stay derived from the music and note counts barely move: e.g. Margin Call Medium 224→228, Short Squeeze Hard 309→308.
 - Mobile Back Office: a nav cluster row (← ↓ ↑ → Enter Tab Esc ⌫) plus an edit row (Del Home F2 F4 $ % . End). Closed checklist items fold away and the next one is tagged **NEXT**.
 - Deployed to production.
