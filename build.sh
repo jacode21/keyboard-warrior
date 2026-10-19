@@ -8,6 +8,7 @@ cd "$(dirname "$0")"
 rm -rf dist && mkdir -p dist
 cp index.html dist/
 cp site/*.html site/*.png site/*.svg site/*.ico site/robots.txt site/sitemap.xml dist/
+mkdir -p dist/fonts && cp site/fonts/*.woff2 dist/fonts/
 PUB=$(grep -oP "publisherId:\s*'\Kca-pub-\d+(?=')" index.html || true)
 if [[ -n "$PUB" ]]; then echo "google.com, ${PUB#ca-}, DIRECT, f08c47fec0942fa0" > dist/ads.txt; echo "ads.txt -> ${PUB#ca-}"
 else echo "ads.txt omitted (ADS.publisherId empty)"; fi
