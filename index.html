@@ -640,6 +640,13 @@ body.wfmode #touch .row.wfk:not(.wfk2) button{font-weight:700;background:var(--p
 #ovEnd:not(.hidden) .ticket{animation:tkThunk .18s ease-out .74s both}
 @keyframes tkThunk{0%{transform:translateY(0)}35%{transform:translateY(3px) rotate(-.25deg)}100%{transform:none}}
 @media (prefers-reduced-motion:reduce){#ovEnd #eStamp,#ovEnd:not(.hidden) .ticket{animation:none}}
+/* R3: Big Board grouping, duel invite as the lead, louder margin */
+#bbPer button.grp{margin-left:12px}#bbSub.hidden{display:none}
+.bbT tr.hd td{font:600 10px var(--mono)!important;letter-spacing:.1em;text-transform:uppercase;color:var(--mut)!important;border-bottom:1.5px solid var(--ink)}
+#chBanner .big.sm{display:inline-flex;margin-top:6px}
+#eVs{display:flex;flex-wrap:wrap;align-items:center;gap:8px}#eVs .up,#eVs .dn{font:700 22px var(--disp);text-transform:uppercase;letter-spacing:.02em}
+body.duel #sDelta{display:none}
+.tkMain #eVs{padding:0;margin:6px 0 2px}
 /* friendly-tight pass (v5): one 4/8 spacing scale, one 1.5px rule weight, 3px corners everywhere */
 :root{--r:3px;--s1:4px;--s2:8px;--s3:12px;--s4:16px}
 button,.ib,kbd,.tk,input,select,.spd,#hDiff,#hud,#queue,.legend,.ticket,.haltCard,.toast,.chip,.stamp.sm,#qp button,#touch button,.htk button,.lst .tk,.xpbar,.goal i,#wfTasks button,.pnl,#wfGridWrap,#hHud>div{border-radius:var(--r)!important}
@@ -974,7 +981,7 @@ function renderPool(){const c=$('poolSel');c.innerHTML='';(PLAT==='mac'?[['ctrl'
 function renderSpeed(){['spdSel','spdPause'].forEach(id=>{const c=$(id);c.innerHTML='';Object.entries(SPEEDS).forEach(([k,v])=>{const b=document.createElement('button');b.textContent=v.n+' '+v.m+'x';b.className=k===speedKey?'on':'';
  b.onclick=()=>{speedKey=k;localStorage.kwSpeed=k;renderSpeed();if(st)hud()};c.appendChild(b)})});$('sSpd').textContent=SP().n+' '+SP().m+'x'}
 const field=$('field'); let st=null, muted=localStorage.kwMute==='1', kbLocked=false;
-let best=+localStorage.kwBest||0; $('best0').textContent=best;
+let best=+localStorage.kwBest||0; $('best0').textContent=fmtN(best);
 
 /* ---------- Audio ---------- */
 let ac; function tone(f,d,type='square',v=.08,when=0){ if(muted)return; ac=ac||new (window.AudioContext||window.webkitAudioContext)();
@@ -2134,13 +2141,14 @@ function startDuel(d){if(SPEEDS[d.sp]){speedKey=d.sp;renderSpeed()}if(d.pl&&d.pl
 function ghost(s){const g=$('ghost');if(!s.duel){g.classList.add('hidden');return}g.classList.remove('hidden');const sec=Math.min(60,Math.max(0,Math.floor(60-s.time))),gv=s.duel.tr[Math.min(sec,s.duel.tr.length-1)]||0,d=s.score-gv;
  g.querySelector('.gn').textContent='vs. '+(s.duel.n||'Rival').toUpperCase();g.querySelector('.gs').textContent=fmt(gv);const gd=g.querySelector('.gd');gd.textContent=(d>=0?'▲ +':'▼ −')+fmt(Math.abs(d));gd.className='gd '+(d>=0?'up':'dn')}
 /* ---- lifecycle ---- */
-function onStart(s){const mode=s.daily?'daily':s.duel?'duel':'arcade';ev('mode_start',mode);if(s.input==='touch')ev('touch_round',mode);runToken(mode).then(t=>{if(st===s)s.run=t});ghost(s);$('eRank').innerHTML='<button id="bPost" class="link">Post to the Big Board</button>';}
+function onStart(s){const mode=s.daily?'daily':s.duel?'duel':'arcade';document.body.classList.toggle('duel',!!s.duel);ev('mode_start',mode);if(s.input==='touch')ev('touch_round',mode);runToken(s.daily?'daily':'arcade').then(t=>{if(st===s)s.run=t});ghost(s);$('eRank').innerHTML='<button id="bPost" class="link">Post to the Big Board</button>';}
 function onEnd(s,why){const mode=s.daily?'daily':s.duel?'duel':'arcade';ev('round_end',mode);
  if(s.duel){const d=s.duel,m=s.score-d.s,win=m>0,stp=$('eStamp');stp.textContent=win?'Win':m===0?'Dead heat':'Loss';stp.className='stamp'+(win?'':' bad');$('endTitle').textContent=(win?'You beat ':m===0?'Dead heat with ':'Beaten by ')+(d.n||'your rival');
   const vs=$('eVs');vs.classList.remove('hidden');vs.innerHTML=(win?'<span class="up">Won by '+fmt(m)+'</span>':m===0?'Dead heat':'<span class="dn">Lost by '+fmt(-m)+'</span>')+' · '+esc0(d.n||'Rival')+' booked '+fmt(d.s)+' <button id="bBack" class="big sm"><span>Send it back</span></button>';
   $('bBack').onclick=()=>shareDuel(win?`I beat you by ${fmt(m)}. Your move.`:m===0?'Dead heat. Run it back?':`You got me by ${fmt(-m)}. Rematch on the same tape.`);ev('duel_end',win?'win':'loss')}
  const auto=localStorage.kwLbAuto==='1';const b=$('bPost');if(b)b.onclick=()=>post(s);if(auto&&s.score>0)post(s)}
-async function post(s,mode,board,stats){mode=mode||(s.daily?'daily':s.duel?'duel':'arcade');const el=$(mode==='hero'?'hRank':mode==='wf'?'wfRank':'eRank');if(el)el.innerHTML='<span class="mutd">Filing with the exchange…</span>';
+async function post(s,mode,board,stats){mode=mode||(s.daily?'daily':'arcade'); // a duel is an arcade session on a rival's tape: it files to the Arcade board
+ const el=$(mode==='hero'?'hRank':mode==='wf'?'wfRank':'eRank');if(el)el.innerHTML='<span class="mutd">Filing with the exchange…</span>';
  const run=s.run;if(!run){if(el)el.innerHTML='<span class="mutd">Big Board offline. Your P&amp;L is saved on this device.</span>';return}
  const j=await call('score',{mode,board:board||(s.daily?String(s.daily):''),daily:s.daily||0,name:pname()||'',desk:desk(),score:s.score,input:s.input,stats:stats||{hits:s.hits,acc:acc(),combo:s.bestCombo,dur:60},rid:run.rid,ts:run.ts,sig:run.sig});
  if(!el)return j;if(!j||!j.ok){el.innerHTML='<span class="mutd">'+esc0(j&&j.error||'Big Board offline. Saved on this device.')+'</span>';return j}
@@ -2154,23 +2162,24 @@ const TABS=(id,items,cur,fn)=>{const c=$(id);c.innerHTML='';items.forEach(([k,l]
 async function board(mode){if(mode)BB.mode=mode==='duel'?'arcade':mode;ev('lb_view',BB.mode);['ovStart','ovEnd'].forEach(o=>$(o).classList.add('hidden'));if(window.HERO_ACTIVE&&window.HERO)HERO.exit();if(window.WF_ACTIVE&&window.WF)WF.exit();$('ovStart').classList.add('hidden');$('ovBoard').classList.remove('hidden');
  TABS('bbMode',[['arcade','Arcade'],['daily','Daily Tape'],['hero','Keyboard Hero'],['wf','Back Office']],BB.mode,k=>{BB.mode=k;BB.sub='';board()});
  const subs=BB.mode==='hero'&&window.HERO?HERO.TRACKS.map(T=>[T.id,T.name]):BB.mode==='wf'&&window.WF?WF.TASKS.map(T=>[T.id,T.name]):BB.mode==='daily'?[[String(dailyNum()),'Tape #'+dailyNum()]]:[['','All speeds']];
- if(!subs.some(x=>x[0]===BB.sub))BB.sub=subs[0][0];TABS('bbSub',subs.concat(desk()?[]:[]),BB.sub,k=>{BB.sub=k;board()});
+ if(!subs.some(x=>x[0]===BB.sub))BB.sub=subs[0][0];TABS('bbSub',subs,BB.sub,k=>{BB.sub=k;board()});$('bbSub').classList.toggle('hidden',subs.length<2);
  TABS('bbPer',[['day','Today'],['week','This week'],['all','All-time']].concat([['street','The Street'],['desk',desk()?'Desk '+desk():'My desk']]).concat([['all-in','All inputs'],['kbd','Keyboard'],['touch','Touch']]),null,k=>{if(['day','week','all'].includes(k))BB.per=k;else if(k==='street'||k==='desk')BB.scope=k;else BB.input=k;board()});
- [...$('bbPer').children].forEach(b=>{const k=['day','week','all','street','desk','all-in','kbd','touch'][[...$('bbPer').children].indexOf(b)];b.classList.toggle('on',k===BB.per||k===BB.scope||k===(BB.input||'all-in'))});
+ [...$('bbPer').children].forEach((b,i)=>{b.classList.toggle('grp',i===3||i===5);const k=['day','week','all','street','desk','all-in','kbd','touch'][[...$('bbPer').children].indexOf(b)];b.classList.toggle('on',k===BB.per||k===BB.scope||k===(BB.input||'all-in'))});
  const T=$('bbT'),N=$('bbNote');T.innerHTML='<tr><td>Loading the tape…</td></tr>';
  if(BB.scope==='desk'&&!desk()){T.innerHTML='';N.innerHTML='Set a desk code under <b>Desk manual &amp; settings</b>, or open a link like <code>playkeyboardwarrior.com/?desk=ACME</code>, to get a private office board.';return}
  const q=new URLSearchParams({mode:BB.mode,board:BB.mode==='daily'?'':BB.sub,daily:BB.mode==='daily'?BB.sub:'',period:BB.per,desk:BB.scope==='desk'?desk():''});if(BB.input&&BB.input!=='all-in')q.set('input',BB.input);
  const j=await call('board?'+q.toString());
  if(!j||!j.ok){T.innerHTML='';N.textContent='The Big Board is offline right now. Your records are still kept on this device.';return}
  N.textContent=j.rows.length?'Top 50. Names are self-reported; impossible runs are rejected at the exchange.':'No trades filed yet. Be the first print on the tape.';
- T.innerHTML=j.rows.map((r,i)=>`<tr${i<3?' class="top"':''}><th>${i+1}</th><td class="nm">${esc0(r.n)}${r.i==='touch'?' <i class="tk sm">TCH</i>':''}</td><td>${fmt(r.s)}</td><td class="mutd">${r.a}%</td></tr>`).join('')}
-function init(){$('bBoard').onclick=()=>board('arcade');$('bbBack').onclick=()=>{$('ovBoard').classList.add('hidden');$('ovStart').classList.remove('hidden')};
+ T.innerHTML=(j.rows.length?'<tr class="hd"><th></th><td class="nm">Trader</td><td>P&amp;L</td><td class="mutd">Fill</td></tr>':'')+j.rows.map((r,i)=>`<tr${i<3?' class="top"':''}><th>${i+1}</th><td class="nm">${esc0(r.n)}${r.i==='touch'?' <i class="tk sm">TCH</i>':''}</td><td>${fmt(r.s)}</td><td class="mutd">${r.a}%</td></tr>`).join('')}
+function init(){{const vs=$('eVs'),br=document.querySelector('#ovEnd .tkMain .btnrow');if(vs&&br)br.parentNode.insertBefore(vs,br)} // the duel verdict sits under the score, where a phone can see it
+ $('bBoard').onclick=()=>board('arcade');$('bbBack').onclick=()=>{$('ovBoard').classList.add('hidden');$('ovStart').classList.remove('hidden')};
  addEventListener('keydown',e=>{if(e.code==='Escape'&&!$('ovBoard').classList.contains('hidden')){e.preventDefault();e.stopPropagation();$('bbBack').click()}},true);
  $('bDuel').onclick=()=>shareDuel();
  const pd=$('pDesk');pd.value=desk();pd.oninput=e=>{localStorage.kwDesk=e.target.value.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,12)};
  const pa=$('pAuto');pa.checked=localStorage.kwLbAuto==='1';pa.onchange=e=>{localStorage.kwLbAuto=e.target.checked?'1':'0'};
  $('bDuel0').onclick=()=>{if(DU)startDuel(DU);else{$('duelSub').innerHTML='<b>No duel link yet.</b> Finish a session, hit <b>Challenge a coworker</b> on the ticket, and send the link. Whoever opens it races your ghost on the same tape.'}};
- if(DU){const b=$('chBanner');b.classList.remove('hidden');b.innerHTML=`<b class="stamp sm">Duel</b> ${esc0(DU.n||'A rival desk')} booked <b>${fmt(DU.s)}</b> P&amp;L. Same tape, their ghost on your screen. <button id="bTakeDuel">Take the duel</button>`;$('bTakeDuel').onclick=()=>startDuel(DU);$('duelSub').innerHTML='<b>'+esc0(DU.n||'A rival')+'</b> is waiting: '+fmt(DU.s)+' P&amp;L to beat'}}
+ if(DU){const b=$('chBanner');b.classList.remove('hidden');b.innerHTML=`<b class="stamp sm">Duel</b> ${esc0(DU.n||'A rival desk')} booked <b>${fmt(DU.s)}</b> P&amp;L. Same tape, their ghost on your screen. <button id="bTakeDuel" class="big sm"><span>Take the duel</span></button>`;$('bTakeDuel').onclick=()=>startDuel(DU);$('duelSub').innerHTML='<b>'+esc0(DU.n||'A rival')+'</b> is waiting: '+fmt(DU.s)+' P&amp;L to beat'}}
 init();
 return{ev,call,post,board,onStart,onEnd,ghost,shareDuel,duelLink,startDuel,runToken,packTr,unpackTr,desk,get DU(){return DU},get up(){return apiUp}}})();window.KWX=KWX;
 </script>
