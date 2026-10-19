@@ -627,7 +627,14 @@ body.wfmode #touch .tmode,body.wfmode #touch .row.ctx{display:none!important}
  body.wfmode #wfLeft .note,body.wfmode .wfStats>div:nth-child(4){display:none}
  body.wfmode #touch{position:sticky;bottom:0;z-index:20;max-height:36vh;overflow-y:auto;background:var(--bg);border-top:2px solid var(--fg)}
  body.playing[data-tmode=pick] #touch .more-b{display:none}
+ /* compact job card: closed items fold away, the next one is called out */
+ body.wfmode #wfLeft{padding:8px!important}body.wfmode #wfTitle{font-size:20px!important;margin:0 0 4px!important}
+ body.wfmode #wfChecks li.done{display:none}
+ body.wfmode #wfChecks li:first-child:not(.done),body.wfmode #wfChecks li.done+li:not(.done){font-weight:700;color:var(--fg)}
+ body.wfmode #wfChecks li:first-child:not(.done)::after,body.wfmode #wfChecks li.done+li:not(.done)::after{content:'NEXT';margin-left:6px;font:700 10px var(--mono);letter-spacing:.08em;color:var(--red)}
 }
+body.wfmode #touch .row.wfk{display:grid!important;grid-template-columns:repeat(8,minmax(0,1fr));gap:4px}body.wfmode #touch .row.wfk button{min-width:0;font-size:13px!important}
+body.wfmode #touch .row.wfk:not(.wfk2) button{font-weight:700;background:var(--panel,#121a15)}
 /* friendly-tight pass (v5): one 4/8 spacing scale, one 1.5px rule weight, 3px corners everywhere */
 :root{--r:3px;--s1:4px;--s2:8px;--s3:12px;--s4:16px}
 button,.ib,kbd,.tk,input,select,.spd,#hDiff,#hud,#queue,.legend,.ticket,.haltCard,.toast,.chip,.stamp.sm,#qp button,#touch button,.htk button,.lst .tk,.xpbar,.goal i,#wfTasks button,.pnl,#wfGridWrap,#hHud>div{border-radius:var(--r)!important}
@@ -1567,8 +1574,10 @@ function touch(code,ctrl,alt,shift,meta){if(!window.WF_ACTIVE||blocked())return;
  if(wseq){handle(code,{});return}
  if(!IS_MAC()&&alt&&!ctrl&&!shift&&!A['Alt+'+code]){seqStart();handle(code,{});return}
  handle(code,{ctrl,alt,shift,meta,key:keyFor(code)})}
-(function(){const T=$('touch');if(!T)return;const row=document.createElement('div');row.className='row wfOnly';
- [['↑','ArrowUp'],['Tab','Tab'],['Esc','Escape'],['Del','Delete'],['⌫','Backspace'],['$','Digit4'],['%','Digit5'],['.','Period']].forEach(([l,c])=>{const b=document.createElement('button');b.textContent=l;b.onclick=()=>touch(c,false,false,false);row.appendChild(b)});T.insertBefore(row,T.children[1]||null)})();
+(function(){const T=$('touch');if(!T)return;let at=T.children[1]||null; // spreadsheet desk: a nav cluster first (arrows + Enter), then the edit keys
+ [[['←','ArrowLeft'],['↓','ArrowDown'],['↑','ArrowUp'],['→','ArrowRight'],['Enter','Enter'],['Tab','Tab'],['Esc','Escape'],['⌫','Backspace']],
+  [['Del','Delete'],['Home','Home'],['F2','F2'],['F4','F4'],['$','Digit4'],['%','Digit5'],['.','Period'],['End','End']]].forEach((keys,i)=>{const row=document.createElement('div');row.className='row wfOnly wfk'+(i?' wfk2':'');
+ keys.forEach(([l,c])=>{const b=document.createElement('button');b.textContent=l;b.dataset.code=c;b.onclick=()=>touch(c,false,false,false);row.appendChild(b)});T.insertBefore(row,at);at=row.nextSibling})})();
 return{touch,load,menu,enter,exit,handle,run,get S(){return S},get keys(){return keys},get log(){return log},val,cell,TASKS,get done(){return done},snapCount:()=>snaps.length,get act(){return act},sel}})();
 if(location.hash==='#workflow-demo'){WF.enter();WF.load(0);const seqs=['Ctrl+Home','Shift+ArrowRight','Shift+ArrowRight','Shift+ArrowRight','Ctrl+KeyB','ArrowDown','ArrowRight','Ctrl+Shift+ArrowRight','Ctrl+Shift+ArrowDown','Shift+ArrowDown','Alt+Equal','Shift+ArrowUp','Ctrl+Shift+Digit4'];seqs.forEach(c=>WF.run(c))}
 </script>
@@ -1697,7 +1706,7 @@ function evN(T,bar,st,F,E){const has=f=>F.includes(f),s=T.style,hk=has('H'),r=ha
 
 /* ---- chart generation (pure + deterministic, derived from the score above) ---- */
 function genChart(ti,di){const T=TRACKS[ti],D=DIFFS[di],r=rng32(T.seed*10+di),spb=60/T.bpm,s16=spb/4,n=D.lanes,notes=[],phrases=[],half=Math.ceil(n/2);
- let prev=n>>1,blockUntil=-1,cid=0;
+ let prev=n>>1,blockUntil=-1,cid=0,run=0;
  const PH=[.15,.18,.2,.2][di],PC=[0,.18,.3,.4][di];
  for(let b=2;b<T.bars-1;b++){
   const dBar=T.imp.includes(b);if(dBar)phrases.push({t:b*16*s16,j:null}); // gold $ bonus note on the crash/impact downbeat, lane notes kept ≥1 beat away
@@ -1718,7 +1727,9 @@ function genChart(ti,di){const T=TRACKS[ti],D=DIFFS[di],r=rng32(T.seed*10+di),sp
    else if(kind==='s')lane=n-1-Math.floor(r()*half);        // snares/claps → right hand
    else if(kind==='l')lane=Math.round((E.lead.m-T.lo)/Math.max(1,T.hi-T.lo)*(n-1)); // melody → lane follows pitch
    else lane=Math.max(0,Math.min(n-1,prev+Math.floor(r()*3)-1));
-   lane=Math.max(0,Math.min(n-1,lane));if(!on8&&lane===prev)lane=(lane+1)%n;prev=lane;
+   lane=Math.max(0,Math.min(n-1,lane));if(!on8&&lane===prev)lane=(lane+1)%n;
+   if(lane===prev&&++run>=2){lane=lane+(lane<(n>>1)?1:lane>(n>>1)?-1:(run&1?1:-1));lane=Math.max(0,Math.min(n-1,lane));run=0}else if(lane!==prev)run=0; // no 3+ jacks: a repeated pitch becomes a trill
+   prev=lane;
    const t=(step+(st%2?T.swing:0))*s16; // swung 16ths: the note lands exactly where the swung drum hit is
    const meta={part:kind,step,m:kind==='l'?E.lead.m:0,dur:kind==='l'?E.lead.len*s16:0};
    const sus=kind==='l'?E.lead.len:kind==='k'&&E.bass?E.bass.len:kind==='c'?E.chord.len:0;
