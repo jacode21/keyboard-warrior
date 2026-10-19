@@ -647,6 +647,15 @@ body.wfmode #touch .row.wfk:not(.wfk2) button{font-weight:700;background:var(--p
 #eVs{display:flex;flex-wrap:wrap;align-items:center;gap:8px}#eVs .up,#eVs .dn{font:700 22px var(--disp);text-transform:uppercase;letter-spacing:.02em}
 body.duel #sDelta{display:none}
 .tkMain #eVs{padding:0;margin:6px 0 2px}
+/* R4: a phone shows no keyboard chips; the ticket leads with the two moves that bring people back */
+.tconly{display:none}@media (pointer:coarse){body:not(.hwkb) button kbd,body:not(.hwkb) .kbonly{display:none!important}body:not(.hwkb) .tconly{display:inline}}
+@media (max-width:700px){
+ #ovEnd .tkMain .btnrow{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+ #ovEnd .tkMain .btnrow>button{width:100%;margin:0;justify-content:center}
+ #ovEnd #bAgain{grid-column:1/-1}
+ #ovEnd #bDuel{grid-column:1/-1;order:1;font-weight:700;border-width:2px;background:var(--ink);color:var(--paper)}
+ #ovEnd #bShare{order:2}#ovEnd #bMenu{order:3}
+}
 /* friendly-tight pass (v5): one 4/8 spacing scale, one 1.5px rule weight, 3px corners everywhere */
 :root{--r:3px;--s1:4px;--s2:8px;--s3:12px;--s4:16px}
 button,.ib,kbd,.tk,input,select,.spd,#hDiff,#hud,#queue,.legend,.ticket,.haltCard,.toast,.chip,.stamp.sm,#qp button,#touch button,.htk button,.lst .tk,.xpbar,.goal i,#wfTasks button,.pnl,#wfGridWrap,#hHud>div{border-radius:var(--r)!important}
@@ -682,7 +691,7 @@ button,.ib,kbd,.tk,input,select,.spd,#hDiff,#hud,#queue,.legend,.ticket,.haltCar
    <div id="chBanner" class="hidden"></div>
    <div class="fpGrid">
     <section class="lead"><div class="kicker">Markets</div><h3 class="hed">Mouse shares plunge as traders go <span class="hand">keys-only</span></h3>
-     <p class="dek">Orders hit the tape as Excel commands. Key in the real shortcut to fill each one before it lands on the book. Sixty seconds on the clock; five clean fills in a row pays the jackpot.</p>
+     <p class="dek">Orders hit the tape as Excel commands. <span class="kbonly">Key in</span><span class="tconly">Tap</span> the real shortcut to fill each one before it lands on the book. Sixty seconds on the clock; five clean fills in a row pays the jackpot.</p>
      <button class="big" id="bStart"><span>Ring the bell</span><kbd>Enter</kbd></button><div class="bestline">Arcade · 60-second session · record P&amp;L <b id="best0">0</b></div>
      <div class="kicker k2">Other listings</div>
      <div class="listings"><button class="lst" id="bDaily"><i class="tk">DLY</i><b>Daily Tape <span id="dailyN"></span></b><small id="dailySub">One tape, every trader, once a day</small><em class="arr">→</em></button>
@@ -1047,7 +1056,7 @@ function land(p){const i=st.pieces.indexOf(p);if(i>=0)st.pieces.splice(i,1);if(!
 function showHint(){if(!st||!st.running||st.paused)return;const tg=target();if(!tg||tg.hint>=2)return;tg.hint++;st.hints++;
  const parts=TOKENS(tg.combo),sp=SEP(tg.combo),txt=tg.hint===1?(isSeq(tg.combo)?parts.slice(0,2).join(sp)+sp+'…':parts.length>1?parts.slice(0,-1).join(sp)+' + ?':'(no modifier) ?'):parts.join(sp);
  let h=tg.el.querySelector('.hint');if(!h){h=document.createElement('span');h.className='hint';tg.el.appendChild(h)}h.textContent=txt;tone(880,.08,'triangle',.06);hud()}
-function hud(){$('sScore').textContent=st.score;$('sCombo').textContent='x'+st.combo;$('sTime').textContent=Math.ceil(st.time);
+function hud(){$('sScore').textContent=fmtN(st.score);$('sCombo').textContent='x'+st.combo;$('sTime').textContent=Math.ceil(st.time);
  $('stackBar').style.setProperty('--h',stackPct()+'%');$('sPct').textContent=stackPct()+'%';$('sPct').style.color=stackPct()>65?'var(--red)':'';$('sTime').style.color=st.time<10?'var(--red)':'';
  const dl=$('sDelta');if(st.pace){const d=st.score-st.pace[Math.min(60,Math.floor(60-st.time))];dl.textContent=(d>=0?'+':'−')+fmtN(Math.abs(d))+' vs record';dl.className=d>=0?'up':'dn'}else{dl.textContent='';dl.className=''}if(st.duel&&window.KWX)KWX.ghost(st)}
 function hit(p){st.hits++;const isB=st.bricks.includes(p);(isB?st.bricks:st.pieces).splice((isB?st.bricks:st.pieces).indexOf(p),1);
