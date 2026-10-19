@@ -12,7 +12,7 @@ for(let ti=0;ti<3;ti++){
  await p.waitForTimeout(16000);
  const r=await p.evaluate(()=>{clearInterval(window.__kt);const H=HERO.H,q=window.__q,E=q.filter(x=>x.early),L=q.filter(x=>!x.early);
   return{track:HERO.TRACKS[H.ti].id,ac:HERO.ac.state,hits:q.length,parts:[...new Set(H.c.notes.filter(n=>n.j&&n.j!=='miss').map(n=>n.part))].join(''),muted:H.R.mute.size,
-   earlyOnBeat:E.every(x=>Math.abs(x.dA)<.004),earlyScheduledAheadMs:Math.round(1000*Math.min(...E.map(x=>x.ahead))),lateImmediate:L.every(x=>x.ahead<.01),cnt:H.cnt,phr:H.phr}});
+   earlyOnBeat:E.every(x=>Math.abs(x.dA)<.004),earlyScheduledAheadMs:Math.round(1000*Math.min(...E.map(x=>x.ahead))),lateImmediate:L.every(x=>x.ahead<.01),cnt:H.cnt,phr:H.phr,ghosts:Object.keys(H.R.gh).length,handoffs:H.handoff||0}});
  console.log(nm,JSON.stringify(r));
  if(nm==='chrome'&&ti===0)await p.screenshot({path:'/workspace/keyboard-warrior/screenshot-hero-desktop.png'});
  const pr=await p.evaluate(async()=>{const R=HERO.H.R;HERO.pause();await new Promise(r=>setTimeout(r,300));const a=HERO.ac.state;HERO.resume();await new Promise(r=>setTimeout(r,2200));const b=HERO.ac.state;HERO.menu();return{paused:a,resumed:b,oldRunStopped:R.stopped}});console.log('  ',JSON.stringify(pr));
