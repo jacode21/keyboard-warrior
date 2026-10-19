@@ -641,6 +641,14 @@ button,.ib,kbd,.tk,input,select,.spd,#hDiff,#hud,#queue,.legend,.ticket,.haltCar
 .haltCard{padding:var(--s4)!important;gap:var(--s3)!important}
 #touch{gap:var(--s1)!important}#touch .row{gap:var(--s1)!important}
 .hov{gap:var(--s2)!important}
+/* Big Board + duel ghost + rank line (v5) */
+#ghost{position:absolute;top:6px;right:8px;z-index:4;display:flex;gap:8px;align-items:baseline;font:600 12px var(--mono);color:var(--fg);background:var(--term,#0c110e);border:1.5px solid var(--fg);border-radius:var(--r);padding:3px 8px;text-transform:uppercase;letter-spacing:.06em}
+#ghost .gs{font-size:16px}#ghost .gd.up{color:var(--up,#3fd47c)}#ghost .gd.dn{color:var(--red)}#ghost.hidden{display:none}
+.rankline{font:500 13px var(--mono);margin-top:8px;color:var(--fg)}.rankline .rk{font:700 22px var(--disp);color:var(--red);margin-right:4px}.rankline .mutd{color:var(--mut)}
+.board{width:min(720px,100%);text-align:left}.bbH{font:700 clamp(36px,6vw,60px)/.9 var(--disp)!important;text-transform:uppercase;margin:4px 0 10px!important}
+.bbTabs{display:flex;flex-wrap:wrap;gap:4px;margin:0 0 6px}.bbTabs button{min-height:36px;padding:4px 10px;font:600 12px var(--mono);text-transform:uppercase}.bbTabs button.on{background:var(--ink);color:var(--paper)}
+.bbT{margin-top:8px}.bbT th{width:44px;font:700 15px var(--disp)!important;color:var(--ink)!important}.bbT td.nm{text-align:left;font:600 15px var(--disp);text-transform:uppercase;letter-spacing:.03em}.bbT tr.top th{color:var(--red)!important}
+.fld.chk{display:flex;gap:8px;align-items:center}.big.sm{min-height:36px;padding:6px 12px;font-size:14px}
 </style></head><body>
 <div id="marquee"></div>
 <div id="wrap">
@@ -648,7 +656,7 @@ button,.ib,kbd,.tk,input,select,.spd,#hDiff,#hud,#queue,.legend,.ticket,.haltCar
 <button id="bHint" class="ib playOnly" data-ic="hint" title="Insider tip (Tab or /)"></button><button id="bPause" class="ib playOnly" data-ic="pause" title="Halt trading (Esc)"></button><button id="bMute" class="ib" title="Mute"></button><button id="bTheme" class="ib" data-ic="theme" title="Switch edition (terminal / newsprint)"></button><button id="bFs" class="ib" data-ic="full" title="Fullscreen (enables Ctrl+N)"></button></header>
 <div id="hud"><div class="stat"><b id="sScore">0</b><span>P&amp;L <em id="sDelta"></em></span></div><div class="stat"><b id="sCombo">x0</b><span>Streak</span></div><div class="stat"><b id="sTime">60</b><span>Clock <i id="sSpd">1x</i></span></div><div class="stat"><b id="sStack"><i id="stackBar"></i><em id="sPct">0%</em></b><span>Exposure</span></div></div>
 <div id="main">
- <div id="field"><div id="flash"></div><div id="quote"></div><div id="seq" class="hidden"></div><div id="combo"></div><div id="floor"></div>
+ <div id="field"><div id="flash"></div><div id="quote"></div><div id="seq" class="hidden"></div><div id="combo"></div><div id="floor"></div><div id="ghost" class="hidden"><span class="gn"></span><b class="gs">0</b><i class="gd"></i></div>
   <div id="ovStart" class="overlay paper"><div class="fp">
    <div class="mast"><div class="mastTop"><span>Vol. I · No. <b id="mNo">1</b></span><span id="mDate"></span><span>Price: Free</span></div>
     <h2 class="mastName">The Keyboard Warrior</h2><div class="mastSub"><span>Excel Shortcut Exchange</span><span>“All the keys fit to print”</span><span>Late Edition</span></div></div>
@@ -660,12 +668,12 @@ button,.ib,kbd,.tk,input,select,.spd,#hDiff,#hud,#queue,.legend,.ticket,.haltCar
      <div class="kicker k2">Other listings</div>
      <div class="listings"><button class="lst" id="bDaily"><i class="tk">DLY</i><b>Daily Tape <span id="dailyN"></span></b><small id="dailySub">One tape, every trader, once a day</small><em class="arr">→</em></button>
       <button class="lst" id="bWorkflow"><i class="tk">WFL</i><b>Back Office</b><small>Close out real spreadsheet jobs; every keystroke on the record</small><em class="arr">→</em></button>
-      <button class="lst" id="bHero"><i class="tk">KHR</i><b>Keyboard Hero</b><small>Trade the beat on the arrow keys and F2</small><em class="arr">→</em></button></div>
+      <button class="lst" id="bHero"><i class="tk">KHR</i><b>Keyboard Hero</b><small>Trade the beat on the arrow keys and F2</small><em class="arr">→</em></button><button class="lst" id="bDuel0"><i class="tk">DUEL</i><b>Duel</b><small id="duelSub">Race a rival's ghost on the same tape. Needs a link: send one from any ticket.</small><em class="arr">→</em></button><button class="lst" id="bBoard"><i class="tk">BIG</i><b>The Big Board</b><small>Today, this week and all-time, for the whole Street or just your desk</small><em class="arr">→</em></button></div>
     </section>
     <aside class="desk"><div class="kicker">Your desk</div><div id="profile"></div><div id="goals"></div></aside>
    </div>
    <div class="setrow"><div class="setl"><span class="lbl">Platform</span><div class="spd" id="platSel"></div></div><div class="setl"><span class="lbl">Tape speed</span><div class="spd" id="spdSel"></div></div></div>
-   <details class="more"><summary>Desk manual &amp; settings</summary><div class="moreIn"><label class="fld"><span class="lbl">Trader name</span> <input id="pName" maxlength="20" placeholder="Name on the ticket (optional)" autocomplete="nickname"></label><div class="fld"><span class="lbl">Order flow</span> <div class="spd" id="poolSel"></div></div>
+   <details class="more"><summary>Desk manual &amp; settings</summary><div class="moreIn"><label class="fld"><span class="lbl">Trader name</span> <input id="pName" maxlength="16" placeholder="Name on the ticket (optional)" autocomplete="nickname"></label><label class="fld"><span class="lbl">Desk code</span> <input id="pDesk" maxlength="12" placeholder="e.g. ACME (private office board)" autocapitalize="characters"></label><label class="fld chk"><input type="checkbox" id="pAuto"> <span>Post every session to the Big Board</span></label><div class="fld"><span class="lbl">Order flow</span> <div class="spd" id="poolSel"></div></div>
     <p class="note"><b>Bad key.</b> The first wrong key on an order is a strike (✕) and resets your streak. A second one dumps the order onto the book as a stale order. Exposure hits 100% and it's a margin call. <b>Insider tips.</b> Tab or / : the first tip shows the modifier, the second the full keys; tipped fills pay less. <b>Alt KeyTips.</b> Tap Alt, release, then the letters (Alt › H › O › I). <b>Stale orders</b> show their keys; key one in to clear it off the book. <b>Daily Tape.</b> Same orders for every trader today; your first session is official and keeps your streak alive. <b>Re-open.</b> R or Enter on the ticket, R while halted.</p>
     <p class="note">Browsers reserve Ctrl+N/W/T, so Ctrl+N only trades in fullscreen, where the keyboard can be locked. Click the floor first so it has keyboard focus.</p></div></details>
    <nav class="sitefoot"><a href="/about">About</a> · <a href="/privacy">Privacy</a> · <a href="/terms">Terms</a></nav></div></div>
@@ -673,13 +681,14 @@ button,.ib,kbd,.tk,input,select,.spd,#hDiff,#hud,#queue,.legend,.ticket,.haltCar
   <div id="ovEnd" class="overlay paper hidden"><div class="ticket">
    <div class="tkHead"><span>Trade confirmation</span><span id="eDaily"></span><span id="tkNo"></span></div>
    <div class="tkBody"><div class="tkMain"><h2 id="endTitle">Closing bell</h2><div class="bigScore"><b id="eScore">0</b><span id="ePb"></span></div><div id="eStamp" class="stamp">Filled</div>
-     <div class="btnrow"><button class="big" id="bAgain"><span>Trade again</span><kbd>R</kbd></button><button id="bShare">Share ticket</button><button id="bMenu">Front page</button></div></div>
+     <div class="btnrow"><button class="big" id="bAgain"><span>Trade again</span><kbd>R</kbd></button><button id="bShare">Share ticket</button><button id="bDuel">Challenge a coworker</button><button id="bMenu">Front page</button></div><div id="eRank" class="rankline"><button id="bPost" class="link">Post to the Big Board</button></div></div>
     <table class="ledger statgrid"><tr><th>Best streak</th><td id="eCombo">0</td></tr><tr><th>Jackpots</th><td id="eJack">0</td></tr><tr><th>Fill rate</th><td id="eAcc">—</td></tr><tr><th>Tips taken</th><td id="eHints">0</td></tr><tr><th>Tape speed</th><td id="eSpd"></td></tr><tr><th>Record P&amp;L</th><td id="eBest">0</td></tr></table></div>
    <div id="eVs" class="hidden"></div><div id="nudge" class="hidden"></div>
    <div class="tkFoot"><div id="eXp"></div><div id="eNext"></div></div>
    <div id="shareWrap" class="hidden"><img id="shareImg" alt="Your Keyboard Warrior trade ticket"><div class="btnrow"><button id="bCardDl">Save ticket</button><button id="bCopy">Copy challenge link</button></div></div>
    <div class="note" id="shareMsg"></div><div id="eLb"></div><div class="note" id="missed"></div><div id="inter" class="ad"></div></div></div>
  </div>
+ <div id="ovBoard" class="overlay paper hidden"><div class="board"><div class="kicker">Section D · Markets data</div><h2 class="bbH">The Big Board</h2><div class="bbTabs" id="bbMode"></div><div class="bbTabs" id="bbSub"></div><div class="bbTabs" id="bbPer"></div><table class="ledger bbT" id="bbT"></table><p class="note" id="bbNote"></p><div class="btnrow"><button id="bbBack" class="big"><span>Front page</span><kbd>Esc</kbd></button></div></div></div>
  <div id="side"><div id="queue"><h3>Order queue</h3><div id="qList"></div></div><div class="legend"><h3>Desk keys</h3><div><kbd>Esc</kbd> halt</div><div><kbd>Tab</kbd> tip</div><div><kbd>R</kbd> re-open</div><p class="note">The marked order is live. Key in any stale order to clear it off the book.</p></div></div>
 </div>
 <div id="wf" class="hidden">
@@ -978,8 +987,9 @@ function pick(){let p=pool();const rnd=st&&st.rng?st.rng:Math.random;let s;
 function start(opt={}){document.querySelectorAll('.piece').forEach(e=>e.remove());seqCancel&&seqCancel();
  const dn=opt.daily||0,ds=dailyStore();
  st={score:0,combo:0,bestCombo:0,hints:0,bricks:[],time:60,pieces:[],queue:[],nextSpawn:0,running:true,paused:false,last:null,missed:[],hits:0,wrong:0,miss:0,jackpots:0,
-  daily:dn,official:!!dn&&dn===dailyNum()&&!ds[dn],rng:dn?mulberry32(dn*2654435761>>>0):null,
+  daily:dn,official:!!dn&&dn===dailyNum()&&!ds[dn],seed:dn?0:(opt.duel?opt.duel.seed>>>0:(Math.random()*4294967296)>>>0),duel:dn?null:(opt.duel||null),run:null,input:document.body.classList.contains('hwkb')||!matchMedia('(pointer:coarse)').matches?'kbd':'touch',rng:null,
   easy:dn?0:5,assist:(!dn&&META.fresh())?3:0,sold:0,trace:[0],pace:META.pace(),t0:performance.now()};endAt=0;setHeat(0);
+ if(!st.rng)st.rng=dn?mulberry32(dn*2654435761>>>0):mulberry32(st.seed);if(window.KWX)KWX.onStart(st);
  st.nextSpawn=intervalAt(0);document.body.classList.add('playing');
  for(let i=0;i<3;i++)st.queue.push(pick());
  ['ovStart','ovEnd','ovPause'].forEach(o=>$(o).classList.add('hidden'));field.focus();spawn();hud();lastT=performance.now();requestAnimationFrame(loop)}
@@ -1017,7 +1027,7 @@ function showHint(){if(!st||!st.running||st.paused)return;const tg=target();if(!
  let h=tg.el.querySelector('.hint');if(!h){h=document.createElement('span');h.className='hint';tg.el.appendChild(h)}h.textContent=txt;tone(880,.08,'triangle',.06);hud()}
 function hud(){$('sScore').textContent=st.score;$('sCombo').textContent='x'+st.combo;$('sTime').textContent=Math.ceil(st.time);
  $('stackBar').style.setProperty('--h',stackPct()+'%');$('sPct').textContent=stackPct()+'%';$('sPct').style.color=stackPct()>65?'var(--red)':'';$('sTime').style.color=st.time<10?'var(--red)':'';
- const dl=$('sDelta');if(st.pace){const d=st.score-st.pace[Math.min(60,Math.floor(60-st.time))];dl.textContent=(d>=0?'+':'−')+fmtN(Math.abs(d))+' vs record';dl.className=d>=0?'up':'dn'}else{dl.textContent='';dl.className=''}}
+ const dl=$('sDelta');if(st.pace){const d=st.score-st.pace[Math.min(60,Math.floor(60-st.time))];dl.textContent=(d>=0?'+':'−')+fmtN(Math.abs(d))+' vs record';dl.className=d>=0?'up':'dn'}else{dl.textContent='';dl.className=''}if(st.duel&&window.KWX)KWX.ghost(st)}
 function hit(p){st.hits++;const isB=st.bricks.includes(p);(isB?st.bricks:st.pieces).splice((isB?st.bricks:st.pieces).indexOf(p),1);
  if(p.hint||isB){ // hinted or brick clears: flat points, combo neither grows nor resets, no jackpot progress
   const g0=pts(isB?75:(p.hint===1?50:25));st.score+=g0;if(isB){st.sold++;quote()}scorePop(p.el,'+'+g0,isB?'sold':'');p.el.classList.add('hit');setTimeout(()=>p.el.remove(),300);flash('var(--green)');coins(p.el,6);sfx.hit(0);layoutBricks();hud();return}
@@ -1049,7 +1059,7 @@ function end(why){if(!st.running)return;seqCancel();st.running=false;endAt=perfo
  $('ePb').innerHTML=prevBest?(nb?'<span class="up">▲ +'+fmtN(st.score-prevBest)+' over your old record</span>':'<span class="dn">'+fmtN(prevBest-st.score)+' short of your record</span>'):'';st.prevBest=prevBest;st.nb=nb;const stp=$('eStamp');stp.textContent=why==='STACK OVERFLOW!'?'Margin call':nb&&st.score>0?'New high':'Filled';stp.className='stamp'+(why==='STACK OVERFLOW!'?' bad':'');stp.style.setProperty('--rot',(-4-Math.random()*5).toFixed(1)+'deg');$('tkNo').textContent='No. '+String(Date.now()%1e6).padStart(6,'0');
  countUp($('eScore'),st.score);$('eCombo').textContent=st.bestCombo;$('eHints').textContent=st.hints;$('eSpd').textContent=SP().n;$('eBest').textContent=fmtN(best);$('best0').textContent=fmtN(best);$('shareWrap').classList.add('hidden');$('shareMsg').textContent='';
  $('missed').textContent=st.missed.length?'Unfilled: '+st.missed.slice(-4).join(' · '):'';$('eJack').textContent=st.jackpots;$('eAcc').textContent=acc()+'%';
- endExtras();$('ovEnd').classList.remove('hidden');hud();showInterstitial()}
+ endExtras();if(window.KWX)KWX.onEnd(st,why);$('ovEnd').classList.remove('hidden');hud();showInterstitial()}
 function endExtras(){const d=st.daily;
  $('eDaily').textContent=d?('Daily Tape #'+d+(st.official?' · official':' · practice')):'Arcade · '+SP().n+' tape';
  if(d&&st.official){const ds=dailyStore();ds[d]={score:st.score,acc:acc(),jackpots:st.jackpots,combo:st.bestCombo,name:pname(),date:etDate()};localStorage.kwDaily=JSON.stringify(ds);lbPost(d);META.dailyDone(d)}
@@ -1162,7 +1172,7 @@ addEventListener('keydown',e=>{if(e.isTrusted&&!MODS.includes(e.code)&&!document
 
 /* Buttons */
 rebuildActive();renderPlat();renderSpeed();renderPool();marquee();$('bStart').onclick=()=>start();$('bHint').onclick=showHint;$('bAgain').onclick=()=>restart();
-function restart(){$('ovEnd').classList.add('hidden');start(st&&st.daily?{daily:st.daily}:{});dailyLabel()}
+function restart(){$('ovEnd').classList.add('hidden');start(st&&st.daily?{daily:st.daily}:st&&st.duel?{duel:st.duel}:{});dailyLabel()}
 function showMenu(){if(st&&st.running){st.running=false;document.body.classList.remove('playing','paused');document.querySelectorAll('.piece').forEach(e=>e.remove())}['ovEnd','ovPause'].forEach(o=>$(o).classList.add('hidden'));$('ovStart').classList.remove('hidden');dailyLabel();META.renderProfile()}
 $('bMenu').onclick=showMenu;$('bMenu2').onclick=showMenu;$('bRestart').onclick=()=>{if(st&&st.running)restart()};$('bRestart2').onclick=restart;$('bResume').onclick=()=>pause(false);$('bPause').onclick=()=>pause();
 const setMute=()=>{$('bMute').innerHTML=muted?IC.mute:IC.sound;localStorage.kwMute=muted?'1':'0'};setMute();$('bMute').onclick=()=>{muted=!muted;setMute()};
@@ -1175,7 +1185,7 @@ function arcadeCard(){const sp=SP();return META.card({mode:st.daily?'DAILY #'+st
  stats:[['Best streak','x'+st.bestCombo],['Fill rate',acc()+'%'],['Jackpots',st.jackpots]],sub:st.nb&&st.score>0?'New high':''})}
 $('bCardDl').onclick=()=>{const a=document.createElement('a');a.href=$('shareImg').src;a.download='keyboard-warrior-'+st.score+'.png';document.body.appendChild(a);a.click();a.remove()};
 $('bCopy').onclick=async()=>{const{t,url}=shareText(),full=t+' '+url;window.KW_LAST_SHARE=full;await copyShare(full);$('shareMsg').textContent='Challenge link copied. Paste it to your coworkers.'};
-$('bShare').onclick=async()=>{const{t,url}=shareText(),full=t+' '+url;window.KW_LAST_SHARE=full;
+$('bShare').onclick=async()=>{if(window.KWX)KWX.ev('share','arcade');const{t,url}=shareText(),full=t+' '+url;window.KW_LAST_SHARE=full;
  const png=arcadeCard();if(png){$('shareImg').src=png;$('shareWrap').classList.remove('hidden')}
  if(navigator.share){try{let files=null;if(png&&navigator.canShare){const bl=await (await fetch(png)).blob(),fl=new File([bl],'keyboard-warrior.png',{type:'image/png'});if(navigator.canShare({files:[fl]}))files=[fl]}
   await navigator.share(files?{title:'Keyboard Warrior',text:full,files}:{title:'Keyboard Warrior',text:t,url});$('shareMsg').textContent='Ticket sent.';return}catch(e){if(e&&e.name==='AbortError')return}}
@@ -1519,7 +1529,7 @@ function after(){render();check()}
 function showHint(){const g=task&&task.goals.find(g=>!g.ok());if(!g)return;hints++;const el=$('wfHint');el.classList.remove('hidden');el.innerHTML='<b>Tip · </b><b>'+esc(g.t)+'</b><br>'+esc(g.h);rec('F1','Hint',g.h)}
 /* ---- load / menu / finish ---- */
 const bestAll=()=>{try{return JSON.parse(localStorage.kwWF||'{}')}catch(_){return{}}};
-function load(i){task=view(TASKS[i]);task.i=i;S=blank();task.data.forEach((row,r)=>row.forEach((v,c)=>{if(v==null)return;S.cells[K(r,c)]=typeof v==='string'&&v[0]==='='?{v:'',f:v}:{v}}));
+function load(i){task=view(TASKS[i]);task.i=i;if(window.KWX){KWX.ev('mode_start','wf');KWX.runToken('wf').then(t=>{task.run=t})}S=blank();task.data.forEach((row,r)=>row.forEach((v,c)=>{if(v==null)return;S.cells[K(r,c)]=typeof v==='string'&&v[0]==='='?{v:'',f:v}:{v}}));
  act={r:0,c:0};ext={r:0,c:0};selG=null;editing=null;clip=null;undo=[];redo=[];log=[];snaps=[snap()];keys=0;timerOn=false;done=false;tEnd=0;lastRep=null;hints=0;used=new Set();seqCancel();
  $('wfTitle').textContent=task.name+(IS_MAC()?' ⌘':'');$('wfBrief').textContent=task.brief+(task.note?' '+task.note:'');$('wfPar').textContent=task.par;$('wfTime').textContent='0:00.0';$('wfTab').textContent=task.tab;$('wfHint').classList.add('hidden');
  $('wfChecks').innerHTML=task.goals.map(g=>'<li>'+esc(g.t)+'</li>').join('');$('wfLog').innerHTML='';$('wfMenu').classList.add('hidden');$('wfEnd').classList.add('hidden');render();check()}
@@ -1535,7 +1545,8 @@ function finish(){sfx.jackpot();const t=tEnd,eff=Math.min(100,Math.round(100*tas
  <div class="note">Shortcuts used (${sc.length}):</div><div class="chips">${sc.map(s=>'<kbd>'+esc(s)+'</kbd>').join('')}</div>
  <div class="paths"><div><b style="color:#d4af37">Par path (${task.par} keys)</b><br>${task.path.map(esc).join(' → ')}</div><div><b style="color:#19d47a">Your path (${keys} keys)</b><br>${acts.map(l=>esc(l.keys)).join(' → ')}</div></div>
  <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center"><button id="wfRep">Replay</button><button id="wfCsv">Copy log (CSV)</button><button id="wfJson">↓ JSON</button><button id="wfCsvDl">↓ CSV</button>${task.i<TASKS.length-1?'<button id="wfNext" class="big">Next job</button>':''}<button id="wfTasksB">Job board</button></div><div class="note" id="wfMsg">Nothing leaves your browser. <kbd>Enter</kbd> next job · <kbd>R</kbd> re-open</div>`;
- const mx=META.wfEnd({grade:gr,i:task.i,nb});$('wfEnd').querySelector('.grade').insertAdjacentHTML('afterend',mx);
+ const mx=META.wfEnd({grade:gr,i:task.i,nb});$('wfEnd').querySelector('.grade').insertAdjacentHTML('afterend',mx+'<div id="wfRank" class="rankline"><button class="link" id="wfPost">Post to the Big Board</button></div>');
+ if(window.KWX){KWX.ev('round_end','wf');const run={run:task.run,score:eff*100+Math.max(0,Math.round(3000-t*10)),input:document.body.classList.contains('hwkb')||!matchMedia('(pointer:coarse)').matches?'kbd':'touch'},go=()=>KWX.post(run,'wf',task.id,{acc:eff,hits:keys,dur:t});$('wfPost').onclick=go;if(localStorage.kwLbAuto==='1')go()}
  $('wfEnd').classList.remove('hidden');$('wfRep').onclick=replay;$('wfCsv').onclick=()=>{copyText(csv());$('wfMsg').textContent='Log copied as CSV.'};
  $('wfJson').onclick=()=>dl('keyboard-warrior-'+task.id+'.json',JSON.stringify(exportObj(),null,2),'application/json');$('wfCsvDl').onclick=()=>dl('keyboard-warrior-'+task.id+'.csv',csv(),'text/csv');
  if($('wfNext'))$('wfNext').onclick=()=>load(task.i+1);$('wfTasksB').onclick=menu}
@@ -1946,6 +1957,7 @@ const mult=()=>Math.min(4,1+Math.floor(H.streak/10))*(H.starOn?2:1);
 function start(ti=sel.ti,di=sel.di,opts={}){const c=genChart(ti,di);if(H&&H.R)stopRun(H.R);if(!opts.noAudio){ensureAC();if(ac&&ac.state!=='running')ac.resume()}
  H={ti,di,c,t0:clock()+(opts.lead==null?3:opts.lead),score:0,streak:0,maxStreak:0,cnt:{perfect:0,great:0,good:0,miss:0},port:.5,star:0,starOn:false,starEnd:0,
   hold:{},press:{},fired:{},failed:false,done:false,paused:false,step:0,audio:!opts.noAudio&&!!ac,phr:0,missPtr:0,over:0};
+ if(window.KWX&&!opts.noAudio){KWX.ev('mode_start','hero');const h=H;KWX.runToken('hero').then(t=>{h.run=t})}
  if(H.audio){H.R=mkRun(BUS,TRACKS[ti],H.t0);H.R.mute=new Set(c.notes.filter(n=>n.part==='l').map(n=>n.step));H.R.ghosts=ghostMap(c.notes)}
  ['hMenu','hPause','hRes'].forEach(id=>$(id).classList.add('hidden'));$('hero').classList.remove('starOn');
  parts=[];size();hud();if(H.audio){clearInterval(schedTimer);schedTimer=setInterval(sched,25);sched()}cancelAnimationFrame(raf);raf=requestAnimationFrame(loop);return H}
@@ -1993,8 +2005,9 @@ function showResults(){const r=H.res,key=TRACKS[H.ti].id+'-'+H.di,b=bests(),prev
  const el=$('hRes');el.innerHTML=`<div class="stamp">${r.failed?'Margin call':nb?'New high':'Filled'}</div><h2>${r.failed?'Margin call':'Closing bell'}</h2><div style="font:14px var(--mono);color:#9fb6a6">${TRACKS[H.ti].name} · ${DIFFS[H.di].n}${noFail?' · no-fail':''}</div>
  <div class="hgrade">${r.grade}</div><div class="hstars">${'★'.repeat(r.stars)}${'☆'.repeat(5-r.stars)}</div><div style="font:800 32px var(--mono);color:#19d47a">${r.score.toLocaleString()}</div>
  <table><tr><td>Fill rate</td><td>${r.acc}%</td></tr><tr><td>Best streak</td><td>${r.maxStreak}</td></tr><tr><td>Perfect</td><td>${r.cnt.perfect}</td></tr><tr><td>Great</td><td>${r.cnt.great}</td></tr><tr><td>Good</td><td>${r.cnt.good}</td></tr><tr><td>Miss</td><td>${r.cnt.miss}</td></tr><tr><td>$ drops</td><td>${r.phr}/${r.phrN}</td></tr><tr><td>Record P&amp;L</td><td>${(b[key]||prev)?(b[key]||prev).score.toLocaleString():'—'}</td></tr></table>
- ${META.heroEnd(r,{nb,prev,track:TRACKS[H.ti].name,diff:DIFFS[H.di].n})}<div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center"><button id="hRetry" class="hbig">Trade again <kbd>R</kbd></button><button id="hList">Track list</button><button id="hShare">Share ticket</button></div><div id="hShareMsg" style="font:12px var(--mono);color:#9fb6a6;max-width:520px"></div>`;
+ ${META.heroEnd(r,{nb,prev,track:TRACKS[H.ti].name,diff:DIFFS[H.di].n})}<div id="hRank" class="rankline"><button class="link" id="hPost">Post to the Big Board</button></div><div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center"><button id="hRetry" class="hbig">Trade again <kbd>R</kbd></button><button id="hList">Track list</button><button id="hShare">Share ticket</button></div><div id="hShareMsg" style="font:12px var(--mono);color:#9fb6a6;max-width:520px"></div>`;
  el.classList.remove('hidden');resAt=performance.now();$('hRetry').onclick=()=>start();$('hList').onclick=menu;
+ if(window.KWX){KWX.ev('round_end','hero');const h=H,run={run:h.run,score:r.score,input:document.body.classList.contains('hwkb')||!matchMedia('(pointer:coarse)').matches?'kbd':'touch'},go=()=>KWX.post(run,'hero',TRACKS[h.ti].id+'-'+DIFFS[h.di].n.toLowerCase(),{acc:r.acc,notes:h.c.notes.length,drops:h.c.phrases.length,combo:r.maxStreak});$('hPost').onclick=go;if(localStorage.kwLbAuto==='1'&&!r.failed)go()}
  $('hShare').onclick=async()=>{const{t,url}=shareText(),full=t+' '+url;window.KW_LAST_SHARE=full;
   if(navigator.share){try{await navigator.share({title:'Keyboard Hero',text:t,url});$('hShareMsg').textContent='Ticket sent.';return}catch(e){if(e&&e.name==='AbortError')return}}
   try{await navigator.clipboard.writeText(full)}catch(e){const ta=document.createElement('textarea');ta.value=full;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove()}
@@ -2080,4 +2093,66 @@ setup();
 return{TRACKS,DIFFS,LANEKEYS,WIN,PART,genChart,ev,prepare,renderDemo,get SMP(){return SMP},get ac(){return ac},get BUS(){return BUS},start,down,up,dollar,activateStar,update,pause,resume,menu,enter,exit,results,shareText,
  get H(){return H},setClock(f){clock=f},get noFail(){return noFail},set noFail(v){noFail=v},now}})();
 </script>
-</body></html>
+<script>
+/* ===== KWX: Big Board (online leaderboard), anonymous event counts, and Duel (race a challenger's ghost).
+ * Everything degrades to local-only when /api is unreachable (file://, local preview, storage not bound). ===== */
+const KWX=(function(){
+const API=location.protocol.startsWith('http')?'/api/':null;let apiUp=null;
+const deskP=new URLSearchParams(location.search).get('desk');if(deskP)localStorage.kwDesk=deskP.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,12);
+const desk=()=>(localStorage.kwDesk||'').toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,12);
+async function call(path,body,ms=4000){if(!API||apiUp===false)return null;const c=new AbortController(),t=setTimeout(()=>c.abort(),ms);
+ try{const r=await fetch(API+path,body?{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body),signal:c.signal}:{signal:c.signal});const j=await r.json().catch(()=>null);if(r.status===503||r.status===404&&!j)apiUp=false;else apiUp=true;return j}catch(_){return null}finally{clearTimeout(t)}}
+function ev(e,m){if(!API)return;try{const b=JSON.stringify({e,m});if(navigator.sendBeacon)navigator.sendBeacon(API+'ev',new Blob([b],{type:'application/json'}));else fetch(API+'ev',{method:'POST',body:b,headers:{'content-type':'application/json'},keepalive:true})}catch(_){}}
+async function runToken(mode){const j=await call('run',{mode});return j&&j.ok?j:null}
+const fmt=n=>Number(n).toLocaleString('en-US');
+/* ---- duel payload: seed + the challenger's per-second P&L trace (delta-coded base36) ---- */
+const packTr=tr=>{let p=0;return tr.slice(0,61).map(v=>{const d=Math.max(0,(v|0)-p);p=v|0;return d.toString(36)}).join('.')};
+const unpackTr=s=>{let p=0;return String(s||'').split('.').slice(0,61).map(x=>p+=parseInt(x,36)||0)};
+function duelLink(){const o={v:2,n:pname()||'',s:st.score,sp:speedKey,pl:PLAT,po:poolKey,sd:st.seed,tr:packTr(st.trace),a:acc(),b:st.bestCombo};return SITE_URL+'?d='+enc(o)}
+let DU=null;try{const d=new URLSearchParams(location.search).get('d');if(d){const o=dec(d);if(o&&typeof o.s==='number'&&o.sd!=null)DU={n:String(o.n||'').slice(0,16),s:o.s|0,sp:o.sp,pl:o.pl,po:o.po,seed:o.sd>>>0,tr:unpackTr(o.tr),a:o.a,b:o.b}}}catch(_){}
+function startDuel(d){if(SPEEDS[d.sp]){speedKey=d.sp;renderSpeed()}if(d.pl&&d.pl!==PLAT&&typeof setPlat==='function')setPlat(d.pl);if(d.po&&d.po!==poolKey&&['ctrl','alt','mixed'].includes(d.po)){poolKey=d.po;if(typeof rebuildActive==='function')rebuildActive()}
+ $('ovEnd').classList.add('hidden');ev('duel_start','arcade');start({duel:d})}
+function ghost(s){const g=$('ghost');if(!s.duel){g.classList.add('hidden');return}g.classList.remove('hidden');const sec=Math.min(60,Math.max(0,Math.floor(60-s.time))),gv=s.duel.tr[Math.min(sec,s.duel.tr.length-1)]||0,d=s.score-gv;
+ g.querySelector('.gn').textContent='vs. '+(s.duel.n||'Rival').toUpperCase();g.querySelector('.gs').textContent=fmt(gv);const gd=g.querySelector('.gd');gd.textContent=(d>=0?'▲ +':'▼ −')+fmt(Math.abs(d));gd.className='gd '+(d>=0?'up':'dn')}
+/* ---- lifecycle ---- */
+function onStart(s){const mode=s.daily?'daily':s.duel?'duel':'arcade';ev('mode_start',mode);if(s.input==='touch')ev('touch_round',mode);runToken(mode).then(t=>{if(st===s)s.run=t});ghost(s);$('eRank').innerHTML='<button id="bPost" class="link">Post to the Big Board</button>';}
+function onEnd(s,why){const mode=s.daily?'daily':s.duel?'duel':'arcade';ev('round_end',mode);
+ if(s.duel){const d=s.duel,m=s.score-d.s,win=m>0,stp=$('eStamp');stp.textContent=win?'Win':m===0?'Dead heat':'Loss';stp.className='stamp'+(win?'':' bad');$('endTitle').textContent=(win?'You beat ':m===0?'Dead heat with ':'Beaten by ')+(d.n||'your rival');
+  const vs=$('eVs');vs.classList.remove('hidden');vs.innerHTML=(win?'<span class="up">Won by '+fmt(m)+'</span>':m===0?'Dead heat':'<span class="dn">Lost by '+fmt(-m)+'</span>')+' · '+esc0(d.n||'Rival')+' booked '+fmt(d.s)+' <button id="bBack" class="big sm"><span>Send it back</span></button>';
+  $('bBack').onclick=()=>shareDuel(win?`I beat you by ${fmt(m)}. Your move.`:m===0?'Dead heat. Run it back?':`You got me by ${fmt(-m)}. Rematch on the same tape.`);ev('duel_end',win?'win':'loss')}
+ const auto=localStorage.kwLbAuto==='1';const b=$('bPost');if(b)b.onclick=()=>post(s);if(auto&&s.score>0)post(s)}
+async function post(s,mode,board,stats){mode=mode||(s.daily?'daily':s.duel?'duel':'arcade');const el=$(mode==='hero'?'hRank':mode==='wf'?'wfRank':'eRank');if(el)el.innerHTML='<span class="mutd">Filing with the exchange…</span>';
+ const run=s.run;if(!run){if(el)el.innerHTML='<span class="mutd">Big Board offline. Your P&amp;L is saved on this device.</span>';return}
+ const j=await call('score',{mode,board:board||(s.daily?String(s.daily):''),daily:s.daily||0,name:pname()||'',desk:desk(),score:s.score,input:s.input,stats:stats||{hits:s.hits,acc:acc(),combo:s.bestCombo,dur:60},rid:run.rid,ts:run.ts,sig:run.sig});
+ if(!el)return j;if(!j||!j.ok){el.innerHTML='<span class="mutd">'+esc0(j&&j.error||'Big Board offline. Saved on this device.')+'</span>';return j}
+ localStorage.kwLbAuto='1';const r=j.rank||{};el.innerHTML=r.day?`<b class="rk">#${r.day}</b> on ${desk()?'the '+esc0(desk())+' desk':'the Street'} today${r.all?` · #${r.all} all-time`:''} <button class="link" onclick="KWX.board('${mode}')">See the board</button>`:`Filed. Outside today's top 100 <button class="link" onclick="KWX.board('${mode}')">See the board</button>`;return j}
+async function shareDuel(msg){const url=duelLink(),t=msg||`${pname()||'I'} booked ${fmt(st.score)} P&L on Keyboard Warrior. Race my ghost on the same tape.`,full=t+' '+url;window.KW_LAST_SHARE=full;ev('share','duel');
+ if(navigator.share){try{await navigator.share({title:'Keyboard Warrior duel',text:t,url});return}catch(e){if(e&&e.name==='AbortError')return}}
+ try{await navigator.clipboard.writeText(full)}catch(_){const ta=document.createElement('textarea');ta.value=full;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove()}$('shareMsg').textContent='Duel link copied. Send it to your desk.'}
+/* ---- The Big Board ---- */
+let BB={mode:'arcade',sub:'',per:'day',scope:'street'};
+const TABS=(id,items,cur,fn)=>{const c=$(id);c.innerHTML='';items.forEach(([k,l])=>{const b=document.createElement('button');b.textContent=l;b.className=k===cur?'on':'';b.onclick=()=>fn(k);c.appendChild(b)})};
+async function board(mode){if(mode)BB.mode=mode==='duel'?'arcade':mode;ev('lb_view',BB.mode);['ovStart','ovEnd'].forEach(o=>$(o).classList.add('hidden'));if(window.HERO_ACTIVE&&window.HERO)HERO.exit();if(window.WF_ACTIVE&&window.WF)WF.exit();$('ovStart').classList.add('hidden');$('ovBoard').classList.remove('hidden');
+ TABS('bbMode',[['arcade','Arcade'],['daily','Daily Tape'],['hero','Keyboard Hero'],['wf','Back Office']],BB.mode,k=>{BB.mode=k;BB.sub='';board()});
+ const subs=BB.mode==='hero'&&window.HERO?HERO.TRACKS.map(T=>[T.id,T.name]):BB.mode==='wf'&&window.WF?WF.TASKS.map(T=>[T.id,T.name]):BB.mode==='daily'?[[String(dailyNum()),'Tape #'+dailyNum()]]:[['','All speeds']];
+ if(!subs.some(x=>x[0]===BB.sub))BB.sub=subs[0][0];TABS('bbSub',subs.concat(desk()?[]:[]),BB.sub,k=>{BB.sub=k;board()});
+ TABS('bbPer',[['day','Today'],['week','This week'],['all','All-time']].concat([['street','The Street'],['desk',desk()?'Desk '+desk():'My desk']]).concat([['all-in','All inputs'],['kbd','Keyboard'],['touch','Touch']]),null,k=>{if(['day','week','all'].includes(k))BB.per=k;else if(k==='street'||k==='desk')BB.scope=k;else BB.input=k;board()});
+ [...$('bbPer').children].forEach(b=>{const k=['day','week','all','street','desk','all-in','kbd','touch'][[...$('bbPer').children].indexOf(b)];b.classList.toggle('on',k===BB.per||k===BB.scope||k===(BB.input||'all-in'))});
+ const T=$('bbT'),N=$('bbNote');T.innerHTML='<tr><td>Loading the tape…</td></tr>';
+ if(BB.scope==='desk'&&!desk()){T.innerHTML='';N.innerHTML='Set a desk code under <b>Desk manual &amp; settings</b>, or open a link like <code>playkeyboardwarrior.com/?desk=ACME</code>, to get a private office board.';return}
+ const q=new URLSearchParams({mode:BB.mode,board:BB.mode==='daily'?'':BB.sub,daily:BB.mode==='daily'?BB.sub:'',period:BB.per,desk:BB.scope==='desk'?desk():''});if(BB.input&&BB.input!=='all-in')q.set('input',BB.input);
+ const j=await call('board?'+q.toString());
+ if(!j||!j.ok){T.innerHTML='';N.textContent='The Big Board is offline right now. Your records are still kept on this device.';return}
+ N.textContent=j.rows.length?'Top 50. Names are self-reported; impossible runs are rejected at the exchange.':'No trades filed yet. Be the first print on the tape.';
+ T.innerHTML=j.rows.map((r,i)=>`<tr${i<3?' class="top"':''}><th>${i+1}</th><td class="nm">${esc0(r.n)}${r.i==='touch'?' <i class="tk sm">TCH</i>':''}</td><td>${fmt(r.s)}</td><td class="mutd">${r.a}%</td></tr>`).join('')}
+function init(){$('bBoard').onclick=()=>board('arcade');$('bbBack').onclick=()=>{$('ovBoard').classList.add('hidden');$('ovStart').classList.remove('hidden')};
+ addEventListener('keydown',e=>{if(e.code==='Escape'&&!$('ovBoard').classList.contains('hidden')){e.preventDefault();e.stopPropagation();$('bbBack').click()}},true);
+ $('bDuel').onclick=()=>shareDuel();
+ const pd=$('pDesk');pd.value=desk();pd.oninput=e=>{localStorage.kwDesk=e.target.value.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,12)};
+ const pa=$('pAuto');pa.checked=localStorage.kwLbAuto==='1';pa.onchange=e=>{localStorage.kwLbAuto=e.target.checked?'1':'0'};
+ $('bDuel0').onclick=()=>{if(DU)startDuel(DU);else{$('duelSub').innerHTML='<b>No duel link yet.</b> Finish a session, hit <b>Challenge a coworker</b> on the ticket, and send the link. Whoever opens it races your ghost on the same tape.'}};
+ if(DU){const b=$('chBanner');b.classList.remove('hidden');b.innerHTML=`<b class="stamp sm">Duel</b> ${esc0(DU.n||'A rival desk')} booked <b>${fmt(DU.s)}</b> P&amp;L. Same tape, their ghost on your screen. <button id="bTakeDuel">Take the duel</button>`;$('bTakeDuel').onclick=()=>startDuel(DU);$('duelSub').innerHTML='<b>'+esc0(DU.n||'A rival')+'</b> is waiting: '+fmt(DU.s)+' P&amp;L to beat'}}
+init();
+return{ev,call,post,board,onStart,onEnd,ghost,shareDuel,duelLink,startDuel,runToken,packTr,unpackTr,desk,get DU(){return DU},get up(){return apiUp}}})();window.KWX=KWX;
+</script>
+<script>/* Cloudflare Web Analytics: production hosts only */if(/(^|\.)playkeyboardwarrior\.com$/.test(location.hostname)){const s=document.createElement('script');s.defer=1;s.src='https://static.cloudflareinsights.com/beacon.min.js';s.dataset.cfBeacon='{"token": "4875ccf7ac4f41389b9859a14da8a1e8"}';document.body.appendChild(s)}</script></body></html>
