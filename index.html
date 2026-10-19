@@ -635,6 +635,11 @@ body.wfmode #touch .tmode,body.wfmode #touch .row.ctx{display:none!important}
 }
 body.wfmode #touch .row.wfk{display:grid!important;grid-template-columns:repeat(8,minmax(0,1fr));gap:4px}body.wfmode #touch .row.wfk button{min-width:0;font-size:13px!important}
 body.wfmode #touch .row.wfk:not(.wfk2) button{font-weight:700;background:var(--panel,#121a15)}
+/* R2 signature: the stamp lands on the third bell, and the ticket takes the hit */
+#ovEnd #eStamp{animation:stampIn .22s var(--snap) .62s both}
+#ovEnd:not(.hidden) .ticket{animation:tkThunk .18s ease-out .74s both}
+@keyframes tkThunk{0%{transform:translateY(0)}35%{transform:translateY(3px) rotate(-.25deg)}100%{transform:none}}
+@media (prefers-reduced-motion:reduce){#ovEnd #eStamp,#ovEnd:not(.hidden) .ticket{animation:none}}
 /* friendly-tight pass (v5): one 4/8 spacing scale, one 1.5px rule weight, 3px corners everywhere */
 :root{--r:3px;--s1:4px;--s2:8px;--s3:12px;--s4:16px}
 button,.ib,kbd,.tk,input,select,.spd,#hDiff,#hud,#queue,.legend,.ticket,.haltCard,.toast,.chip,.stamp.sm,#qp button,#touch button,.htk button,.lst .tk,.xpbar,.goal i,#wfTasks button,.pnl,#wfGridWrap,#hHud>div{border-radius:var(--r)!important}
@@ -978,7 +983,10 @@ let ac; function tone(f,d,type='square',v=.08,when=0){ if(muted)return; ac=ac||n
 const PENTA=[0,2,4,7,9];
 const sfx={hit(c){if(!c){tone(660,.1,'square',.06);return}const n=c-1,semi=Math.min(26,PENTA[n%5]+12*Math.floor(n/5)),f=523.25*Math.pow(2,semi/12);tone(f,.11,'square',.07);tone(f*1.5,.13,'triangle',.05,.05);if(c>=10)tone(f*2,.09,'sine',.04,.09)},miss(){tone(180,.3,'sawtooth',.1);tone(120,.35,'sawtooth',.08,.1)},
  jackpot(){[523,659,784,1047,784,1047,1319].forEach((f,i)=>tone(f,.18,'square',.08,i*.09))},spin(){for(let i=0;i<5;i++)tone(300+i*80,.04,'triangle',.03,i*.05)},
- land(){tone(90,.15,'square',.1)},end(){[784,659,523,392].forEach((f,i)=>tone(f,.25,'triangle',.08,i*.15))}};
+ land(){tone(90,.15,'square',.1)},
+ // The closing bell: three struck-brass clangs (inharmonic partials), the stamp lands on the third. A margin call gets one low, dead strike.
+ end(bad){const P=[[1,.09,1.6],[2.02,.05,1.1],[2.76,.045,.9],[4.07,.03,.6],[5.43,.02,.4]],strike=(f0,w,k)=>P.forEach(([r,v,d])=>tone(f0*r*(1+(Math.random()-.5)*.004),d*k,'sine',v,w));
+  if(bad){strike(196,0,1.4);tone(98,.5,'sawtooth',.05,0);return}[0,.3,.6].forEach((w,i)=>strike(i===2?988:1046,w,i===2?1.6:.55))}};
 
 /* ---------- Marquee ---------- */
 function marquee(){const m=$('marquee');const sym=n=>n.replace(/[^A-Za-z ]/g,'').split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,4)+(n.length%3?'':'X');
@@ -1061,7 +1069,7 @@ function coins(el,n,rain){if(RMO())n=Math.min(n,2);if(RMO()&&rain)return;const f
   c.animate([{transform:'translate(0,0) scale(1)',opacity:1},{transform:to+' scale(.6) rotate(720deg)',opacity:0}],{duration:rain?1400+Math.random()*600:700,easing:'cubic-bezier(.2,.6,.4,1)'}).onfinish=()=>c.remove()}}
 let endAt=0;
 function countUp(el,v){if(RMO()||v<=0){el.textContent=fmtN(v);return}const t0=performance.now(),D=200,stp=t=>{const k=Math.min(1,(t-t0)/D);el.textContent=fmtN(k<1?Math.round(v*Math.floor(k*8)/8):v);if(k<1)requestAnimationFrame(stp)};el.textContent='0';requestAnimationFrame(stp)}
-function end(why){if(!st.running)return;seqCancel();st.running=false;endAt=performance.now();setHeat(0);st.trace[60]=st.score;document.body.classList.remove('playing');setTimeout(()=>document.querySelectorAll('.piece').forEach(e=>e.remove()),900);sfx.end();
+function end(why){if(!st.running)return;seqCancel();st.running=false;endAt=performance.now();setHeat(0);st.trace[60]=st.score;document.body.classList.remove('playing');setTimeout(()=>document.querySelectorAll('.piece').forEach(e=>e.remove()),900);sfx.end(why==='STACK OVERFLOW!');
  const prevBest=best,nb=st.score>best;if(nb){best=st.score;localStorage.kwBest=best;META.savePace(st.trace,st.score)}$('endTitle').innerHTML=esc0(why==='STACK OVERFLOW!'?'Margin call':why&&why!=='TIME!'?why:'Closing bell');
  $('ePb').innerHTML=prevBest?(nb?'<span class="up">▲ +'+fmtN(st.score-prevBest)+' over your old record</span>':'<span class="dn">'+fmtN(prevBest-st.score)+' short of your record</span>'):'';st.prevBest=prevBest;st.nb=nb;const stp=$('eStamp');stp.textContent=why==='STACK OVERFLOW!'?'Margin call':nb&&st.score>0?'New high':'Filled';stp.className='stamp'+(why==='STACK OVERFLOW!'?' bad':'');stp.style.setProperty('--rot',(-4-Math.random()*5).toFixed(1)+'deg');$('tkNo').textContent='No. '+String(Date.now()%1e6).padStart(6,'0');
  countUp($('eScore'),st.score);$('eCombo').textContent=st.bestCombo;$('eHints').textContent=st.hints;$('eSpd').textContent=SP().n;$('eBest').textContent=fmtN(best);$('best0').textContent=fmtN(best);$('shareWrap').classList.add('hidden');$('shareMsg').textContent='';
