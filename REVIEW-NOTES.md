@@ -30,3 +30,30 @@ Thematic copy pass ('80s trading floor), friendly-tight spacing (4/8 scale, 3px 
 - Chart rule: never 3+ notes in a row on one lane. A repeated pitch becomes a trill to the neighbouring lane. The rule is deterministic and uses no extra RNG, so charts stay derived from the music and note counts barely move: e.g. Margin Call Medium 224→228, Short Squeeze Hard 309→308.
 - Mobile Back Office: a nav cluster row (← ↓ ↑ → Enter Tab Esc ⌫) plus an edit row (Del Home F2 F4 $ % . End). Closed checklist items fold away and the next one is tagged **NEXT**.
 - Deployed to production.
+
+## Round 2 (Ye: one signature moment)
+**Critique.** The session ended on a generic descending "game over" arpeggio. That is the most important beat in the game, the closing bell, and it had no sound of its own.
+
+**Change.**
+- A synthesized closing bell: three struck-brass clangs built from inharmonic partials. The stamp now lands on the third strike, and the ticket takes a 3px "thunk".
+- A margin call gets one low, dead strike instead.
+- Reduced-motion users get no animation.
+- Renders: `music-samples/closing-bell.wav`, `music-samples/margin-call-strike.wav`.
+- Deployed to production.
+
+## Round 3 (Rubin: the duel is the product, so make it read in one glance)
+**Critique.**
+- On a phone, the duel verdict and "Send it back" sat below the ledger, off-screen, so the loop's key action was invisible.
+- The invite's "Take the duel" was a secondary button under a louder "Ring the Bell".
+- The Big Board stacked three rows of tabs, including an "All speeds" row with a single option.
+- Duel runs filed to a "duel" board that no tab shows.
+- Front-page "Record P&L 1500" had no thousands separator.
+
+**Changes.**
+- The verdict line now sits under the score: big **WON BY 310 / LOST BY 120**, then Send it back.
+- "Take the duel" is the primary button style.
+- Big Board: one grouped filter row (period | scope | input), single-choice rows hidden, and a column header.
+- Duels file to the Arcade board. They are honest arcade sessions on the rival's tape.
+- Record P&L is formatted.
+- The P&L-vs-record delta is hidden during a duel, so the ghost is the only comparison.
+- Deployed to production.
