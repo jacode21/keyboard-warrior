@@ -473,7 +473,7 @@ details.more summary::before{content:'+ ';color:var(--red);font-weight:700}detai
 .toast{display:flex;gap:12px;align-items:center;background:var(--ink);color:var(--paper);border:1px solid #3a4c3e;border-left:6px solid var(--red);border-radius:0;padding:9px 14px 8px 10px;box-shadow:none;font:500 13px var(--mono);animation:toastIn .14s ease-out}
 .toast b{display:block;font:700 10px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:#f08a73;margin-bottom:2px}
 .toast .ti{font:700 11px/1 var(--mono);border:1.5px solid var(--paper);padding:5px 5px 4px;letter-spacing:.06em;min-width:40px;text-align:center}
-.toast.out{opacity:0;transform:translateX(30px);transition:all .12s linear}
+.toast.out{opacity:0;transform:translateY(-8px);transition:all .12s linear}
 @keyframes toastIn{from{opacity:0;transform:translateX(40px)}}
 /* touch keyboard */
 #touch button{border-radius:0;font:500 14px var(--mono);background:var(--panel);border:1px solid var(--bd-2);color:var(--fg);text-transform:none}
@@ -600,12 +600,53 @@ body.light #hero{background:var(--grain),var(--paper);color:var(--ink)}
  .fpGrid{margin-top:10px}.lead{padding:0 0 12px}.desk{padding:12px 0}
  .hed{font-size:clamp(24px,7.4vw,32px)}.dek{font-size:16px;margin-bottom:12px}
 }
+/* touch desk (v5) */
+#qp{display:none;grid-template-columns:1fr 1fr;gap:6px;padding:6px 0 0}
+#qp button{min-height:56px;border:1.5px solid var(--bd-2);border-radius:3px;background:var(--panel);color:var(--fg);font:600 17px var(--mono);text-transform:none;touch-action:manipulation}
+#qp button kbd{font:inherit;border:0;background:none;padding:0;color:inherit}
+#qp button:active{background:var(--fg);color:var(--bg)}
+#touch button,#touch .row{touch-action:manipulation}
+#touch .row.ctx{display:none;grid-template-columns:repeat(6,1fr)}
+#touch .row.ctx button{min-height:52px;font-size:17px!important}
+#touch .tmode{grid-column:span 2;font-size:12px!important;text-transform:uppercase;letter-spacing:.06em}
+@media (pointer:coarse),(max-width:700px){
+ body.playing:not(.wfmode):not(.hwkb)[data-tmode=pick] #qp{display:grid}
+ body.playing:not(.wfmode)[data-tmode=pick] #touch .row.full,body.playing:not(.wfmode)[data-tmode=pick] #touch .mod{display:none!important}
+ body.playing:not(.wfmode)[data-tmode=keys] #touch .row.ctx{display:grid}
+ body.playing:not(.wfmode)[data-tmode=keys] #touch:not(.more) .row.full{display:none!important}
+ body.playing #field{touch-action:none}
+}
+body.hwkb #touch,body.hwkb #qp,body.hwkb #hDollarB{display:none!important}
+#qp{padding-bottom:max(4px,env(safe-area-inset-bottom))}
+#qp{min-height:118px;align-content:start}
+body.wfmode #touch .tmode,body.wfmode #touch .row.ctx{display:none!important}
+@media (max-width:700px){
+ body.wfmode #wfRight{display:none!important}
+ body.wfmode #wfGridWrap{max-height:30vh;overflow:auto}
+ body.wfmode #wfLeft{order:2}body.wfmode #wfCenter{order:1}
+ body.wfmode #wfLeft .note,body.wfmode .wfStats>div:nth-child(4){display:none}
+ body.wfmode #touch{position:sticky;bottom:0;z-index:20;max-height:36vh;overflow-y:auto;background:var(--bg);border-top:2px solid var(--fg)}
+ body.playing[data-tmode=pick] #touch .more-b{display:none}
+}
+/* friendly-tight pass (v5): one 4/8 spacing scale, one 1.5px rule weight, 3px corners everywhere */
+:root{--r:3px;--s1:4px;--s2:8px;--s3:12px;--s4:16px}
+button,.ib,kbd,.tk,input,select,.spd,#hDiff,#hud,#queue,.legend,.ticket,.haltCard,.toast,.chip,.stamp.sm,#qp button,#touch button,.htk button,.lst .tk,.xpbar,.goal i,#wfTasks button,.pnl,#wfGridWrap,#hHud>div{border-radius:var(--r)!important}
+.big{border-radius:var(--r)!important}
+#hud{overflow:hidden;margin:var(--s2) 0}.stat{padding:var(--s1) var(--s2)}
+#side{gap:var(--s2)}#queue,.legend{padding:var(--s2) var(--s3)}
+.btnrow{gap:var(--s2)}
+.ticket .tkBody{gap:var(--s3)}
+.htk{gap:0 var(--s2)}.htk button{padding:var(--s2) var(--s2)!important}
+#hOpts{gap:var(--s2) var(--s3)}
+.haltCard{padding:var(--s4)!important;gap:var(--s3)!important}
+#touch{gap:var(--s1)!important}#touch .row{gap:var(--s1)!important}
+.hov{gap:var(--s2)!important}
 </style></head><body>
 <div id="marquee"></div>
 <div id="wrap">
-<header><h1><span class="logo" aria-hidden="true">KW</span><span class="wm">Keyboard <em>Warrior</em><small>Excel Shortcut Exchange</small></span></h1><button id="bRestart" class="ib playOnly" data-ic="restart" title="Restart (R while paused)"></button>
-<button id="bHint" class="ib playOnly" data-ic="hint" title="Hint (Tab or /)"></button><button id="bPause" class="ib playOnly" data-ic="pause" title="Pause (Esc)"></button><button id="bMute" class="ib" title="Mute"></button><button id="bTheme" class="ib" data-ic="theme" title="Switch edition (terminal / newsprint)"></button><button id="bFs" class="ib" data-ic="full" title="Fullscreen (enables Ctrl+N)"></button></header>
-<div id="hud"><div class="stat"><b id="sScore">0</b><span>Score <em id="sDelta"></em></span></div><div class="stat"><b id="sCombo">x0</b><span>Combo</span></div><div class="stat"><b id="sTime">60</b><span>Time <i id="sSpd">1x</i></span></div><div class="stat"><b id="sStack"><i id="stackBar"></i><em id="sPct">0%</em></b><span>Stack</span></div></div>
+<header><h1><span class="logo" aria-hidden="true">KW</span><span class="wm">Keyboard <em>Warrior</em><small>Excel Shortcut Exchange</small></span></h1><button id="bRestart" class="ib playOnly" data-ic="restart" title="Re-open the session (R while halted)"></button>
+<button id="bHint" class="ib playOnly" data-ic="hint" title="Insider tip (Tab or /)"></button><button id="bPause" class="ib playOnly" data-ic="pause" title="Halt trading (Esc)"></button><button id="bMute" class="ib" title="Mute"></button><button id="bTheme" class="ib" data-ic="theme" title="Switch edition (terminal / newsprint)"></button><button id="bFs" class="ib" data-ic="full" title="Fullscreen (enables Ctrl+N)"></button></header>
+<div id="hud"><div class="stat"><b id="sScore">0</b><span>P&amp;L <em id="sDelta"></em></span></div><div class="stat"><b id="sCombo">x0</b><span>Streak</span></div><div class="stat"><b id="sTime">60</b><span>Clock <i id="sSpd">1x</i></span></div><div class="stat"><b id="sStack"><i id="stackBar"></i><em id="sPct">0%</em></b><span>Exposure</span></div></div>
 <div id="main">
  <div id="field"><div id="flash"></div><div id="quote"></div><div id="seq" class="hidden"></div><div id="combo"></div><div id="floor"></div>
   <div id="ovStart" class="overlay paper"><div class="fp">
@@ -614,46 +655,46 @@ body.light #hero{background:var(--grain),var(--paper);color:var(--ink)}
    <div id="chBanner" class="hidden"></div>
    <div class="fpGrid">
     <section class="lead"><div class="kicker">Markets</div><h3 class="hed">Mouse shares plunge as traders go <span class="hand">keys-only</span></h3>
-     <p class="dek">Type the real Excel shortcut before the order lands. Sixty seconds on the clock. Five clean fills in a row pays the jackpot.</p>
-     <button class="big" id="bStart"><span>Ring the bell</span><kbd>Enter</kbd></button><div class="bestline">Arcade · 60s · your best <b id="best0">0</b></div>
+     <p class="dek">Orders hit the tape as Excel commands. Key in the real shortcut to fill each one before it lands on the book. Sixty seconds on the clock; five clean fills in a row pays the jackpot.</p>
+     <button class="big" id="bStart"><span>Ring the bell</span><kbd>Enter</kbd></button><div class="bestline">Arcade · 60-second session · record P&amp;L <b id="best0">0</b></div>
      <div class="kicker k2">Other listings</div>
-     <div class="listings"><button class="lst" id="bDaily"><i class="tk">DLY</i><b>Daily <span id="dailyN"></span></b><small id="dailySub">Same tape for everyone</small><em class="arr">→</em></button>
-      <button class="lst" id="bWorkflow"><i class="tk">WFL</i><b>Workflow</b><small>Format real-looking sheets, keystroke-tracked</small><em class="arr">→</em></button>
-      <button class="lst" id="bHero"><i class="tk">KHR</i><b>Keyboard Hero</b><small>Rhythm mode on original beats</small><em class="arr">→</em></button></div>
+     <div class="listings"><button class="lst" id="bDaily"><i class="tk">DLY</i><b>Daily Tape <span id="dailyN"></span></b><small id="dailySub">One tape, every trader, once a day</small><em class="arr">→</em></button>
+      <button class="lst" id="bWorkflow"><i class="tk">WFL</i><b>Back Office</b><small>Close out real spreadsheet jobs; every keystroke on the record</small><em class="arr">→</em></button>
+      <button class="lst" id="bHero"><i class="tk">KHR</i><b>Keyboard Hero</b><small>Trade the beat on the arrow keys and F2</small><em class="arr">→</em></button></div>
     </section>
     <aside class="desk"><div class="kicker">Your desk</div><div id="profile"></div><div id="goals"></div></aside>
    </div>
-   <div class="setrow"><div class="setl"><span class="lbl">Platform</span><div class="spd" id="platSel"></div></div><div class="setl"><span class="lbl">Speed</span><div class="spd" id="spdSel"></div></div></div>
-   <details class="more"><summary>More options &amp; how to play</summary><div class="moreIn"><label class="fld"><span class="lbl">Trader name</span> <input id="pName" maxlength="20" placeholder="Your name (optional)" autocomplete="nickname"></label><div class="fld"><span class="lbl">Shortcut pool</span> <div class="spd" id="poolSel"></div></div>
-    <p class="note"><b>Wrong key?</b> The first miss on a prompt is a warning strike (✕, combo resets). A second wrong key slams it onto the stack. Missed prompts land as bricks; the stack hitting the top ends the round. <b>Hints:</b> Tab or / : 1st shows the modifier, 2nd the full keys; hinted clears score less. <b>Alt KeyTips:</b> tap Alt, release, then the letters (Alt › H › O › I). <b>Bricks</b> show their keys; type any brick's shortcut to sell it off the stack. <b>Daily:</b> same sequence for everyone today; first run is official and keeps your streak alive. <b>Restart:</b> R or Enter on the results screen, R while paused.</p>
-    <p class="note">Browsers block Ctrl+N/W/T, so Ctrl+N only shows up in fullscreen mode where the keyboard can be locked. Click the field first so it has keyboard focus.</p></div></details>
+   <div class="setrow"><div class="setl"><span class="lbl">Platform</span><div class="spd" id="platSel"></div></div><div class="setl"><span class="lbl">Tape speed</span><div class="spd" id="spdSel"></div></div></div>
+   <details class="more"><summary>Desk manual &amp; settings</summary><div class="moreIn"><label class="fld"><span class="lbl">Trader name</span> <input id="pName" maxlength="20" placeholder="Name on the ticket (optional)" autocomplete="nickname"></label><div class="fld"><span class="lbl">Order flow</span> <div class="spd" id="poolSel"></div></div>
+    <p class="note"><b>Bad key.</b> The first wrong key on an order is a strike (✕) and resets your streak. A second one dumps the order onto the book as a stale order. Exposure hits 100% and it's a margin call. <b>Insider tips.</b> Tab or / : the first tip shows the modifier, the second the full keys; tipped fills pay less. <b>Alt KeyTips.</b> Tap Alt, release, then the letters (Alt › H › O › I). <b>Stale orders</b> show their keys; key one in to clear it off the book. <b>Daily Tape.</b> Same orders for every trader today; your first session is official and keeps your streak alive. <b>Re-open.</b> R or Enter on the ticket, R while halted.</p>
+    <p class="note">Browsers reserve Ctrl+N/W/T, so Ctrl+N only trades in fullscreen, where the keyboard can be locked. Click the floor first so it has keyboard focus.</p></div></details>
    <nav class="sitefoot"><a href="/about">About</a> · <a href="/privacy">Privacy</a> · <a href="/terms">Terms</a></nav></div></div>
-  <div id="ovPause" class="overlay paper hidden"><div class="haltCard"><div class="stamp big-stamp">Trading halted</div><div class="spd" id="spdPause"></div><div class="btnrow"><button class="big" id="bResume"><span>Resume</span><kbd>Esc</kbd></button><button id="bRestart2">Restart <kbd>R</kbd></button><button id="bMenu2">Menu</button></div></div></div>
+  <div id="ovPause" class="overlay paper hidden"><div class="haltCard"><div class="stamp big-stamp">Trading halted</div><div class="spd" id="spdPause"></div><div class="btnrow"><button class="big" id="bResume"><span>Resume trading</span><kbd>Esc</kbd></button><button id="bRestart2">Re-open <kbd>R</kbd></button><button id="bMenu2">Front page</button></div></div></div>
   <div id="ovEnd" class="overlay paper hidden"><div class="ticket">
    <div class="tkHead"><span>Trade confirmation</span><span id="eDaily"></span><span id="tkNo"></span></div>
    <div class="tkBody"><div class="tkMain"><h2 id="endTitle">Closing bell</h2><div class="bigScore"><b id="eScore">0</b><span id="ePb"></span></div><div id="eStamp" class="stamp">Filled</div>
-     <div class="btnrow"><button class="big" id="bAgain"><span>Play again</span><kbd>R</kbd></button><button id="bShare">Share card</button><button id="bMenu">Menu</button></div></div>
-    <table class="ledger statgrid"><tr><th>Best combo</th><td id="eCombo">0</td></tr><tr><th>Jackpots</th><td id="eJack">0</td></tr><tr><th>Accuracy</th><td id="eAcc">—</td></tr><tr><th>Hints</th><td id="eHints">0</td></tr><tr><th>Speed</th><td id="eSpd"></td></tr><tr><th>High score</th><td id="eBest">0</td></tr></table></div>
+     <div class="btnrow"><button class="big" id="bAgain"><span>Trade again</span><kbd>R</kbd></button><button id="bShare">Share ticket</button><button id="bMenu">Front page</button></div></div>
+    <table class="ledger statgrid"><tr><th>Best streak</th><td id="eCombo">0</td></tr><tr><th>Jackpots</th><td id="eJack">0</td></tr><tr><th>Fill rate</th><td id="eAcc">—</td></tr><tr><th>Tips taken</th><td id="eHints">0</td></tr><tr><th>Tape speed</th><td id="eSpd"></td></tr><tr><th>Record P&amp;L</th><td id="eBest">0</td></tr></table></div>
    <div id="eVs" class="hidden"></div><div id="nudge" class="hidden"></div>
    <div class="tkFoot"><div id="eXp"></div><div id="eNext"></div></div>
-   <div id="shareWrap" class="hidden"><img id="shareImg" alt="Your Keyboard Warrior score card"><div class="btnrow"><button id="bCardDl">Save image</button><button id="bCopy">Copy challenge link</button></div></div>
+   <div id="shareWrap" class="hidden"><img id="shareImg" alt="Your Keyboard Warrior trade ticket"><div class="btnrow"><button id="bCardDl">Save ticket</button><button id="bCopy">Copy challenge link</button></div></div>
    <div class="note" id="shareMsg"></div><div id="eLb"></div><div class="note" id="missed"></div><div id="inter" class="ad"></div></div></div>
  </div>
- <div id="side"><div id="queue"><h3>Up next</h3><div id="qList"></div></div><div class="legend"><h3>Controls</h3><div><kbd>Esc</kbd> pause</div><div><kbd>Tab</kbd> hint</div><div><kbd>R</kbd> restart</div><p class="note">The marked prompt is your target. Type any brick's keys to sell it off the stack.</p></div></div>
+ <div id="side"><div id="queue"><h3>Order queue</h3><div id="qList"></div></div><div class="legend"><h3>Desk keys</h3><div><kbd>Esc</kbd> halt</div><div><kbd>Tab</kbd> tip</div><div><kbd>R</kbd> re-open</div><p class="note">The marked order is live. Key in any stale order to clear it off the book.</p></div></div>
 </div>
 <div id="wf" class="hidden">
  <div id="wfLeft" class="pnl">
-  <h3 id="wfTitle">Task</h3>
+  <h3 id="wfTitle">Job</h3>
   <div id="wfBrief" class="note"></div>
   <ul id="wfChecks"></ul>
   <div class="wfStats"><div><b id="wfTime">0:00.0</b>time</div><div><b id="wfKeys">0</b>keystrokes</div><div><b id="wfPar">0</b>par</div><div><b id="wfEff">—</b>efficiency</div></div>
   <div id="wfHint" class="hidden"></div>
-  <div style="display:flex;gap:6px;flex-wrap:wrap"><button id="wfBHint">Hint <kbd>F1</kbd></button><button id="wfBReset">Restart</button><button id="wfBMenu">Tasks</button><button id="wfBExit">Arcade</button></div>
-  <p class="note">Simulated sheet: runs entirely in your browser, nothing is uploaded. Mouse-free: drive it with the keyboard. Alt KeyTips: tap Alt, release, then letters.</p>
+  <div style="display:flex;gap:6px;flex-wrap:wrap"><button id="wfBHint">Tip <kbd>F1</kbd></button><button id="wfBReset">Re-open</button><button id="wfBMenu">Job board</button><button id="wfBExit">Front page</button></div>
+  <p class="note">Simulated sheet; nothing leaves your browser. No mouse on this desk. Alt KeyTips: tap Alt, release, then the letters.</p>
  </div>
  <div id="wfCenter"><div id="wfBar"><div id="wfName">A1</div><div id="wfFx"></div><div id="wfSeq"></div></div><div id="wfToast"></div><div id="wfGridWrap"><table id="wfGrid"></table></div><div id="wfTabs"><span id="wfTab">Sheet1</span><i>KBW · simulated workbook</i></div></div>
  <div id="wfRight" class="pnl"><h3 class="lbl">Keystroke tracker</h3><div id="wfLog"></div></div>
- <div id="wfMenu" class="overlay paper"><div class="kicker">Section B · Operations</div><h2>Workflow desk</h2><p class="note">Real-world Excel formatting jobs on a simulated sheet. Every keystroke is tracked and logged. Beat par for an A.</p><div id="wfTasks" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:8px;width:min(960px,100%)"></div><button id="wfBExit2">← Back to the front page</button></div>
+ <div id="wfMenu" class="overlay paper"><div class="kicker">Section B · Operations</div><h2>Back Office</h2><p class="note">Real Excel formatting jobs on a simulated sheet. Every keystroke goes on the record. Come in under par for an A.</p><div id="wfTasks" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:8px;width:min(960px,100%)"></div><button id="wfBExit2">← Front page</button></div>
  <div id="wfEnd" class="overlay paper hidden"></div>
 </div>
 <div id="touch"></div>
@@ -681,29 +722,29 @@ const rankOf=xp=>{let i=0;RANKS.forEach((r,j)=>{if(xp>=r[0])i=j});const r=RANKS[
  return{i,name:r[1],icon:r[2],min:r[0],next:n?n[0]:null,nextName:n?n[1]:null,nextIcon:n?n[2]:'',pct:n?(xp-r[0])/(n[0]-r[0]):1}};
 const A=(c,k)=>c.mode==='arcade'&&k(c);
 const ACH=[
- ['first','OPEN','Opening Bell','Land your first shortcut',c=>A(c,c=>c.hits>0)],
- ['jackpot','JKPT','Jackpot','Hit a 5-shortcut combo',c=>A(c,c=>c.combo>=5)],
- ['fire','FIRE','On Fire','Hit a x10 combo',c=>A(c,c=>c.combo>=10)],
- ['pack','PACK','Wolf Pack','Hit a x20 combo',c=>A(c,c=>c.combo>=20)],
- ['bonus','BONS','Bonus Season','Score 2,500 in one round',c=>A(c,c=>c.score>=2500)],
- ['rain','RAIN','Rainmaker','Score 5,000 in one round',c=>A(c,c=>c.score>=5000)],
- ['tbtf','TBTF','Too Big to Fail','Score 10,000 in one round',c=>A(c,c=>c.score>=10000)],
- ['clean','CLEN','Clean Books','100% accuracy with 15+ hits',c=>A(c,c=>c.hits>=15&&c.acc===100)],
- ['nohint','SOLO','No Lifelines','Score 2,000 without a hint',c=>A(c,c=>c.score>=2000&&!c.hints)],
- ['insane','INSN','Insane Trader','Score 1,000 on Insane',c=>A(c,c=>c.speed==='insane'&&c.score>=1000)],
- ['squeeze','SQZ','Short Squeeze','Sell 5 bricks off the stack in a round',c=>A(c,c=>c.sold>=5)],
- ['clock','CLKD','Clocked In','Finish an official Daily',c=>A(c,c=>c.official)],
- ['three','3PT','Three-Peat','3-day Daily streak',()=>M.streak.n>=3],
- ['week','WEEK','Full Week','7-day Daily streak',()=>M.streak.n>=7],
- ['model','MODL','Model Analyst','Get an A in Workflow',c=>c.mode==='wf'&&c.grade==='A'],
- ['deck','DECK','Full Deck','Finish all 5 Workflow tasks',c=>c.mode==='wf'&&c.allDone],
- ['bell','BELL','Closing Bell','Clear a Keyboard Hero song',c=>c.mode==='hero'&&!c.failed],
- ['ovation','OVTN','Standing Ovation','S rank in Keyboard Hero',c=>c.mode==='hero'&&c.grade==='S'],
- ['streak50','PCKT','In the Pocket','50-note streak in Keyboard Hero',c=>c.mode==='hero'&&c.maxStreak>=50],
- ['corner','CRNR','Corner Office','Reach VP',()=>M.xp>=5000]];
-const GOALS={combo5:['Hit a x5 combo',c=>A(c,c=>c.combo>=5)],s1500:['Score 1,500 in Arcade',c=>A(c,c=>c.score>=1500)],s3000:['Score 3,000 in Arcade',c=>A(c,c=>c.score>=3000)],
- acc90:['Finish a round with 90%+ accuracy',c=>A(c,c=>c.hits>=10&&c.acc>=90)],sell2:['Sell 2 bricks off the stack',c=>A(c,c=>c.sold>=2)],daily:["Play today's Daily",c=>A(c,c=>!!c.daily)],
- wf:['Finish a Workflow task',c=>c.mode==='wf'],kh:['Clear a Keyboard Hero song',c=>c.mode==='hero'&&!c.failed],rounds3:['Play 3 Arcade rounds',()=>S.rounds>=3],hits25:['Land 25 shortcuts this session',()=>S.hits>=25]};
+ ['first','OPEN','Opening Bell','Fill your first order',c=>A(c,c=>c.hits>0)],
+ ['jackpot','JKPT','Jackpot','Fill 5 orders in a row',c=>A(c,c=>c.combo>=5)],
+ ['fire','FIRE','On Fire','Run a x10 streak',c=>A(c,c=>c.combo>=10)],
+ ['pack','PACK','Wolf Pack','Run a x20 streak',c=>A(c,c=>c.combo>=20)],
+ ['bonus','BONS','Bonus Season','Book 2,500 P&L in one session',c=>A(c,c=>c.score>=2500)],
+ ['rain','RAIN','Rainmaker','Book 5,000 P&L in one session',c=>A(c,c=>c.score>=5000)],
+ ['tbtf','TBTF','Too Big to Fail','Book 10,000 P&L in one session',c=>A(c,c=>c.score>=10000)],
+ ['clean','CLEN','Clean Books','Fill 15+ orders at a 100% fill rate',c=>A(c,c=>c.hits>=15&&c.acc===100)],
+ ['nohint','SOLO','No Insider Tips','Book 2,000 P&L without a tip',c=>A(c,c=>c.score>=2000&&!c.hints)],
+ ['insane','FRNZ','Frenzy Trader','Book 1,000 P&L at Frenzy speed',c=>A(c,c=>c.speed==='insane'&&c.score>=1000)],
+ ['squeeze','SQZ','Short Squeeze','Clear 5 stale orders in one session',c=>A(c,c=>c.sold>=5)],
+ ['clock','CLKD','Clocked In','Close an official Daily Tape',c=>A(c,c=>c.official)],
+ ['three','3PT','Three-Peat','Run a 3-day Daily Tape streak',()=>M.streak.n>=3],
+ ['week','WEEK','Full Week','Run a 7-day Daily Tape streak',()=>M.streak.n>=7],
+ ['model','MODL','Model Analyst','Grade A on a Back Office job',c=>c.mode==='wf'&&c.grade==='A'],
+ ['deck','DECK','Full Deck','Close all 5 Back Office jobs',c=>c.mode==='wf'&&c.allDone],
+ ['bell','BELL','Closing Bell','Close out a Keyboard Hero track',c=>c.mode==='hero'&&!c.failed],
+ ['ovation','OVTN','Standing Ovation','Grade S on a Keyboard Hero track',c=>c.mode==='hero'&&c.grade==='S'],
+ ['streak50','PCKT','In the Pocket','Run a 50-note streak in Keyboard Hero',c=>c.mode==='hero'&&c.maxStreak>=50],
+ ['corner','CRNR','Corner Office','Make VP',()=>M.xp>=5000]];
+const GOALS={combo5:['Run a x5 streak',c=>A(c,c=>c.combo>=5)],s1500:['Book 1,500 P&L in Arcade',c=>A(c,c=>c.score>=1500)],s3000:['Book 3,000 P&L in Arcade',c=>A(c,c=>c.score>=3000)],
+ acc90:['Close a session at a 90%+ fill rate',c=>A(c,c=>c.hits>=10&&c.acc>=90)],sell2:['Clear 2 stale orders off the book',c=>A(c,c=>c.sold>=2)],daily:["Trade today's Daily Tape",c=>A(c,c=>!!c.daily)],
+ wf:['Close a Back Office job',c=>c.mode==='wf'],kh:['Close out a Keyboard Hero track',c=>c.mode==='hero'&&!c.failed],rounds3:['Trade 3 Arcade sessions',()=>S.rounds>=3],hits25:['Fill 25 orders today',()=>S.hits>=25]};
 let S={goals:[],done:[],rounds:0,hits:0};
 function initS(){try{S=JSON.parse(sessionStorage.kwSess||'null')}catch(_){S=null}
 if(!S||!S.goals||!S.goals.every(g=>GOALS[g])){const ds=(()=>{try{return JSON.parse(localStorage.kwDaily||'{}')}catch(_){return{}}})(),today=typeof dailyNum==='function'?dailyNum():0;
@@ -720,23 +761,23 @@ function nextToast(){const it=TQ.shift();if(!it){tBusy=false;return}tBusy=true;l
  const t=document.createElement('div');t.className='toast '+(it[1]||'');t.innerHTML=it[0];w.appendChild(t);setTimeout(()=>{t.classList.add('out');setTimeout(()=>{t.remove();nextToast()},300)},TQ.length?1500:2600)}
 /* ---- core: record a finished run ---- */
 function record(c){const r0=rankOf(M.xp),parts=[],newAch=[],goals=[];M.runs++;
- if(c.mode==='arcade'){S.rounds++;S.hits+=c.hits;parts.push(['Round',Math.round(c.score/10)+25]);if(c.official)parts.push(['Daily bonus',100])}
- if(c.mode==='wf')parts.push(['Task',100+({A:150,B:100,C:60,D:30}[c.grade]||10)]);
- if(c.mode==='hero')parts.push(['Song',Math.round(c.score/40)+c.stars*25]);
- for(const g of S.goals)if(!S.done.includes(g)&&GOALS[g][1](c)){S.done.push(g);goals.push(g);parts.push(['Goal · '+GOALS[g][0],150])}
- if(goals.length&&S.done.length===S.goals.length)parts.push(['All session goals',250]);
+ if(c.mode==='arcade'){S.rounds++;S.hits+=c.hits;parts.push(['Session',Math.round(c.score/10)+25]);if(c.official)parts.push(['Daily bonus',100])}
+ if(c.mode==='wf')parts.push(['Job',100+({A:150,B:100,C:60,D:30}[c.grade]||10)]);
+ if(c.mode==='hero')parts.push(['Track',Math.round(c.score/40)+c.stars*25]);
+ for(const g of S.goals)if(!S.done.includes(g)&&GOALS[g][1](c)){S.done.push(g);goals.push(g);parts.push(['Target · '+GOALS[g][0],150])}
+ if(goals.length&&S.done.length===S.goals.length)parts.push(['All targets hit',250]);
  const chk=()=>ACH.forEach(a=>{if(!M.ach[a[0]]&&a[4](c)){M.ach[a[0]]=Date.now();newAch.push(a);parts.push([a[1]+' '+a[2],100])}});
  chk();const gained=parts.reduce((t,p)=>t+p[1],0),before=M.xp;M.xp+=gained;chk();const extra=parts.reduce((t,p)=>t+p[1],0)-gained;M.xp+=extra;
  const r1=rankOf(M.xp);sv();svS();
- newAch.forEach((a,i)=>setTimeout(()=>toast('<span class="ti">'+a[1]+'</span><span><b>Bulletin · achievement</b>'+h(a[2])+'</span>','ach'),300+i*700));
+ newAch.forEach((a,i)=>setTimeout(()=>toast('<span class="ti">'+a[1]+'</span><span><b>Bulletin · trophy</b>'+h(a[2])+'</span>','ach'),300+i*700));
  if(r1.i>r0.i)setTimeout(()=>toast('<span class="ti">'+r1.icon+'</span><span><b>Bulletin · promotion</b>You are now '+(/^[AEIOU]/.test(r1.name)?'an ':'a ')+r1.name+'</span>','rank'),200);
- goals.forEach((g,i)=>setTimeout(()=>toast('<span class="ti">✓</span><span><b>Order filled · session goal</b>'+h(GOALS[g][0])+'</span>','goal'),900+i*700));
+ goals.forEach((g,i)=>setTimeout(()=>toast('<span class="ti">✓</span><span><b>Bulletin · target hit</b>'+h(GOALS[g][0])+'</span>','goal'),900+i*700));
  return{gained:gained+extra,parts,before,after:M.xp,r0,r1,newAch,goals}}
 /* ---- rendering ---- */
 function xpBlock(res){const r=res.r1,up=res.r1.i>res.r0.i,p0=up?0:res.r0.pct;
  const id='xb'+Math.random().toString(36).slice(2,7);setTimeout(()=>{const e=document.getElementById(id);if(e)e.style.width=Math.round(r.pct*100)+'%'},60);
  return `<div class="xpbox"><div class="xprow"><span class="rk"><i class="tk">${r.icon}</i>${r.name}${up?' <b class="stamp sm">Promoted</b>':''}</span><b class="xpg">+${fmt(res.gained)} XP</b></div>
- <div class="xpbar"><i id="${id}" style="width:${Math.round(p0*100)}%"></i></div><div class="xpsub">${r.next?fmt(r.next-res.after)+' XP to '+r.nextName:'Top of the food chain.'}</div>
+ <div class="xpbar"><i id="${id}" style="width:${Math.round(p0*100)}%"></i></div><div class="xpsub">${r.next?fmt(r.next-res.after)+' XP to '+r.nextName:'Top of the food chain'}</div>
  ${res.newAch.length?'<div class="achrow">'+res.newAch.map(a=>`<span class="chip" title="${h(a[3])}"><i class="tk">${a[1]}</i>${h(a[2])}</span>`).join('')+'</div>':''}</div>`}
 function goalsHTML(){return `<div class="glist">${S.goals.map(g=>`<div class="goal ${S.done.includes(g)?'done':''}"><i>${S.done.includes(g)?'✓':''}</i><span>${h(GOALS[g][0])}</span></div>`).join('')}</div>`}
 function nextAch(c){const pri=['jackpot','fire','bonus','clean','nohint','squeeze','rain','pack','clock','tbtf'];for(const id of pri){const a=ACH.find(x=>x[0]===id);if(!M.ach[id])return a}return null}
@@ -745,26 +786,26 @@ function arcadeEnd(st){const acc=(()=>{const t=st.hits+st.wrong+st.miss;return t
  if(c.official)dailyDone(st.daily);const res=record(c);document.getElementById('eXp').innerHTML=xpBlock(res);
  // what to beat next
  const nx=[],pb=Math.max(st.prevBest||0,st.score);
- if(!st.nb&&st.prevBest)nx.push(['PB','Beat your best',fmt(st.prevBest)+' <small>(+'+fmt(st.prevBest-st.score+1)+')</small>']);
- else{const tiers=[1000,2500,5000,7500,10000,15000,20000,30000,50000],t=tiers.find(x=>x>pb)||pb+10000;nx.push(['TGT','Next milestone',fmt(t)+' <small>(+'+fmt(t-st.score)+')</small>'])}
- if(st.bestCombo<5)nx.push(['JKPT','Land 5 in a row','for a +500 jackpot']);else if(st.bestCombo<10)nx.push(['FIRE','Reach x10 combo','best this run: x'+st.bestCombo]);
+ if(!st.nb&&st.prevBest)nx.push(['REC','Beat your record',fmt(st.prevBest)+' <small>(+'+fmt(st.prevBest-st.score+1)+')</small>']);
+ else{const tiers=[1000,2500,5000,7500,10000,15000,20000,30000,50000],t=tiers.find(x=>x>pb)||pb+10000;nx.push(['TGT','Next price target',fmt(t)+' <small>(+'+fmt(t-st.score)+')</small>'])}
+ if(st.bestCombo<5)nx.push(['JKPT','Fill 5 in a row','pays a 500 jackpot']);else if(st.bestCombo<10)nx.push(['FIRE','Run a x10 streak','best this session: x'+st.bestCombo]);
  const a=nextAch(c);if(a)nx.push([a[1],a[2],h(a[3])]);
- const open=S.goals.filter(g=>!S.done.includes(g));if(open.length)nx.push(['ORD','Session goal',h(GOALS[open[0]][0])]);
+ const open=S.goals.filter(g=>!S.done.includes(g));if(open.length)nx.push(['TGT','Open target',h(GOALS[open[0]][0])]);
  document.getElementById('eNext').innerHTML='<div class="kicker">Next to beat</div><table class="nxlist">'+nx.slice(0,3).map(x=>`<tr class="nx"><td><i class="tk">${x[0]}</i></td><th>${x[1]}</th><td>${x[2]}</td></tr>`).join('')+'</table>';return res}
 function wfEnd(o){const b=(()=>{try{return JSON.parse(localStorage.kwWF||'{}')}catch(_){return{}}})();const all=WF.TASKS.every(t=>b[t.id]||b[t.id+'-mac']);
  return '<div class="metaWrap">'+xpBlock(record({mode:'wf',grade:o.grade,allDone:all}))+'</div>'}
 function heroEnd(r,o){const res=record({mode:'hero',grade:r.grade,failed:r.failed,maxStreak:r.maxStreak,stars:r.stars,score:r.score});
- const nx=o.prev&&!o.nb?'<div class="xpsub">Beat '+fmt(o.prev.score)+' to set a new best (+'+fmt(Math.max(1,o.prev.score-r.score+1))+')</div>':'';return '<div class="metaWrap">'+xpBlock(res)+nx+'</div>'}
+ const nx=o.prev&&!o.nb?'<div class="xpsub">Beat '+fmt(o.prev.score)+' to set a new record (+'+fmt(Math.max(1,o.prev.score-r.score+1))+')</div>':'';return '<div class="metaWrap">'+xpBlock(res)+nx+'</div>'}
 function dailyDone(d){if(M.streak.last===d)return;M.streak.n=M.streak.last===d-1?M.streak.n+1:1;M.streak.last=d;M.streak.best=Math.max(M.streak.best,M.streak.n);sv()}
 const streak=()=>M.streak.last>=dailyNum()-1?M.streak.n:0;
 function renderProfile(){const el=document.getElementById('profile');if(!el)return;const r=rankOf(M.xp),n=Object.keys(M.ach).length,sk=streak();
  el.innerHTML=`<table class="ledger desk-t"><tr><th>Rank</th><td><i class="tk">${r.icon}</i><b>${r.name}</b></td></tr>
  <tr><th>XP</th><td><b>${fmt(M.xp)}</b><div class="xpbar"><i style="width:${Math.round(r.pct*100)}%"></i></div><small>${r.next?fmt(r.next-M.xp)+' to '+r.nextName:'Top of the food chain'}</small></td></tr>
- <tr><th>Daily streak</th><td><b class="${sk?'hot':''}">${sk} day${sk===1?'':'s'}</b></td></tr>
+ <tr><th>Daily Tape streak</th><td><b class="${sk?'hot':''}">${sk} day${sk===1?'':'s'}</b></td></tr>
  <tr><th>Trophies</th><td><b>${n}</b>/${ACH.length} <button class="link" id="bTrophy">view case</button></td></tr></table>
  <div id="trophies" class="hidden">${ACH.map(a=>`<div class="tro ${M.ach[a[0]]?'on':''}" title="${h(a[3])}"><i class="tk">${a[1]}</i><b>${h(a[2])}</b><small>${h(a[3])}</small></div>`).join('')}</div>`;
  document.getElementById('bTrophy').onclick=()=>document.getElementById('trophies').classList.toggle('hidden');
- const g=document.getElementById('goals');if(g)g.innerHTML=`<div class="kicker">Today's orders <span class="mutd">+150 XP each</span></div>`+goalsHTML();
+ const g=document.getElementById('goals');if(g)g.innerHTML=`<div class="kicker">Today's targets <span class="mutd">+150 XP each</span></div>`+goalsHTML();
  const md=document.getElementById('mDate');if(md){try{md.textContent=new Date().toLocaleDateString('en-US',{timeZone:'America/New_York',weekday:'long',month:'long',day:'numeric',year:'numeric'})}catch(_){}}
  const mn=document.getElementById('mNo');if(mn)mn.textContent=dailyNum()}
 /* ---- PB pace curve (live delta) ---- */
@@ -885,8 +926,8 @@ const isAlt=c=>PLAT==='mac'?!c.includes('Meta'):c.startsWith('Alt');
 
 const $=id=>document.getElementById(id);
 /* Speed levels: f scales fall speed & spawn rate, m is the score multiplier. Normal is ~17% slower than v1. */
-const SPEEDS={chill:{n:'Chill',f:.6,m:.75},normal:{n:'Normal',f:.83,m:1},fast:{n:'Fast',f:1.15,m:1.5},insane:{n:'Insane',f:1.5,m:2}};
-let speedKey=SPEEDS[localStorage.kwSpeed]?localStorage.kwSpeed:'normal';
+const SPEEDS={chill:{n:'Quiet',f:.6,m:.75},normal:{n:'Normal',f:.83,m:1},fast:{n:'Busy',f:1.15,m:1.5},insane:{n:'Frenzy',f:1.5,m:2}};
+let speedKey=SPEEDS[localStorage.kwSpeed]?localStorage.kwSpeed:(matchMedia('(pointer:coarse)').matches&&!/iPad|Macintosh/.test(navigator.userAgent)?'chill':'normal');
 const SP=()=>SPEEDS[(typeof st!=='undefined'&&st&&st.daily)?'normal':speedKey], pts=n=>Math.round(n*SP().m);
 /* ---- Daily challenge: seeded by the America/New_York date ---- */
 const DAILY_EPOCH='2026-10-01';
@@ -900,9 +941,8 @@ const dec=s=>{try{s=s.replace(/-/g,'+').replace(/_/g,'/');return JSON.parse(deco
 let CH=null;try{const c=new URLSearchParams(location.search).get('c');if(c)CH=dec(c)}catch(_){}
 const fmtN=n=>Number(n).toLocaleString('en-US');
 const QUOTES=[["Greed, for lack of a better word, is good.","Wall Street (1987)"],["Lunch is for wimps.","Wall Street (1987)"],["Money never sleeps, pal.","Wall Street (1987)"],["The most valuable commodity I know of is information.","Wall Street (1987)"],["If you're not inside, you're outside.","Wall Street (1987)"],
-["Sell me this pen.","The Wolf of Wall Street (2013)"],["I'm not leaving!","The Wolf of Wall Street (2013)"],["Be first, be smarter, or cheat.","Margin Call (2011)"],["It's just money. It's made up.","Margin Call (2011)"],["There are three ways to make a living in this business.","Margin Call (2011)"],
-["Truth is like poetry. And most people hate poetry.","The Big Short (2015)"],["I may be early, but I'm not wrong.","The Big Short (2015)"],["Always be closing.","Glengarry Glen Ross (1992)"],["Coffee's for closers only.","Glengarry Glen Ross (1992)"],["Put that coffee down!","Glengarry Glen Ross (1992)"],
-["Looking good, Billy Ray! Feeling good, Louis!","Trading Places (1983)"],["Sell, Mortimer! Sell!","Trading Places (1983)"],["Turn those machines back on!","Trading Places (1983)"],["Motion creates emotion.","Boiler Room (2000)"],["There is no such thing as a no-sale call.","Boiler Room (2000)"]];
+["Always be closing.","Glengarry Glen Ross (1992)"],["Coffee's for closers only.","Glengarry Glen Ross (1992)"],["Looking good, Billy Ray! Feeling good, Louis!","Trading Places (1983)"],["Sell, Mortimer! Sell!","Trading Places (1983)"],["Turn those machines back on!","Trading Places (1983)"],
+["Buy the rumor, sell the news.","Floor saying"],["The trend is your friend.","Floor saying"],["Cut your losses, let your winners run.","Floor saying"],["Nobody rings a bell at the top.","Floor saying"]];
 let qi=Math.random()*QUOTES.length|0;
 function quote(){const q=QUOTES[qi++%QUOTES.length],el=$('quote');el.innerHTML='“'+q[0]+'”<small>▲ '+q[1].toUpperCase()+'</small>';el.classList.remove('go');void el.offsetWidth;el.classList.add('go')}
 function renderPlat(){const c=$('platSel');c.innerHTML='';[['win','⊞ Windows'],['mac','⌘ Mac / iPad']].forEach(([k,n])=>{const b=document.createElement('button');b.textContent=n;b.className=k===PLAT?'on':'';
@@ -967,7 +1007,7 @@ function layoutBricks(){const fh=field.clientHeight;st.bricks.forEach((b,i)=>{b.
 function topBrick(){return st.bricks[st.bricks.length-1]||null}
 // Target = lowest falling prompt; if nothing is falling, the top brick of the stack.
 function target(){return st.pieces.reduce((a,p)=>!a||p.y>a.y?p:a,null)||topBrick()}
-function markTarget(){const tg=target();[...st.pieces,...st.bricks].forEach(p=>p.el.classList.toggle('target',p===tg))}
+function markTarget(){const tg=target();[...st.pieces,...st.bricks].forEach(p=>p.el.classList.toggle('target',p===tg));if(window.qpUpdate&&TMODE==='pick')qpUpdate(tg);if(window.touchCtx&&TMODE==='keys')touchCtx(tg)}
 function stackPct(){return Math.min(100,Math.round(100*st.bricks.length*PITCH/(field.clientHeight-8-PITCH)))}
 function land(p){const i=st.pieces.indexOf(p);if(i>=0)st.pieces.splice(i,1);if(!st.missed.includes(p.name+' = '+LABEL(p.combo)))st.missed.push(p.name+' = '+LABEL(p.combo));
  p.el.classList.remove('shake','strike');const pp=p.el.querySelector('.pip');if(pp)pp.remove();p.el.classList.add('brick');if(!p.el.querySelector('.keys'))p.el.insertAdjacentHTML('beforeend','<span class="keys">'+CAPS(p.combo)+'</span>');st.bricks.push(p);layoutBricks();sfx.land();
@@ -977,13 +1017,13 @@ function showHint(){if(!st||!st.running||st.paused)return;const tg=target();if(!
  let h=tg.el.querySelector('.hint');if(!h){h=document.createElement('span');h.className='hint';tg.el.appendChild(h)}h.textContent=txt;tone(880,.08,'triangle',.06);hud()}
 function hud(){$('sScore').textContent=st.score;$('sCombo').textContent='x'+st.combo;$('sTime').textContent=Math.ceil(st.time);
  $('stackBar').style.setProperty('--h',stackPct()+'%');$('sPct').textContent=stackPct()+'%';$('sPct').style.color=stackPct()>65?'var(--red)':'';$('sTime').style.color=st.time<10?'var(--red)':'';
- const dl=$('sDelta');if(st.pace){const d=st.score-st.pace[Math.min(60,Math.floor(60-st.time))];dl.textContent=(d>=0?'+':'−')+fmtN(Math.abs(d))+' vs PB';dl.className=d>=0?'up':'dn'}else{dl.textContent='';dl.className=''}}
+ const dl=$('sDelta');if(st.pace){const d=st.score-st.pace[Math.min(60,Math.floor(60-st.time))];dl.textContent=(d>=0?'+':'−')+fmtN(Math.abs(d))+' vs record';dl.className=d>=0?'up':'dn'}else{dl.textContent='';dl.className=''}}
 function hit(p){st.hits++;const isB=st.bricks.includes(p);(isB?st.bricks:st.pieces).splice((isB?st.bricks:st.pieces).indexOf(p),1);
  if(p.hint||isB){ // hinted or brick clears: flat points, combo neither grows nor resets, no jackpot progress
   const g0=pts(isB?75:(p.hint===1?50:25));st.score+=g0;if(isB){st.sold++;quote()}scorePop(p.el,'+'+g0,isB?'sold':'');p.el.classList.add('hit');setTimeout(()=>p.el.remove(),300);flash('var(--green)');coins(p.el,6);sfx.hit(0);layoutBricks();hud();return}
  const g=pts(100+25*st.combo);st.score+=g;st.combo++;st.bestCombo=Math.max(st.bestCombo,st.combo);scorePop(p.el,'+'+g);setHeat(st.combo);
  p.el.classList.add('hit');setTimeout(()=>p.el.remove(),300);flash('var(--green)');coins(p.el,8+Math.min(30,st.combo*2));sfx.hit(st.combo);
- if(st.combo%5===0){st.jackpots++;st.score+=pts(500);sfx.jackpot();const lv=st.combo>=20?'WOLF MODE':st.combo>=15?'UNSTOPPABLE':st.combo>=10?'ON FIRE':'JACKPOT!';comboText(lv+' +$'+fmtN(pts(500)),true);coins(field,st.combo>=10?80:50,true);bigShake(st.combo>=10?2:1)}else if(st.combo>=2)comboText('COMBO x'+st.combo);hud()}
+ if(st.combo%5===0){st.jackpots++;st.score+=pts(500);sfx.jackpot();const lv=st.combo>=20?'WOLF PACK':st.combo>=15?'BULL RUN':st.combo>=10?'ON FIRE':'JACKPOT';comboText(lv+' +$'+fmtN(pts(500)),true);coins(field,st.combo>=10?80:50,true);bigShake(st.combo>=10?2:1)}else if(st.combo>=2)comboText('STREAK x'+st.combo);hud()}
 function setHeat(c){const h=c>=15?4:c>=10?3:c>=5?2:c>=3?1:0;field.dataset.heat=h;field.style.setProperty('--heat',h)}
 const RMO=()=>matchMedia('(prefers-reduced-motion: reduce)').matches;
 function bigShake(n){if(RMO())return;const w=$('wrap');w.classList.remove('bshake','bshake2');void w.offsetWidth;w.classList.add(n>1?'bshake2':'bshake');setTimeout(()=>w.classList.remove('bshake','bshake2'),600)}
@@ -1005,33 +1045,33 @@ function coins(el,n,rain){if(RMO())n=Math.min(n,2);if(RMO()&&rain)return;const f
 let endAt=0;
 function countUp(el,v){if(RMO()||v<=0){el.textContent=fmtN(v);return}const t0=performance.now(),D=200,stp=t=>{const k=Math.min(1,(t-t0)/D);el.textContent=fmtN(k<1?Math.round(v*Math.floor(k*8)/8):v);if(k<1)requestAnimationFrame(stp)};el.textContent='0';requestAnimationFrame(stp)}
 function end(why){if(!st.running)return;seqCancel();st.running=false;endAt=performance.now();setHeat(0);st.trace[60]=st.score;document.body.classList.remove('playing');setTimeout(()=>document.querySelectorAll('.piece').forEach(e=>e.remove()),900);sfx.end();
- const prevBest=best,nb=st.score>best;if(nb){best=st.score;localStorage.kwBest=best;META.savePace(st.trace,st.score)}$('endTitle').innerHTML=esc0(why==='STACK OVERFLOW!'?'Stack overflow':why&&why!=='TIME!'?why:'Closing bell');
- $('ePb').innerHTML=prevBest?(nb?'<span class="up">▲ +'+fmtN(st.score-prevBest)+' over your old best</span>':'<span class="dn">'+fmtN(prevBest-st.score)+' short of your best</span>'):'';st.prevBest=prevBest;st.nb=nb;const stp=$('eStamp');stp.textContent=why==='STACK OVERFLOW!'?'Margin call':nb&&st.score>0?'New high':'Filled';stp.className='stamp'+(why==='STACK OVERFLOW!'?' bad':'');stp.style.setProperty('--rot',(-4-Math.random()*5).toFixed(1)+'deg');$('tkNo').textContent='No. '+String(Date.now()%1e6).padStart(6,'0');
+ const prevBest=best,nb=st.score>best;if(nb){best=st.score;localStorage.kwBest=best;META.savePace(st.trace,st.score)}$('endTitle').innerHTML=esc0(why==='STACK OVERFLOW!'?'Margin call':why&&why!=='TIME!'?why:'Closing bell');
+ $('ePb').innerHTML=prevBest?(nb?'<span class="up">▲ +'+fmtN(st.score-prevBest)+' over your old record</span>':'<span class="dn">'+fmtN(prevBest-st.score)+' short of your record</span>'):'';st.prevBest=prevBest;st.nb=nb;const stp=$('eStamp');stp.textContent=why==='STACK OVERFLOW!'?'Margin call':nb&&st.score>0?'New high':'Filled';stp.className='stamp'+(why==='STACK OVERFLOW!'?' bad':'');stp.style.setProperty('--rot',(-4-Math.random()*5).toFixed(1)+'deg');$('tkNo').textContent='No. '+String(Date.now()%1e6).padStart(6,'0');
  countUp($('eScore'),st.score);$('eCombo').textContent=st.bestCombo;$('eHints').textContent=st.hints;$('eSpd').textContent=SP().n;$('eBest').textContent=fmtN(best);$('best0').textContent=fmtN(best);$('shareWrap').classList.add('hidden');$('shareMsg').textContent='';
- $('missed').textContent=st.missed.length?'Missed: '+st.missed.slice(-4).join(' · '):'';$('eJack').textContent=st.jackpots;$('eAcc').textContent=acc()+'%';
+ $('missed').textContent=st.missed.length?'Unfilled: '+st.missed.slice(-4).join(' · '):'';$('eJack').textContent=st.jackpots;$('eAcc').textContent=acc()+'%';
  endExtras();$('ovEnd').classList.remove('hidden');hud();showInterstitial()}
 function endExtras(){const d=st.daily;
- $('eDaily').textContent=d?('Daily #'+d+(st.official?' · official':' · practice')):'Arcade · '+SP().n;
+ $('eDaily').textContent=d?('Daily Tape #'+d+(st.official?' · official':' · practice')):'Arcade · '+SP().n+' tape';
  if(d&&st.official){const ds=dailyStore();ds[d]={score:st.score,acc:acc(),jackpots:st.jackpots,combo:st.bestCombo,name:pname(),date:etDate()};localStorage.kwDaily=JSON.stringify(ds);lbPost(d);META.dailyDone(d)}
  // head-to-head vs challenge link
  META.arcadeEnd(st);const vs=$('eVs');vs.classList.add('hidden');
- if(CH&&((CH.d||0)===d)){const them=CH.n||'Your rival',diff=st.score-CH.s;vs.classList.remove('hidden');
-  vs.innerHTML=`Head to head: you ${fmtN(st.score)} vs ${esc0(them)} ${fmtN(CH.s)} — `+(diff>0?`<span class="up">you win by ${fmtN(diff)}! ▲</span>`:diff<0?`<span class="dn">${esc0(them)} leads by ${fmtN(-diff)} ▼</span>`:'dead heat!')}
+ if(CH&&((CH.d||0)===d)){const them=CH.n||'The other desk',diff=st.score-CH.s;vs.classList.remove('hidden');
+  vs.innerHTML=`Head to head: you booked ${fmtN(st.score)} vs ${esc0(them)} ${fmtN(CH.s)} — `+(diff>0?`<span class="up">you take it by ${fmtN(diff)} ▲</span>`:diff<0?`<span class="dn">${esc0(them)} leads by ${fmtN(-diff)} ▼</span>`:'dead heat')}
  // low-score nudge
  const ng=$('nudge');ng.classList.add('hidden');
- if(st.score<300&&!d&&speedKey!=='chill'){ng.classList.remove('hidden');ng.innerHTML='Rough tape? Try <b>Chill</b> speed (0.75x) to learn the shortcuts. <button id="bChill">Play Chill</button>';
+ if(st.score<300&&!d&&speedKey!=='chill'){ng.classList.remove('hidden');ng.innerHTML='Rough tape? Drop to <b>Quiet</b> speed (0.75x) and learn the orders. <button id="bChill">Trade Quiet tape</button>';
   $('bChill').onclick=()=>{speedKey='chill';localStorage.kwSpeed='chill';renderSpeed();$('ovEnd').classList.add('hidden');start()}}
  renderLb(d)}
 const esc0=s=>String(s).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
 function renderLb(d){const el=$('eLb');if(!d){el.innerHTML='';return}const ds=dailyStore();
- const rows=Object.entries(ds).sort((a,b)=>b[0]-a[0]).slice(0,7).map(([n,x])=>`<tr class="${+n===d?'me':''}"><td>Daily #${n}</td><td>${fmtN(x.score)}</td><td>${x.acc}%</td><td>${x.jackpots} jkpt</td></tr>`).join('');
- el.innerHTML=rows?`<div class="note">Your official Daily scores (local)</div><table class="lb">${rows}</table><div id="lbRemote"></div>`:'';lbFetch(d)}
+ const rows=Object.entries(ds).sort((a,b)=>b[0]-a[0]).slice(0,7).map(([n,x])=>`<tr class="${+n===d?'me':''}"><td>Tape #${n}</td><td>${fmtN(x.score)}</td><td>${x.acc}%</td><td>${x.jackpots} jkpt</td></tr>`).join('');
+ el.innerHTML=rows?`<div class="note">Your official Daily Tape P&amp;L (this browser)</div><table class="lb">${rows}</table><div id="lbRemote"></div>`:'';lbFetch(d)}
 async function lbFetch(d){if(!LEADERBOARD.endpoint)return;try{const u=LEADERBOARD.flavor==='supabase'?`${LEADERBOARD.endpoint}?daily=eq.${d}&order=score.desc&limit=10&select=name,score,accuracy,jackpots`:`${LEADERBOARD.endpoint}?daily=${d}`;
- const r=await fetch(u,{headers:LEADERBOARD.headers});const a=await r.json();const el=$('lbRemote');if(el&&Array.isArray(a))el.innerHTML='<div class="note">Daily #'+d+' leaderboard</div><table class="lb">'+a.slice(0,10).map((x,i)=>`<tr><td>${i+1}.</td><td>${esc0(x.name||'anon')}</td><td>${fmtN(x.score)}</td><td>${x.accuracy??''}%</td></tr>`).join('')+'</table>'}catch(e){}}
+ const r=await fetch(u,{headers:LEADERBOARD.headers});const a=await r.json();const el=$('lbRemote');if(el&&Array.isArray(a))el.innerHTML='<div class="note">Daily Tape #'+d+' leaderboard</div><table class="lb">'+a.slice(0,10).map((x,i)=>`<tr><td>${i+1}.</td><td>${esc0(x.name||'anon')}</td><td>${fmtN(x.score)}</td><td>${x.accuracy??''}%</td></tr>`).join('')+'</table>'}catch(e){}}
 async function lbPost(d){if(!LEADERBOARD.endpoint)return;try{await fetch(LEADERBOARD.endpoint,{method:'POST',headers:Object.assign({'Content-Type':'application/json'},LEADERBOARD.flavor==='supabase'?{Prefer:'return=minimal'}:{},LEADERBOARD.headers),
  body:JSON.stringify({daily:d,name:pname()||'anon',score:st.score,accuracy:acc(),jackpots:st.jackpots,combo:st.bestCombo})})}catch(e){}}
 function shareText(){const who=pname()||'I',sp=SP();const url=SITE_URL+'?c='+enc({n:pname(),s:st.score,d:st.daily||0,sp:st.daily?'normal':speedKey,a:acc(),j:st.jackpots,b:st.bestCombo});
- const t=`${who} scored ${fmtN(st.score)} on Keyboard Warrior (${st.daily?'Daily #'+st.daily+', ':''}${IS_MAC()?'Mac, ':''}${sp.n} ${sp.m}x, ${st.jackpots} jackpot${st.jackpots===1?'':'s'}, ${acc()}% accuracy, best combo x${st.bestCombo}) — beat me!`;return{t,url}}
+ const t=`${who} booked ${fmtN(st.score)} P&L on Keyboard Warrior (${st.daily?'Daily Tape #'+st.daily+', ':''}${IS_MAC()?'Mac, ':''}${sp.n} tape ${sp.m}x, ${st.jackpots} jackpot${st.jackpots===1?'':'s'}, ${acc()}% fill rate, best streak x${st.bestCombo}). Your move.`;return{t,url}}
 function pause(v){if(!st||!st.running)return;renderSpeed();st.paused=v===undefined?!st.paused:v;$('ovPause').classList.toggle('hidden',!st.paused);$('bPause').innerHTML=st.paused?IC.play:IC.pause;document.body.classList.toggle('paused',st.paused);if(!st.paused)lastT=performance.now()}
 // Priority: falling prompt (lowest matching) > any brick with that shortcut > wrong key.
 function submit(c){if(!st||!st.running||st.paused)return;const tg=target();if(!tg)return;
@@ -1078,6 +1118,7 @@ addEventListener('keyup',e=>{if(window.WF_ACTIVE||window.HERO_ACTIVE)return;if(e
 addEventListener('blur',()=>{if(!window.WF_ACTIVE&&!window.HERO_ACTIVE)pause(true)});
 
 /* Touch controls */
+let TMODE=localStorage.kwTouch||'pick';
 const tm={Ctrl:false,Meta:false,Alt:false,Shift:false};
 const tmCombo=c=>(tm.Ctrl?'Ctrl+':'')+(tm.Meta?'Meta+':'')+(tm.Alt?'Alt+':'')+(tm.Shift?'Shift+':'')+c;let buildMods;
 (function buildTouch(){const T=$('touch');
@@ -1086,8 +1127,8 @@ const tmCombo=c=>(tm.Ctrl?'Ctrl+':'')+(tm.Meta?'Meta+':'')+(tm.Alt?'Alt+':'')+(t
  const mr=document.createElement('div');mr.className='row';
  const modWrap=document.createElement('span');modWrap.style.display='contents';mr.appendChild(modWrap);
  buildMods=()=>{modWrap.innerHTML='';Object.keys(tm).forEach(k=>tm[k]=false);(PLAT==='mac'?[['Meta','⌘'],['Alt','⌥'],['Ctrl','⌃'],['Shift','⇧']]:[['Ctrl','Ctrl'],['Alt','Alt'],['Shift','Shift']]).forEach(([m,l])=>{const b=document.createElement('button');b.className='mod';b.textContent=l;b.title=m;b.onclick=()=>{tm[m]=!tm[m];b.classList.toggle('on',tm[m])};modWrap.appendChild(b)})};buildMods();
- const hb=document.createElement('button');hb.textContent='Hint';hb.title='Hint';hb.onclick=()=>{if(window.WF_ACTIVE)WF.touch('HINT');else showHint()};mr.appendChild(hb);
- const mb=document.createElement('button');mb.textContent='⋯';mb.title='More keys';mb.onclick=()=>{T.classList.toggle('more');mb.classList.toggle('on')};mr.appendChild(mb);T.appendChild(mr);
+ const hb=document.createElement('button');hb.textContent='Tip';hb.title='Insider tip';hb.onclick=()=>{if(window.WF_ACTIVE)WF.touch('HINT');else showHint()};mr.appendChild(hb);
+ const mb=document.createElement('button');mb.className='more-b';mb.textContent='⋯';mb.title='More keys';mb.onclick=()=>{T.classList.toggle('more');mb.classList.toggle('on')};mr.appendChild(mb);T.appendChild(mr);
  const EXTRA=new Set(['Space','Home','End','F2','F4','F5','F7','F11','Enter','ArrowDown','ArrowLeft','ArrowRight','F1','F8']);
  const kr=document.createElement('div');kr.className='row';const xr=document.createElement('div');xr.className='row extra';
  keys.forEach(([l,c])=>{const b=document.createElement('button');b.textContent=l;b.onclick=()=>{if(window.WF_ACTIVE){WF.touch(c,tm.Ctrl,tm.Alt,tm.Shift,tm.Meta);Object.keys(tm).forEach(k=>tm[k]=false);mr.querySelectorAll('.mod').forEach(x=>x.classList.remove('on'));return}if(c==='HINT'){showHint();return}
@@ -1097,7 +1138,27 @@ const tmCombo=c=>(tm.Ctrl?'Ctrl+':'')+(tm.Meta?'Meta+':'')+(tm.Alt?'Alt+':'')+(t
    // Alt alone + key: chord if it matches something on screen, otherwise it starts a KeyTip sequence
    if(!IS_MAC()&&tm.Alt&&!tm.Ctrl&&!tm.Shift&&![...st.pieces,...st.bricks].some(p=>p.combo===chord)){seqStart();seqKey(c);Object.keys(tm).forEach(k=>tm[k]=false);mr.querySelectorAll('.mod').forEach(x=>x.classList.remove('on'));return}}
   submit(chord);
-  Object.keys(tm).forEach(k=>tm[k]=false);mr.querySelectorAll('.mod').forEach(x=>x.classList.remove('on'))};(EXTRA.has(c)?xr:kr).appendChild(b)});T.appendChild(kr);T.appendChild(xr)})();
+  Object.keys(tm).forEach(k=>tm[k]=false);mr.querySelectorAll('.mod').forEach(x=>x.classList.remove('on'))};b.dataset.c=c;(EXTRA.has(c)?xr:kr).appendChild(b)});kr.classList.add('full');xr.classList.add('full');T.appendChild(kr);T.appendChild(xr);
+ // contextual keypad: the keys this order needs + a few decoys (fast "build the combo" tap puzzle)
+ const cr=document.createElement('div');cr.className='row ctx';T.insertBefore(cr,kr);const KB=new Map(keys.map(([l,c])=>[c,l]));
+ const lab=c=>KB.get(c)||LABEL0(c).replace(/_SAFE/,'');
+ const fire=c=>{const k=[...T.querySelectorAll('.full button')].find(x=>x.dataset.c===c);if(k){k.click();return}submit(tmCombo(c));Object.keys(tm).forEach(k=>tm[k]=false);mr.querySelectorAll('.mod').forEach(x=>x.classList.remove('on'))};
+ let lastTg=null;
+ window.touchCtx=tg=>{if(!tg){cr.innerHTML='';lastTg=null;return}if(tg===lastTg)return;lastTg=tg;
+  const need=[...new Set(String(tg.combo).split(/[+>]/).filter(t=>!/^(Ctrl|Alt|Shift|Meta)$/.test(t)))];
+  const pool=[...new Set((typeof ACTIVE!=='undefined'&&ACTIVE.length?ACTIVE:SHORTCUTS).map(x=>String(x[1]).split(/[+>]/).pop()).filter(c=>!need.includes(c)&&!/^(Ctrl|Alt|Shift|Meta)$/.test(c)))].sort(()=>Math.random()-.5);
+  const set=need.concat(pool.slice(0,Math.max(2,6-need.length))).sort(()=>Math.random()-.5);
+  cr.innerHTML='';set.forEach(c=>{const b=document.createElement('button');b.textContent=lab(c);b.dataset.c=c;b.onpointerdown=e=>{e.preventDefault();buzzT(8);fire(c)};cr.appendChild(b)})};
+ // Quick Pick: choose the right shortcut from four tickets (default on phones)
+ const qp=document.createElement('div');qp.id='qp';T.parentNode.insertBefore(qp,T);let qpTg=null;
+ window.qpUpdate=tg=>{if(!tg||!st||!st.running){qp.innerHTML='';qpTg=null;return}if(tg===qpTg)return;qpTg=tg;
+  const src=(typeof ACTIVE!=='undefined'&&ACTIVE.length?ACTIVE:SHORTCUTS).map(x=>x[1]).filter(c=>c!==tg.combo&&!RESERVED.has(c));const opts=[tg.combo];
+  const r=src.sort(()=>Math.random()-.5);for(const c of r){if(opts.length>=4)break;if(!opts.some(o=>LABEL(o)===LABEL(c)))opts.push(c)}
+  opts.sort(()=>Math.random()-.5);qp.innerHTML='';opts.forEach(c=>{const b=document.createElement('button');b.innerHTML='<kbd>'+LABEL(c)+'</kbd>';b.dataset.c=c;b.onpointerdown=e=>{e.preventDefault();if(!st||!st.running||st.paused)return;buzzT(c===tg.combo?8:[30,40,30]);submit(c)};qp.appendChild(b)})};
+ const mt=document.createElement('button');mt.className='tmode';mt.title='Switch touch input: Quick Pick or keypad';const setMode=m=>{TMODE=m;localStorage.kwTouch=m;document.body.dataset.tmode=m;mt.textContent=m==='pick'?'Keypad':'Quick pick';qpTg=null;lastTg=null;if(st&&st.running)markTarget()};mt.onclick=()=>setMode(TMODE==='pick'?'keys':'pick');mr.appendChild(mt);setMode(TMODE)})();
+function buzzT(p){try{if(navigator.vibrate)navigator.vibrate(p)}catch(_){}}
+// any real hardware key press hides the touch UI (iPad + keyboard, Chromebooks, etc.)
+addEventListener('keydown',e=>{if(e.isTrusted&&!MODS.includes(e.code)&&!document.body.classList.contains('hwkb'))document.body.classList.add('hwkb')},true);
 
 /* Buttons */
 rebuildActive();renderPlat();renderSpeed();renderPool();marquee();$('bStart').onclick=()=>start();$('bHint').onclick=showHint;$('bAgain').onclick=()=>restart();
@@ -1111,21 +1172,21 @@ $('bFs').onclick=async()=>{try{if(!document.fullscreenElement){await document.do
 document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement){kbLocked=false;if(navigator.keyboard&&navigator.keyboard.unlock)navigator.keyboard.unlock()}});
 async function copyShare(full){try{await navigator.clipboard.writeText(full)}catch(e){const ta=document.createElement('textarea');ta.value=full;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove()}}
 function arcadeCard(){const sp=SP();return META.card({mode:st.daily?'DAILY #'+st.daily:'ARCADE · '+sp.n.toUpperCase()+' '+sp.m+'x',score:st.score,trace:st.trace,
- stats:[['Best combo','x'+st.bestCombo],['Accuracy',acc()+'%'],['Jackpots',st.jackpots]],sub:st.nb&&st.score>0?'New high':''})}
+ stats:[['Best streak','x'+st.bestCombo],['Fill rate',acc()+'%'],['Jackpots',st.jackpots]],sub:st.nb&&st.score>0?'New high':''})}
 $('bCardDl').onclick=()=>{const a=document.createElement('a');a.href=$('shareImg').src;a.download='keyboard-warrior-'+st.score+'.png';document.body.appendChild(a);a.click();a.remove()};
 $('bCopy').onclick=async()=>{const{t,url}=shareText(),full=t+' '+url;window.KW_LAST_SHARE=full;await copyShare(full);$('shareMsg').textContent='Challenge link copied. Paste it to your coworkers.'};
 $('bShare').onclick=async()=>{const{t,url}=shareText(),full=t+' '+url;window.KW_LAST_SHARE=full;
  const png=arcadeCard();if(png){$('shareImg').src=png;$('shareWrap').classList.remove('hidden')}
  if(navigator.share){try{let files=null;if(png&&navigator.canShare){const bl=await (await fetch(png)).blob(),fl=new File([bl],'keyboard-warrior.png',{type:'image/png'});if(navigator.canShare({files:[fl]}))files=[fl]}
-  await navigator.share(files?{title:'Keyboard Warrior',text:full,files}:{title:'Keyboard Warrior',text:t,url});$('shareMsg').textContent='Shared!';return}catch(e){if(e&&e.name==='AbortError')return}}
- await copyShare(full);$('shareMsg').textContent='Challenge link copied! Save the card image above and post it with the link.'};
+  await navigator.share(files?{title:'Keyboard Warrior',text:full,files}:{title:'Keyboard Warrior',text:t,url});$('shareMsg').textContent='Ticket sent.';return}catch(e){if(e&&e.name==='AbortError')return}}
+ await copyShare(full);$('shareMsg').textContent='Challenge link copied. Save the ticket above and post it with the link.'};
 /* name, daily button, challenge banner */
 $('pName').value=pname();$('pName').oninput=e=>{localStorage.kwName=e.target.value.trim()};
 function dailyLabel(){const n=dailyNum(),done=dailyStore()[n],sk=META.streak();$('dailyN').textContent='#'+n+(done?' ✓':'');
- $('dailySub').textContent=done?(sk>1?sk+'-day streak · back tomorrow':'Filed · practice runs are unofficial'):(sk>0?'Keep your '+sk+'-day streak alive':'Same tape for everyone today');$('bDaily').classList.toggle('due',!done)}
+ $('dailySub').textContent=done?(sk>1?sk+'-day streak · next tape tomorrow':'Filed · reruns are practice only'):(sk>0?'Keep your '+sk+'-day streak alive':'One tape, every trader, once a day');$('bDaily').classList.toggle('due',!done)}
 $('bDaily').onclick=()=>start({daily:dailyNum()});
-if(CH&&typeof CH.s==='number'){const b=$('chBanner'),who=esc0(CH.n||'A coworker');b.classList.remove('hidden');
- b.innerHTML=`<b class="stamp sm">Challenge</b> Beat ${who}'s <b>${fmtN(CH.s)}</b>${CH.d?' on Daily #'+CH.d:' ('+(SPEEDS[CH.sp]||SPEEDS.normal).n+' speed)'}${CH.a!=null?' · '+CH.a+'% acc':''} <button id="bTakeCh">Take the challenge ▶</button>`;
+if(CH&&typeof CH.s==='number'){const b=$('chBanner'),who=esc0(CH.n||'A rival desk');b.classList.remove('hidden');
+ b.innerHTML=`<b class="stamp sm">Challenge</b> ${who} booked <b>${fmtN(CH.s)}</b>${CH.d?' on Daily Tape #'+CH.d:' ('+(SPEEDS[CH.sp]||SPEEDS.normal).n+' tape)'}${CH.a!=null?' · '+CH.a+'% fill rate':''} <button id="bTakeCh">Take the trade</button>`;
  $('bTakeCh').onclick=()=>{if(CH.d)start({daily:CH.d});else{if(SPEEDS[CH.sp]){speedKey=CH.sp;renderSpeed()}start()}}}
 field.tabIndex=0;
 META.init();dailyLabel();
@@ -1455,7 +1516,7 @@ function render(){const g=sel(),one=single(g);let h='<colgroup><col style="width
 function check(){if(replaying)return;let n=0;task.goals.forEach((g,i)=>{const ok=!!g.ok();if(ok)n++;const li=$('wfChecks').children[i];if(ok&&!li.classList.contains('done')){li.classList.add('done');tone(1046,.1,'triangle',.06)}else if(!ok)li.classList.remove('done')});
  if(n===task.goals.length&&!done){done=true;tEnd=(performance.now()-t0)/1000;if(!timerOn)tEnd=0;timerOn=false;const tok=task,lc=log;setTimeout(()=>{if(task===tok&&log===lc&&done)finish()},500)}}
 function after(){render();check()}
-function showHint(){const g=task&&task.goals.find(g=>!g.ok());if(!g)return;hints++;const el=$('wfHint');el.classList.remove('hidden');el.innerHTML='<b>Hint · </b><b>'+esc(g.t)+'</b><br>'+esc(g.h);rec('F1','Hint',g.h)}
+function showHint(){const g=task&&task.goals.find(g=>!g.ok());if(!g)return;hints++;const el=$('wfHint');el.classList.remove('hidden');el.innerHTML='<b>Tip · </b><b>'+esc(g.t)+'</b><br>'+esc(g.h);rec('F1','Hint',g.h)}
 /* ---- load / menu / finish ---- */
 const bestAll=()=>{try{return JSON.parse(localStorage.kwWF||'{}')}catch(_){return{}}};
 function load(i){task=view(TASKS[i]);task.i=i;S=blank();task.data.forEach((row,r)=>row.forEach((v,c)=>{if(v==null)return;S.cells[K(r,c)]=typeof v==='string'&&v[0]==='='?{v:'',f:v}:{v}}));
@@ -1463,17 +1524,17 @@ function load(i){task=view(TASKS[i]);task.i=i;S=blank();task.data.forEach((row,r
  $('wfTitle').textContent=task.name+(IS_MAC()?' ⌘':'');$('wfBrief').textContent=task.brief+(task.note?' '+task.note:'');$('wfPar').textContent=task.par;$('wfTime').textContent='0:00.0';$('wfTab').textContent=task.tab;$('wfHint').classList.add('hidden');
  $('wfChecks').innerHTML=task.goals.map(g=>'<li>'+esc(g.t)+'</li>').join('');$('wfLog').innerHTML='';$('wfMenu').classList.add('hidden');$('wfEnd').classList.add('hidden');render();check()}
 function menu(){const b=bestAll();$('wfTasks').innerHTML='';TASKS.forEach((t,i)=>{view(t);const x=b[bestKey(t)],btn=document.createElement('button');btn.className='tcard';
- btn.innerHTML=`<b>${i+1}. ${esc(t.name)}</b><span class="note">${esc(t.brief)}</span><small>${t.goals.length} goals · par ${t.par} keys${x?' · best '+fmtT(x.time)+' / '+x.keys+' keys ('+x.grade+')':''}</small>`;btn.onclick=()=>load(i);$('wfTasks').appendChild(btn)});
+ btn.innerHTML=`<b>${i+1}. ${esc(t.name)}</b><span class="note">${esc(t.brief)}</span><small>${t.goals.length} steps · par ${t.par} keys${x?' · record '+fmtT(x.time)+' / '+x.keys+' keys ('+x.grade+')':''}</small>`;btn.onclick=()=>load(i);$('wfTasks').appendChild(btn)});
  $('wfMenu').classList.remove('hidden');$('wfEnd').classList.add('hidden')}
 const grade=e=>e>=90?'A':e>=75?'B':e>=60?'C':e>=45?'D':'F';
 function finish(){sfx.jackpot();const t=tEnd,eff=Math.min(100,Math.round(100*task.par/Math.max(1,keys))),gr=grade(eff),b=bestAll(),prev=b[bestKey(task)];let nb=false;
  if(!prev||t<prev.time){b[bestKey(task)]={time:t,keys,grade:gr};localStorage.kwWF=JSON.stringify(b);nb=true}
  const sc=[...used].filter(u=>u!=='Typing');const acts=log.filter(l=>!l.bad&&l.action!=='Hint');
- $('wfEnd').innerHTML=`<div class="stamp">${nb?'New best':'Filled'}</div><h2>Task complete</h2><div class="grade">${gr}</div>
- <table><tr><td>Time</td><td><b>${fmtT(t)}</b>${prev&&!nb?' (best '+fmtT(prev.time)+')':''}</td></tr><tr><td>Keystrokes</td><td><b>${keys}</b> vs par ${task.par}</td></tr><tr><td>Mouse-free efficiency</td><td><b>${eff}%</b></td></tr><tr><td>Hints used</td><td>${hints}</td></tr><tr><td>Logged actions</td><td>${log.length} (${log.filter(l=>l.bad).length} invalid)</td></tr></table>
+ $('wfEnd').innerHTML=`<div class="stamp">${nb?'New record':'Filled'}</div><h2>Job closed</h2><div class="grade">${gr}</div>
+ <table><tr><td>Time</td><td><b>${fmtT(t)}</b>${prev&&!nb?' (record '+fmtT(prev.time)+')':''}</td></tr><tr><td>Keystrokes</td><td><b>${keys}</b> vs par ${task.par}</td></tr><tr><td>Mouse-free efficiency</td><td><b>${eff}%</b></td></tr><tr><td>Tips taken</td><td>${hints}</td></tr><tr><td>Logged actions</td><td>${log.length} (${log.filter(l=>l.bad).length} invalid)</td></tr></table>
  <div class="note">Shortcuts used (${sc.length}):</div><div class="chips">${sc.map(s=>'<kbd>'+esc(s)+'</kbd>').join('')}</div>
  <div class="paths"><div><b style="color:#d4af37">Par path (${task.par} keys)</b><br>${task.path.map(esc).join(' → ')}</div><div><b style="color:#19d47a">Your path (${keys} keys)</b><br>${acts.map(l=>esc(l.keys)).join(' → ')}</div></div>
- <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center"><button id="wfRep">▶ Replay</button><button id="wfCsv">Copy log (CSV)</button><button id="wfJson">↓ JSON</button><button id="wfCsvDl">↓ CSV</button>${task.i<TASKS.length-1?'<button id="wfNext" class="big">Next task ▶</button>':''}<button id="wfTasksB">Tasks</button></div><div class="note" id="wfMsg">Everything stays in your browser (simulated sheet). <kbd>Enter</kbd> next task · <kbd>R</kbd> retry</div>`;
+ <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center"><button id="wfRep">Replay</button><button id="wfCsv">Copy log (CSV)</button><button id="wfJson">↓ JSON</button><button id="wfCsvDl">↓ CSV</button>${task.i<TASKS.length-1?'<button id="wfNext" class="big">Next job</button>':''}<button id="wfTasksB">Job board</button></div><div class="note" id="wfMsg">Nothing leaves your browser. <kbd>Enter</kbd> next job · <kbd>R</kbd> re-open</div>`;
  const mx=META.wfEnd({grade:gr,i:task.i,nb});$('wfEnd').querySelector('.grade').insertAdjacentHTML('afterend',mx);
  $('wfEnd').classList.remove('hidden');$('wfRep').onclick=replay;$('wfCsv').onclick=()=>{copyText(csv());$('wfMsg').textContent='Log copied as CSV.'};
  $('wfJson').onclick=()=>dl('keyboard-warrior-'+task.id+'.json',JSON.stringify(exportObj(),null,2),'application/json');$('wfCsvDl').onclick=()=>dl('keyboard-warrior-'+task.id+'.csv',csv(),'text/csv');
@@ -1502,16 +1563,16 @@ if(location.hash==='#workflow-demo'){WF.enter();WF.load(0);const seqs=['Ctrl+Hom
 </script>
 <div id="hero" class="hidden">
  <div id="hTop"><button id="hBack" title="Back to modes">← Modes</button><div id="hTick"></div><button id="hPauseB" data-ic="pause" title="Pause (Esc)"></button></div>
- <div id="hHud"><div><b id="hScore">0</b><i>SCORE</i></div><div><b id="hMult">1x</b><i>MULT</i></div><div><b id="hStreak">0</b><i>STREAK</i></div>
+ <div id="hHud"><div><b id="hScore">0</b><i>P&amp;L</i></div><div><b id="hMult">1x</b><i>LEVERAGE</i></div><div><b id="hStreak">0</b><i>STREAK</i></div>
   <div class="hm"><div id="hPort"><span></span></div><i>PORTFOLIO</i></div><div class="hm"><div id="hStar"><span></span></div><i>BULL MARKET</i></div></div>
- <div id="hStage"><canvas id="hCv"></canvas><div id="hCount"></div><div id="hCall"></div><button id="hStarB">BULL MARKET 2x <kbd>Enter</kbd></button><button id="hDollarB" title="Gold bonus bar (Space)">$ SPACE $</button><div id="hBucks"><span>$</span><span>$</span><span>$</span></div>
+ <div id="hStage"><canvas id="hCv"></canvas><div id="hCount"></div><div id="hCall"></div><button id="hStarB">BULL MARKET 2x <kbd>Enter</kbd></button><button id="hDollarB" title="Gold bonus bar (F2)">$ F2 $</button><div id="hBucks"><span>$</span><span>$</span><span>$</span></div>
   <div id="hMenu" class="hov paper"><div class="kicker">Section C · Entertainment</div><h2>Keyboard Hero</h2>
-   <p style="margin:0;max-width:560px">Hit the notes as they cross the line. Hold the long ones, slam chords together, hit the wide gold <b>$ bonus bar</b> with <b>SPACE</b> for a $$$ payout. Starred <b>★</b> notes charge the Bull Market meter — <b>Enter</b> for 2x.</p>
+   <p style="margin:0;max-width:560px">Fill every note on the line with the <b>arrow keys</b>. Hold the long ones, hit chords together, and slam the gold <b>$ bar</b> with <b>F2</b> (Fn+F2 on Mac) when the drop lands. Starred <b>★</b> notes charge the Bull Market; <b>Enter</b> cashes it in for 2x.</p>
    <div class="htk" id="hTracks"></div><div id="hDiff"></div>
-   <div id="hOpts"><label><input type="checkbox" id="hNoFail"> No-fail</label><label>Music <input type="range" id="hVol" min="0" max="100" step="5"></label><label>Latency offset <input type="range" id="hOff" min="-200" max="200" step="5"> <span id="hOffV"></span> ms</label></div>
-   <p class="note" id="hKeys" style="margin:0"></p><p id="hLand">↻ Landscape recommended on phones/tablets</p>
-   <button id="hPlay">Play</button><div style="font:12px var(--mono);color:#9fb6a6">Original beats synthesized in your browser (no samples, no downloads) · notes follow the drums &amp; melody · charts are fixed per track &amp; difficulty, so scores compare fairly.</div></div>
-  <div id="hPause" class="hov paper hidden"><div class="stamp big-stamp">Paused</div><button id="hResume">▶ Resume</button><button id="hRestart">Restart</button><button id="hQuit">Track list</button></div>
+   <div id="hOpts"><label><input type="checkbox" id="hNoFail"> No-fail</label><label>Volume <input type="range" id="hVol" min="0" max="100" step="5"></label><label>Latency offset <input type="range" id="hOff" min="-200" max="200" step="5"> <span id="hOffV"></span> ms</label></div>
+   <p class="note" id="hKeys" style="margin:0"></p><p id="hLand">Turn your phone sideways for the full floor</p>
+   <button id="hPlay">Play</button><div class="note">Original beats, synthesized live in your browser. Every note follows the music, and every chart is fixed per track and difficulty, so P&amp;L compares fairly.</div></div>
+  <div id="hPause" class="hov paper hidden"><div class="stamp big-stamp">Trading halted</div><button id="hResume" class="hbig">Resume trading</button><button id="hRestart">Re-open</button><button id="hQuit">Track list</button></div>
   <div id="hRes" class="hov paper hidden"></div>
  </div>
 </div>
@@ -1524,25 +1585,25 @@ const $=id=>document.getElementById(id);
  * arrangement [bar, flags]: k kick · s snare · h hats · b bass · p pad/keys · l lead · x sparse lead · c counter-melody · o open hats · H hook energy · f filtered
  * rise = riser bars (last beat drops out), imp = crash/impact bars (gold $ SPACE notes land on these downbeats) ---- */
 const TRACKS=[
- {id:'trap',name:'Margin Call',bpm:140,genre:'Dark trap · sliding 808s, hat rolls',style:'trap',bars:44,seed:3003,swing:0,
-  chords:[{b:31,v:[55,58,62,67]},{b:39,v:[55,58,63,67]},{b:36,v:[55,60,63,67]},{b:38,v:[54,57,62,66]}],
-  motif:[[0,74,3],[3,70,3],[6,67,2],[8,69,2],[10,70,4],[14,74,2],[16,75,3],[19,74,3],[22,70,2],[24,67,6],[30,70,2],[32,72,3],[35,70,3],[38,67,2],[40,75,4],[44,74,4],[48,74,3],[51,72,3],[54,70,2],[56,69,4],[60,66,4]],
-  arr:[[0,'p l f'],[2,'h p l f'],[4,'k s h b p l H'],[12,'k s h b p l x'],[20,'s p l f'],[24,'k s h b p l c o H'],[32,'k s h b p l x'],[36,'k s h b p l c o H'],[42,'h p l f']],
-  rise:[3,23,35],imp:[4,8,12,16,20,24,28,32,36,40]},
- {id:'boombap',name:'Opening Bell',bpm:90,genre:'Boom-bap · dusty drums, Rhodes, vinyl',style:'boom',bars:30,seed:1001,swing:.2,
-  chords:[{b:38,v:[53,57,60,64]},{b:31,v:[53,57,58,62]},{b:34,v:[50,53,57,60]},{b:33,v:[49,55,58,64]}],
-  motif:[[0,69,4],[6,72,2],[8,74,4],[14,72,2],[16,70,6],[22,69,2],[24,67,6],[30,65,2],[32,65,4],[38,69,2],[40,72,6],[46,74,2],[48,73,4],[52,70,4],[56,67,4],[60,64,4]],
-  arr:[[0,'p f'],[2,'k s h b p'],[6,'k s h b p l x'],[10,'k s h b p l o H'],[18,'s h p l f'],[20,'k s h b p l c o H'],[28,'h p f']],
-  rise:[9,19],imp:[2,6,10,14,18,20,24,28]},
- {id:'lofi',name:'After Hours',bpm:78,genre:'Lo-fi chill · warm keys, tape wobble',style:'lofi',bars:26,seed:5005,swing:.25,
-  chords:[{b:41,v:[56,60,63,67]},{b:34,v:[56,60,62,67]},{b:39,v:[55,58,62,65]},{b:36,v:[51,55,58,62]}],
-  motif:[[0,72,3],[4,75,3],[8,79,4],[12,77,4],[16,74,6],[22,72,2],[24,70,8],[32,70,3],[36,74,3],[40,77,4],[44,75,4],[48,74,4],[52,72,4],[56,67,8]],
-  arr:[[0,'p l f'],[2,'k s h b p'],[6,'k s h b p l x'],[10,'k s h b p l o H'],[18,'h p l f'],[20,'k s h b p l c H']],
-  rise:[9,19],imp:[2,6,10,14,18,20,24]}];
+ {id:'phonk',name:'Margin Call',bpm:132,genre:'Drift phonk · cowbell hook, blown-out 808',style:'phonk',bars:40,seed:3003,swing:0,
+  chords:[{b:29,v:[53,56,60,65]},{b:29,v:[53,56,60,63]},{b:25,v:[49,53,56,61]},{b:24,v:[48,52,55,60]}],
+  motif:[[0,77,2],[3,75,2],[6,72,2],[8,77,2],[10,75,2],[12,72,2],[14,70,2],[16,77,2],[19,75,2],[22,72,2],[24,77,2],[26,75,2],[28,72,3],[32,77,2],[35,75,2],[38,73,2],[40,77,2],[42,75,2],[44,73,2],[46,72,2],[48,76,2],[51,72,2],[54,67,2],[56,76,2],[58,72,2],[60,79,4]],
+  arr:[[0,'k s h b l'],[4,'k s h b p l H'],[12,'k s h b p l c o H'],[16,'h p l f'],[18,'k s h b p l Z H'],[26,'p l f'],[28,'k s h b p l c o H'],[36,'k s h b l'],[39,'p l f']],
+  rise:[15,27],imp:[4,8,12,18,22,28,32,36]},
+ {id:'jersey',name:'Short Squeeze',bpm:142,genre:'Jersey club · bed-squeak kicks, vocal chops',style:'jersey',bars:40,seed:1001,swing:0,
+  chords:[{b:33,v:[57,60,64,69]},{b:29,v:[53,57,60,65]},{b:36,v:[55,60,64,67]},{b:31,v:[55,59,62,67]}],
+  motif:[[0,76,1],[2,76,1],[3,74,1],[6,72,2],[8,76,1],[11,74,1],[12,72,2],[14,69,2],[16,77,1],[18,77,1],[19,76,1],[22,72,2],[24,77,1],[27,76,1],[28,72,3],[32,79,1],[34,79,1],[35,76,1],[38,72,2],[40,79,1],[43,76,1],[44,74,2],[46,72,2],[48,74,1],[50,74,1],[51,71,1],[54,67,2],[56,74,1],[58,76,2],[60,79,4]],
+  arr:[[0,'k s h b l q'],[4,'k s h b p l q H'],[12,'k s h b p l c o q H'],[16,'p l f'],[18,'k s h b p l q Z H'],[26,'h p l f'],[28,'k s h b p l c o q H'],[36,'k s h b l q'],[39,'p l f']],
+  rise:[15,27],imp:[4,8,12,18,22,28,32,36]},
+ {id:'spedup',name:'Bull Run',bpm:160,genre:'Sped-up pop · bright chords, bouncy bass',style:'spedup',bars:44,seed:5005,swing:0,
+  chords:[{b:38,v:[62,66,69,73]},{b:35,v:[59,62,66,69]},{b:31,v:[59,62,66,67]},{b:33,v:[61,64,69,73]}],
+  motif:[[0,78,2],[2,81,2],[4,78,2],[6,76,2],[8,74,4],[12,76,2],[14,78,2],[16,78,2],[18,81,2],[20,78,2],[22,76,2],[24,74,6],[30,73,2],[32,74,2],[34,78,2],[36,74,2],[38,73,2],[40,71,4],[44,73,2],[46,74,2],[48,76,2],[50,78,2],[52,76,2],[54,73,2],[56,69,4],[60,81,4]],
+  arr:[[0,'k s h b p l'],[4,'k s h b p l H'],[12,'k s h b p l c o H'],[16,'p l f'],[20,'k s h b p l Z H'],[28,'h p l f'],[32,'k s h b p l c o H'],[40,'k s h b l'],[43,'p l f']],
+  rise:[15,31],imp:[4,8,12,20,24,32,36,40]}];
 TRACKS.forEach(T=>{const ms=T.motif.map(x=>x[1]);T.lo=Math.min(...ms);T.hi=Math.max(...ms)});
 const DIFFS=[{n:'Easy',lanes:3,scroll:1.9,drain:.05},{n:'Medium',lanes:4,scroll:1.6,drain:.06},{n:'Hard',lanes:5,scroll:1.35,drain:.07},{n:'Expert',lanes:5,scroll:1.15,drain:.08}];
-const LANEKEYS={3:['KeyA','KeyS','KeyL'],4:['KeyA','KeyS','KeyK','KeyL'],5:['KeyA','KeyS','KeyD','KeyK','KeyL']}; // D = left middle finger on home row (no reach); Space = gold bonus bar; Enter = Bull Market
-const KL=c=>c==='Space'?'SPACE':c.slice(3);
+const LANEKEYS={3:['ArrowLeft','ArrowDown','ArrowRight'],4:['ArrowLeft','ArrowDown','ArrowUp','ArrowRight'],5:['Tab','ArrowLeft','ArrowDown','ArrowUp','ArrowRight']}; // arrows like a cell cursor; Tab (next cell) = 5th lane; F2 (edit cell) = gold bonus bar, Space = silent fallback; Enter = Bull Market
+const KL=c=>({ArrowLeft:'←',ArrowDown:'↓',ArrowUp:'↑',ArrowRight:'→',Tab:'TAB',F2:'F2',Space:'F2'})[c]||c.replace(/^Key/,'');
 const COLORS=['#19d47a','#ff4d5e','#f3d77a','#3aa0ff','#ff9f1a'];
 const WIN={perfect:.045,great:.09,good:.14};
 const PTS={perfect:100,great:80,good:50};
@@ -1553,10 +1614,13 @@ const hash=(a,b,c)=>{let h=Math.imul(a,73856093)^Math.imul(b+1,19349663)^Math.im
  * so notes always sit on real kicks, snares, hat accents and melody notes. ---- */
 const KP={trap:{H:[[0,10],[0,3,11],[0,10,13],[0,6,10]],V:[[0,10],[0,11],[0,10],[0,7,10,11]]},
  boom:{H:[[0,7,10],[0,3,10],[0,7,10],[0,10,15]],V:[[0,10],[0,7,10],[0,10],[0,3,10]]},
- lofi:{H:[[0,10],[0,7,10],[0,10],[0,10,13]],V:[[0,10],[0,10],[0,7,10],[0,10]]}};
+ lofi:{H:[[0,10],[0,7,10],[0,10],[0,10,13]],V:[[0,10],[0,10],[0,7,10],[0,10]]},
+ phonk:{V:[[0,10],[0,7,10],[0,10],[0,6,10,14]],H:[[0,10],[0,3,10],[0,10,13],[0,6,10,14]],Z:[[0,4,8,12],[0,4,8,12],[0,4,8,12],[0,4,8,11,14]]},
+ jersey:{V:[[0,8],[0,8,10],[0,8],[0,6,8,14]],H:[[0,4,8,10,14],[0,4,8,11,14],[0,4,8,10,14],[0,3,6,8,10,12,14]],Z:[[0,3,6,8,11,14],[0,3,6,8,11,14],[0,3,6,8,11,14],[0,2,4,6,8,10,12,14]]},
+ spedup:{V:[[0,10],[0,7,10],[0,10],[0,10,14]],H:[[0,6,10],[0,7,10],[0,6,10],[0,10,13]],Z:[[0,4,8,12],[0,4,8,12],[0,4,8,12],[0,4,8,10,12,14]]}};
 function sec(T,bar){let s=T.arr[0][1];for(const a of T.arr)if(bar>=a[0])s=a[1];return s.split(' ')}
-function kicks(T,bar){if(bar<0||bar>=T.bars)return[];const F=sec(T,bar);if(!F.includes('k'))return[];return KP[T.style][F.includes('H')?'H':'V'][bar%4]}
-function ev(T,bar,st){const E={};if(bar<0||bar>=T.bars)return E;const F=sec(T,bar),has=f=>F.includes(f),hk=has('H'),s=T.style,r=hash(T.seed,bar,st),ch=T.chords[bar%4];
+function kicks(T,bar){if(bar<0||bar>=T.bars)return[];const F=sec(T,bar);if(!F.includes('k'))return[];const P=KP[T.style];return P[F.includes('Z')&&P.Z?'Z':F.includes('H')?'H':'V'][bar%4]}
+function ev(T,bar,st){const E={};if(bar<0||bar>=T.bars)return E;if(NEWS.has(T.style))return evN(T,bar,st,sec(T,bar),E);const F=sec(T,bar),has=f=>F.includes(f),hk=has('H'),s=T.style,r=hash(T.seed,bar,st),ch=T.chords[bar%4];
  const gap=T.rise.includes(bar)&&st>=12;
  if(st===0&&T.imp.includes(bar))E.crash=1;
  if(st===0&&T.rise.includes(bar))E.rise=1;
@@ -1589,6 +1653,35 @@ function ev(T,bar,st){const E={};if(bar<0||bar>=T.bars)return E;const F=sec(T,ba
   else if(s==='boom'){if(st===0)E.chord={v:ch.v,len:hk?6:10,vel:1};else if(hk&&st===7)E.chord={v:ch.v,len:2,vel:.65};else if(st===11&&!hk&&has('k'))E.chord={v:ch.v,len:3,vel:.55};else if(hk&&st===10)E.chord={v:ch.v,len:4,vel:.6}}
   else if(st===0)E.chord={v:ch.v,len:16,vel:1}}
  if(has('l')){const ms=(bar%4)*16+st,nt=T.motif.find(x=>x[0]===ms);if(nt&&!(has('x')&&st>=8)){E.lead={m:nt[1],len:nt[2]};if(has('c'))E.counter={m:nt[1]+12,len:nt[2]}}}
+ return E}
+
+/* viral-era styles: phonk / jersey club / sped-up pop. Same contract as ev(): one pure decision per 16th. */
+const NEWS=new Set(['phonk','jersey','spedup']);
+function evN(T,bar,st,F,E){const has=f=>F.includes(f),s=T.style,hk=has('H'),r=hash(T.seed,bar,st),ch=T.chords[bar%4],gap=T.rise.includes(bar)&&st>=12;
+ if(st===0&&T.imp.includes(bar))E.crash=1;
+ if(st===0&&T.rise.includes(bar))E.rise=1;
+ if(!gap){
+  const K=kicks(T,bar),ki=K.indexOf(st);
+  if(ki>=0){E.kick=st===0?1:.85;
+   if(has('b')){let len=(ki+1<K.length?K[ki+1]:16)-st;if(T.rise.includes(bar))len=Math.min(len,12-st);let m=ch.b,from=null;
+    if(s==='phonk'){len=Math.min(len,8);if(ki===K.length-1&&bar%2)m+=12;else if(ki===0&&bar%4===0&&bar>0)from=ch.b+7}
+    else if(s==='jersey'){len=Math.min(len,ki===0?6:3);if(ki%2)m+=12}
+    else{len=Math.min(len,4)}
+    E.bass={m,len,from}}}
+  else if(s==='spedup'&&has('b')&&st%4===2)E.bass={m:ch.b+12,len:2,from:null}; // bouncy octave on the off-8ths
+  if(has('s')){
+   if(s==='phonk'){if(st===8){E.snare=1;E.clap=1}if(hk&&bar%2&&st===14)E.snare=.45}
+   else{if(st===4||st===12){E.clap=1;E.snare=hk?.8:.5}if(s==='jersey'&&hk&&bar%4===3&&(st===13||st===15))E.snare=.5}}
+  if(s==='jersey'&&has('q')&&(st===2||st===10||(hk&&st===7)))E.squeak=st===7?.6:1;
+  if(has('h')){
+   if(s==='phonk'){if(has('o')&&st===4&&bar%2)E.open=.6;else if(bar%2===1&&st>=12){E.hat=.75;E.hsub=[0,2/3,4/3]}else if(st%2===0)E.hat=st%4===0?.9:.65;else if(hk&&r<.3)E.hat=.4}
+   else if(s==='jersey'){if(has('o')&&(st===2||st===10))E.open=.5;else if(st%2===0)E.hat=st%4===0?.7:.55;else if(hk)E.hat=.35}
+   else{if(has('o')&&st%4===2)E.open=.45;else if(st%2===0)E.hat=st%4===0?.8:.6;else if(hk&&r<.4)E.hat=.3}}}
+ if(has('p')){
+  if(s==='spedup'){if(st===0)E.chord={v:ch.v,len:hk?3:16,vel:1};else if(hk&&(st===6||st===10))E.chord={v:ch.v,len:2,vel:.7}}
+  else if(s==='jersey'){if(st===0)E.chord={v:ch.v,len:16,vel:.9};else if(hk&&(st===3||st===11))E.chord={v:ch.v.map(m=>m+12),len:1,vel:.6}}
+  else if(st===0)E.chord={v:ch.v,len:16,vel:1}}
+ if(has('l')){const ms=(bar%4)*16+st,nt=T.motif.find(x=>x[0]===ms);if(nt){E.lead={m:nt[1],len:nt[2]};if(has('c'))E.counter={m:nt[1]+12,len:nt[2]}}}
  return E}
 
 /* ---- chart generation (pure + deterministic, derived from the score above) ---- */
@@ -1656,6 +1749,10 @@ function rimS(c){[[1720,.5],[830,.9]].forEach(([f,a])=>{const o=c.createOscillat
  const n=nsrc(c,.05,11),bp=filt(c,'bandpass',3200,2),g=gn(c,0);g.gain.setValueAtTime(.7,0);g.gain.setTargetAtTime(0,0,.005);n.connect(bp);bp.connect(g);g.connect(c.destination);n.start(0)}
 function s808(c){const out=filt(c,'lowpass',2800);out.connect(c.destination);const sh=shaper(c,2.4);sh.connect(out);const o=c.createOscillator(),g=gn(c,0),f=mtof(36);
  o.frequency.setValueAtTime(f*1.7,0);o.frequency.exponentialRampToValueAtTime(f,.035);g.gain.setValueAtTime(0,0);g.gain.linearRampToValueAtTime(1,.003);g.gain.setTargetAtTime(0,.06,1.15);o.connect(g);g.connect(sh);o.start(0)}
+function s808d(c){const out=filt(c,'lowpass',3600);out.connect(c.destination);const sh=shaper(c,6);sh.connect(out);const o=c.createOscillator(),g=gn(c,0),f=mtof(36);
+ o.frequency.setValueAtTime(f*2,0);o.frequency.exponentialRampToValueAtTime(f,.03);g.gain.setValueAtTime(0,0);g.gain.linearRampToValueAtTime(1,.002);g.gain.setTargetAtTime(0,.08,1.3);o.connect(g);g.connect(sh);o.start(0)}
+function squeakS(c){const o=c.createOscillator(),g=gn(c,0),bp=filt(c,'bandpass',2600,3);o.type='sawtooth';o.frequency.setValueAtTime(1400,0);o.frequency.exponentialRampToValueAtTime(2900,.05);o.frequency.exponentialRampToValueAtTime(2100,.11);
+ g.gain.setValueAtTime(0,0);g.gain.linearRampToValueAtTime(1,.006);g.gain.setTargetAtTime(0,.06,.025);o.connect(bp);bp.connect(g);g.connect(c.destination);o.start(0);o.stop(.22)}
 function crackleS(c){const b=c.createBuffer(1,c.length,c.sampleRate),d=b.getChannelData(0),r=rng32(77);for(let i=0;i<d.length;i++){d[i]=(r()*2-1)*.015;if(r()<.0005)d[i]+=(r()*2-1)*(r()<.12?1:.35)}
  const s=c.createBufferSource();s.buffer=b;const hp=filt(c,'highpass',1000),lp=filt(c,'lowpass',6500);s.connect(hp);hp.connect(lp);lp.connect(c.destination);s.start(0)}
 const SDEF=[
@@ -1669,7 +1766,11 @@ const SDEF=[
  ['hat',.15,metal({m:1.45,hp:7200,nz:.8,tau:.013,len:.15})],
  ['open',.9,metal({m:1.45,hp:7000,nz:.8,tau:.12,len:.9})],
  ['crash',3,metal({m:2.3,hp:4200,bp:8000,nz:1.2,tau:.75,len:3})],
- ['b808',3.6,s808],['crackle',4,crackleS],['noise',2,c=>{const n=nsrc(c,2,13);n.connect(c.destination);n.start(0)}]];
+ ['b808',3.6,s808],['b808d',3.6,s808d],['squeak',.25,squeakS],
+ ['kickP',.5,kickS({f0:260,f1:50,pt:.04,hold:.03,dec:.09,drive:4.5,click:.7,len:.5})],
+ ['kickJ',.35,kickS({f0:240,f1:58,pt:.03,hold:.015,dec:.05,drive:2.6,click:.8,len:.35})],
+ ['kickS',.45,kickS({f0:200,f1:55,pt:.04,hold:.025,dec:.07,drive:2,click:.5,len:.45})],
+ ['snareS',.35,snareS({tone:230,btau:.03,ntau:.06,hp:1600,drive:1.8,len:.35})],['crackle',4,crackleS],['noise',2,c=>{const n=nsrc(c,2,13);n.connect(c.destination);n.start(0)}]];
 function prepare(){if(smpP)return smpP;if(!OAC)return smpP=Promise.resolve(null);const t0=performance.now();
  smpP=Promise.all(SDEF.map(([k,len,fn])=>renderOff(len,fn).then(b=>[k,k==='noise'||k==='crackle'?b:norm(b)]))).then(a=>{const S={};a.forEach(([k,b])=>S[k]=b);SMP=S;SMP.ms=Math.round(performance.now()-t0);return SMP})
   .catch(e=>{console.warn('Keyboard Hero: sample render failed',e);smpP=null;return null});return smpP}
@@ -1687,6 +1788,12 @@ function mkBus(c){const B={ctx:c};
  // hit/miss/$$$ SFX skip the glue comp so they sit on top of the beat
  B.ir=impulse(c,2.4,.55);return B}
 const STY={
+ phonk:{kick:'kickP',snare:'snareT',b808:'b808d',kv:.95,sv:.45,cv:.7,rv:.3,hv:.24,ov:.16,bv:.24,sverb:.18,duck:.4,bassLP:3600,tone:20000,verb:.22,dly:.22,rsv:.2,crash:.34,
+  keys:(R,t,v,d,vel)=>v.forEach((m,i)=>padSaw(R,t,m,d,.022*vel,(i%2?.35:-.35))),lead:(R,t,m,d,v)=>cowbell(R,t,m,d,v),lv:.3},
+ jersey:{kick:'kickJ',snare:'snareS',kv:.95,sv:.4,cv:.7,rv:.3,hv:.16,ov:.12,bv:.2,sverb:.15,duck:.5,bassLP:1800,tone:20000,verb:.2,dly:.2,rsv:.2,crash:.3,qv:.32,
+  keys:(R,t,v,d,vel)=>v.forEach((m,i)=>padSaw(R,t,m,d,.026*vel,(i%2?.3:-.3))),lead:(R,t,m,d,v)=>vox(R,t,m,Math.min(d,.16),v),lv:.5},
+ spedup:{kick:'kickS',snare:'snareS',kv:.85,sv:.4,cv:.65,rv:.3,hv:.2,ov:.12,bv:.2,sverb:.2,duck:.55,bassLP:1400,tone:20000,verb:.28,dly:.2,rsv:.18,crash:.3,
+  keys:(R,t,v,d,vel)=>v.forEach((m,i)=>pluckFM(R,t+i*.004,m+12,d,.07*vel)),lead:(R,t,m,d,v)=>{bell(R,t,m,d,v,2,.3);vox(R,t,m,Math.min(d,.2),v*.9)},lv:.16},
  trap:{kick:'kickT',snare:'snareT',kv:.8,sv:.5,cv:.55,rv:.3,hv:.2,ov:.17,bv:.17,sverb:.22,duck:.45,bassLP:5000,tone:20000,verb:.32,dly:.28,rsv:.16,crash:.32,strum:0,
   keys:(R,t,v,d,vel)=>v.forEach((m,i)=>padSaw(R,t,m,d,.03*vel,(i%2?.3:-.3))),lead:(R,t,m,d,v)=>bell(R,t,m,d,v,3.5,.55),lv:.17},
  boom:{kick:'kickB',snare:'snareB',kv:.9,sv:.6,cv:.3,rv:.3,hv:.22,ov:.16,bv:.16,sverb:.12,duck:.65,bassLP:650,tone:20000,verb:.24,dly:.18,rsv:.1,crash:.18,vinyl:.07,
@@ -1711,7 +1818,7 @@ const send=(R,node,amt,to)=>{if(amt>0){const g=gn(R.ctx,amt);node.connect(g);g.c
 function hit(R,name,t,vel,o={}){const b=SMP&&SMP[name];if(!b||vel<=0)return;const c=R.ctx,s=c.createBufferSource(),g=gn(c,vel);s.buffer=b;if(o.rate)s.playbackRate.value=o.rate;s.connect(g);
  const out=panTo(R,g,o.pan);out.connect(o.dest||R.drums);send(R,out,o.verb||0);s.start(t)}
 function duck(R,t){const g=R.duck.gain;g.setTargetAtTime(R.X.duck,t,.003);g.setTargetAtTime(1,t+.05,.11)}
-function bass808(R,t,m,dur,from,vel){const b=SMP&&SMP.b808;if(!b)return;const c=R.ctx;
+function bass808(R,t,m,dur,from,vel){const b=SMP&&SMP[R.X.b808||'b808'];if(!b)return;const c=R.ctx;
  if(R.lastB&&R.lastB.end>t){const pg=R.lastB.g.gain;try{pg.cancelScheduledValues(t);pg.setTargetAtTime(0,t,.006)}catch(e){}}
  const s=c.createBufferSource(),g=gn(c,0),rate=Math.pow(2,(m-36)/12);s.buffer=b;
  if(from!=null&&from!==m){s.playbackRate.setValueAtTime(Math.pow(2,(from-36)/12),t);s.playbackRate.exponentialRampToValueAtTime(rate,t+Math.min(.11,dur*.4))}else s.playbackRate.setValueAtTime(rate,t);
@@ -1734,6 +1841,10 @@ function bell(R,t,m,dur,vel,ratio,tau,dest){const c=R.ctx,f=mtof(m),car=c.create
 function pluckFM(R,t,m,dur,vel,dest){const c=R.ctx,f=mtof(m),car=c.createOscillator(),mod=c.createOscillator(),mg=gn(c,0),lp=filt(c,'lowpass',2600),g=gn(c,0);car.type='triangle';
  car.frequency.value=f;mod.frequency.value=f*2;mg.gain.setValueAtTime(f*1.4,t);mg.gain.setTargetAtTime(0,t,.06);mod.connect(mg);mg.connect(car.frequency);if(R.wob)R.wob.connect(car.detune);
  g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vel,t+.004);g.gain.setTargetAtTime(0,t+.005,.32);car.connect(lp);lp.connect(g);const o=panTo(R,g,-.15);o.connect(dest||R.sweep);send(R,o,.5);send(R,o,.3,R.dly);[car,mod].forEach(x=>{x.start(t);x.stop(t+dur+1.5)});return g}
+function cowbell(R,t,m,d,vel,dest){const c=R.ctx,f=mtof(m),g=gn(c,0),bp=filt(c,'bandpass',f*2.1,1.1),len=Math.min(.35,Math.max(.12,d));
+ [1,1.48].forEach(k=>{const o=c.createOscillator();o.type='square';o.frequency.value=f*k;o.connect(bp);o.start(t);o.stop(t+len+.3)});
+ g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vel,t+.002);g.gain.setTargetAtTime(vel*.45,t+.003,.025);g.gain.setTargetAtTime(0,t+.03,len*.45);
+ bp.connect(g);const sh=shaper(c,1.8);g.connect(sh);const o=panTo(R,sh,.1);o.connect(dest||R.sweep);send(R,o,.22);send(R,o,.3,R.dly);return g}
 function vox(R,t,m,dur,vel,dest){const c=R.ctx,f=mtof(m),o=c.createOscillator(),o2=c.createOscillator(),g=gn(c,0),mix=gn(c,1),len=Math.max(.14,dur*.92);o.type=o2.type='sawtooth';o.frequency.value=f;o2.frequency.value=f;o2.detune.value=8;
  const vib=c.createOscillator(),vg=gn(c,0);vib.frequency.value=5.2;vg.gain.setValueAtTime(0,t);vg.gain.linearRampToValueAtTime(12,t+.3);vib.connect(vg);vg.connect(o.detune);vg.connect(o2.detune);o.connect(mix);o2.connect(mix);
  [[730,7,1],[1090,9,.55],[2440,11,.25]].forEach(([F,Q,a])=>{const bp=filt(c,'bandpass',F*.85,Q),ag=gn(c,a);bp.frequency.setValueAtTime(F*.8,t);bp.frequency.linearRampToValueAtTime(F,t+.07);mix.connect(bp);bp.connect(ag);ag.connect(g)}); // "oh→ah" formants = chopped vocal
@@ -1742,6 +1853,12 @@ function vox(R,t,m,dur,vel,dest){const c=R.ctx,f=mtof(m),o=c.createOscillator(),
 /* ---- PLAYER PART: charted melody notes are muted in the backing and only sound when hit; drum-lane hits add a matching
  * drum layer + a chord tone. Every trigger is quantized to the note's beat time on the audio clock. ---- */
 const PART={
+ phonk:{lead:(R,t,m,d,v)=>cowbell(R,t,m,d,v,R.pl),lv:.42,tone:(R,t,m,v,d)=>cowbell(R,t,m+12,Math.min(d,.2),v,R.pl),tv:.16,kick:'kickP',kl:.24,snare:'clap',sl:.26,sub:.18,
+  stab:(R,t,v,d,vel)=>v.forEach((m,i)=>bell(R,t+i*.003,m,d,vel,2,.4,R.pl)),stv:.09},
+ jersey:{lead:(R,t,m,d,v)=>vox(R,t,m,Math.min(d,.16),v,R.pl),lv:.7,tone:(R,t,m,v,d)=>pluckFM(R,t,m,d,v,R.pl),tv:.16,kick:'kickJ',kl:.24,snare:'clap',sl:.26,sub:.14,
+  stab:(R,t,v,d,vel)=>v.forEach((m,i)=>vox(R,t+i*.004,m,.18,vel*2,R.pl)),stv:.12},
+ spedup:{lead:(R,t,m,d,v)=>{bell(R,t,m,d,v,2,.3,R.pl);return vox(R,t,m,Math.min(d,.2),v*.9,R.pl)},lv:.24,tone:(R,t,m,v,d)=>pluckFM(R,t,m,d,v,R.pl),tv:.16,kick:'kickS',kl:.2,snare:'clap',sl:.24,sub:.12,
+  stab:(R,t,v,d,vel)=>v.forEach((m,i)=>pluckFM(R,t+i*.004,m+12,d,vel,R.pl)),stv:.1},
  trap:{lead:(R,t,m,d,v)=>bell(R,t,m,d,v,3.5,.55,R.pl),lv:.27,tone:(R,t,m,v,d)=>bell(R,t,m,d,v,2,.22,R.pl),tv:.14,kick:'kickT',kl:.24,snare:'clap',sl:.26,sub:.16,
   stab:(R,t,v,d,vel)=>v.forEach((m,i)=>bell(R,t+i*.003,m,d,vel,2,.5,R.pl)) ,stv:.09},
  boom:{lead:(R,t,m,d,v)=>vox(R,t,m,d,v,R.pl),lv:.62,tone:(R,t,m,v,d)=>ep(R,t,m,d,v,0,R.pl),tv:.2,kick:'kickB',kl:.22,snare:'snareB',sl:.2,sub:0,
@@ -1788,6 +1905,7 @@ function playStep(R,T,step,t){const bar=Math.floor(step/16),st=step%16;if(bar>=T
  if(E.rim)hit(R,'rim',tt,X.rv*E.rim,{verb:.25,pan:-.15});
  if(E.hat){const subs=E.hsub||[0],v=E.hat*X.hv*(.82+.36*h);subs.forEach((o,i)=>hit(R,'hat',tt+o*s16+(i?0:(h-.5)*.004),v*(subs.length>1?.7+.3*((i+1)/subs.length):1),{pan:.22}))}
  if(E.open)hit(R,'open',tt,E.open*X.ov,{pan:.28,verb:.12});
+ if(E.squeak)hit(R,'squeak',tt,(X.qv||.3)*E.squeak,{pan:.3,verb:.15});
  if(E.bass)bass808(R,tt,E.bass.m,E.bass.len*s16*.97,E.bass.from,X.bv);
  if(E.chord)X.keys(R,tt,E.chord.v,E.chord.len*s16,E.chord.vel);
  const own=R.mute&&R.mute.has(step);
@@ -1852,15 +1970,15 @@ function up(lane,t=now()){if(!H)return;delete H.press[lane];const h=H.hold[lane]
  h.n.held=Math.min(1,(t-h.n.t)/h.n.len);if(t<h.n.t+h.n.len-.12){h.n.broken=true;if(h.voice&&ac){try{const g=h.voice.gain;g.cancelScheduledValues(ac.currentTime);g.setTargetAtTime(0,ac.currentTime,.04)}catch(e){}}}}
 function dollar(t=now()){if(!H||H.done||H.paused)return null;const p=H.c.phrases.find(p=>!p.j&&Math.abs(p.t-t)<=WIN.good);
  if(!p){H.port=Math.max(0,H.port-.01);buzz();return 'over'}const d=Math.abs(p.t-t),k=d<=WIN.perfect?'perfect':d<=WIN.great?'great':'good';p.j=k;H.phr++;
- H.score+=({perfect:500,great:400,good:250})[k]*mult();H.port=Math.min(1,H.port+.05);if(live())dropHit(p);else chime();coinBurst();bucks();call('BONUS +'+(({perfect:500,great:400,good:250})[k]*mult()));return k}
+ H.score+=({perfect:500,great:400,good:250})[k]*mult();H.port=Math.min(1,H.port+.05);if(live())dropHit(p);else chime();coinBurst();bucks();call('$ DROP +'+(({perfect:500,great:400,good:250})[k]*mult()));return k}
 function bucks(){const e=$('hBucks');e.classList.remove('go');void e.offsetWidth;e.classList.add('go')}
-function activateStar(t=now()){if(!H||H.starOn||H.star<.5||H.done||H.paused)return false;H.starOn=true;H.starEnd=t+H.star*H.c.spb*16;$('hero').classList.add('starOn');call('BULL MARKET! 2x');chime();return true}
+function activateStar(t=now()){if(!H||H.starOn||H.star<.5||H.done||H.paused)return false;H.starOn=true;H.starEnd=t+H.star*H.c.spb*16;$('hero').classList.add('starOn');call('BULL MARKET 2x');chime();return true}
 function update(t){if(!H||H.done)return;const c=H.c;
  for(const n of c.notes){if(n.j)continue;if(n.t>t-WIN.good)break;miss(n);if(H.done)return}
  for(const l in H.hold){const h=H.hold[l];if(t>=h.n.t+h.n.len){H.score+=sustainPts(h,t);h.n.held=1;delete H.hold[l]}}
  if(H.starOn){H.star=Math.max(0,(H.starEnd-t)/(H.c.spb*16));if(t>=H.starEnd){H.starOn=false;H.star=0;$('hero').classList.remove('starOn')}}
  c.phrases.forEach(p=>{if(!p.j&&t>p.t+WIN.good)p.j='miss'});if(t>c.len+.5)finish()}
-function fail(){if(!H||H.done)return;H.failed=true;call('MARGIN CALLED');finish()}
+function fail(){if(!H||H.done)return;H.failed=true;call('MARGIN CALL');finish()}
 function finish(){if(H.done)return;H.done=true;clearInterval(schedTimer);if(H.R)stopRun(H.R,.3);
  H.res=results();const h=H;setTimeout(()=>{if(H===h&&window.HERO_ACTIVE)showResults()},H.failed?900:300)}
 function results(){const t=total(),c=H.cnt,acc=t?(c.perfect+c.great*.75+c.good*.5)/t:0,pct=Math.round(acc*100);
@@ -1868,19 +1986,19 @@ function results(){const t=total(),c=H.cnt,acc=t?(c.perfect+c.great*.75+c.good*.
  return{score:H.score,acc:pct,grade,stars,maxStreak:H.maxStreak,cnt:Object.assign({},c),phr:H.phr,phrN:H.c.phrases.length,failed:H.failed,notes:t}}
 const bests=()=>{try{return JSON.parse(localStorage.kwHeroBest||'{}')}catch(e){return{}}};
 function shareText(r=H.res){const n=(localStorage.kwName||'').trim(),url=SITE_URL+'?mode=hero';
- return{t:`${n||'I'} scored ${r.score.toLocaleString()} on Keyboard Hero — ${TRACKS[H.ti].name} (${DIFFS[H.di].n}, ${r.acc}% accuracy, ${'★'.repeat(r.stars)||'0★'}, max streak ${r.maxStreak}${noFail?', no-fail':''}) — beat me!`,url}}
+ return{t:`${n||'I'} booked ${r.score.toLocaleString()} P&L on Keyboard Hero: ${TRACKS[H.ti].name} (${DIFFS[H.di].n}, ${r.acc}% fill rate, ${'★'.repeat(r.stars)||'0★'}, best streak ${r.maxStreak}${noFail?', no-fail':''}). Your move.`,url}}
 let resAt=0;
 function showResults(){const r=H.res,key=TRACKS[H.ti].id+'-'+H.di,b=bests(),prev=b[key];let nb=false;
  if(!r.failed&&(!prev||r.score>prev.score)){b[key]={score:r.score,acc:r.acc,stars:r.stars,nf:noFail};localStorage.kwHeroBest=JSON.stringify(b);nb=!!prev||r.score>0}
- const el=$('hRes');el.innerHTML=`<div class="stamp">${r.failed?'Margin call':nb?'New high':'Filled'}</div><h2>${r.failed?'Margin called':nb?'New high score':'Closing bell'}</h2><div style="font:14px var(--mono);color:#9fb6a6">${TRACKS[H.ti].name} · ${DIFFS[H.di].n}${noFail?' · no-fail':''}</div>
+ const el=$('hRes');el.innerHTML=`<div class="stamp">${r.failed?'Margin call':nb?'New high':'Filled'}</div><h2>${r.failed?'Margin call':'Closing bell'}</h2><div style="font:14px var(--mono);color:#9fb6a6">${TRACKS[H.ti].name} · ${DIFFS[H.di].n}${noFail?' · no-fail':''}</div>
  <div class="hgrade">${r.grade}</div><div class="hstars">${'★'.repeat(r.stars)}${'☆'.repeat(5-r.stars)}</div><div style="font:800 32px var(--mono);color:#19d47a">${r.score.toLocaleString()}</div>
- <table><tr><td>Accuracy</td><td>${r.acc}%</td></tr><tr><td>Max streak</td><td>${r.maxStreak}</td></tr><tr><td>Perfect</td><td>${r.cnt.perfect}</td></tr><tr><td>Great</td><td>${r.cnt.great}</td></tr><tr><td>Good</td><td>${r.cnt.good}</td></tr><tr><td>Miss</td><td>${r.cnt.miss}</td></tr><tr><td>$ bonuses</td><td>${r.phr}/${r.phrN}</td></tr><tr><td>Best</td><td>${(b[key]||prev)?(b[key]||prev).score.toLocaleString():'—'}</td></tr></table>
- ${META.heroEnd(r,{nb,prev,track:TRACKS[H.ti].name,diff:DIFFS[H.di].n})}<div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center"><button id="hRetry" class="hbig">↻ Retry <kbd>R</kbd></button><button id="hList">Tracks</button><button id="hShare">Share</button></div><div id="hShareMsg" style="font:12px var(--mono);color:#9fb6a6;max-width:520px"></div>`;
+ <table><tr><td>Fill rate</td><td>${r.acc}%</td></tr><tr><td>Best streak</td><td>${r.maxStreak}</td></tr><tr><td>Perfect</td><td>${r.cnt.perfect}</td></tr><tr><td>Great</td><td>${r.cnt.great}</td></tr><tr><td>Good</td><td>${r.cnt.good}</td></tr><tr><td>Miss</td><td>${r.cnt.miss}</td></tr><tr><td>$ drops</td><td>${r.phr}/${r.phrN}</td></tr><tr><td>Record P&amp;L</td><td>${(b[key]||prev)?(b[key]||prev).score.toLocaleString():'—'}</td></tr></table>
+ ${META.heroEnd(r,{nb,prev,track:TRACKS[H.ti].name,diff:DIFFS[H.di].n})}<div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center"><button id="hRetry" class="hbig">Trade again <kbd>R</kbd></button><button id="hList">Track list</button><button id="hShare">Share ticket</button></div><div id="hShareMsg" style="font:12px var(--mono);color:#9fb6a6;max-width:520px"></div>`;
  el.classList.remove('hidden');resAt=performance.now();$('hRetry').onclick=()=>start();$('hList').onclick=menu;
  $('hShare').onclick=async()=>{const{t,url}=shareText(),full=t+' '+url;window.KW_LAST_SHARE=full;
-  if(navigator.share){try{await navigator.share({title:'Keyboard Hero',text:t,url});$('hShareMsg').textContent='Shared!';return}catch(e){if(e&&e.name==='AbortError')return}}
+  if(navigator.share){try{await navigator.share({title:'Keyboard Hero',text:t,url});$('hShareMsg').textContent='Ticket sent.';return}catch(e){if(e&&e.name==='AbortError')return}}
   try{await navigator.clipboard.writeText(full)}catch(e){const ta=document.createElement('textarea');ta.value=full;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove()}
-  $('hShareMsg').textContent='Copied! "'+full+'"'}}
+  $('hShareMsg').textContent='Copied: "'+full+'"'}}
 function pause(){if(!H||H.done||H.paused)return;H.paused=true;H.pauseClock=clock();if(ac&&H.audio)ac.suspend();Object.keys(H.hold).forEach(l=>up(+l));$('hPause').classList.remove('hidden')}
 function resume(){if(!H||!H.paused)return;$('hPause').classList.add('hidden');let n=3;const cd=$('hCount');const tick=()=>{if(!H||!H.paused)return;if(n===0){cd.textContent='';
  if(!H.audio){H.t0+=clock()-H.pauseClock}if(ac&&H.audio)ac.resume();H.paused=false;return}cd.textContent=n--;setTimeout(tick,600)};tick()}
@@ -1898,11 +2016,11 @@ function draw(t){if(!ctx||!H)return;const g=geom(),{n,lw,x0,sy,pps}=g,light=docu
  for(let i=0;i<=n;i++){ctx.fillStyle='#d4af3733';ctx.fillRect(x0+i*lw-1,0,2,HH)}
  const spb=H.c.spb,b0=Math.floor((t-.5)/spb);for(let b=b0;b<b0+DIFFS[H.di].scroll/spb+3;b++){const y=sy-(b*spb-t)*pps;if(y<0||y>HH)continue;ctx.fillStyle=b%4===0?'#d4af3755':'#ffffff14';ctx.fillRect(x0,y,lw*n,b%4===0?2:1)}
  for(let i=0;i<n;i++){const x=x0+(i+.5)*lw,pr=H.press[i]!=null;ctx.beginPath();ctx.arc(x,sy,lw*.34,0,7);ctx.fillStyle=pr?COLORS[i]:'#0b1626';ctx.fill();ctx.lineWidth=3;ctx.strokeStyle=COLORS[i];ctx.stroke();
-  ctx.fillStyle=pr?'#0a1220':'#e9efe6';ctx.font=(LANEKEYS[n][i]==='Space'?'700 11px':'700 16px')+' monospace';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(KL(LANEKEYS[n][i]),x,sy)}
+  ctx.fillStyle=pr?'#0a1220':'#e9efe6';ctx.font=(LANEKEYS[n][i]==='Tab'?'700 12px':'700 20px')+' monospace';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(KL(LANEKEYS[n][i]),x,sy)}
  const top=t+DIFFS[H.di].scroll+.1;
  for(const p of H.c.phrases){if(p.j&&p.j!=='miss'||p.t>top||p.t<t-.4)continue;const y=sy-(p.t-t)*pps;
   const gr=ctx.createLinearGradient(0,y-16,0,y+16);gr.addColorStop(0,p.j?'#666':'#ffe9a0');gr.addColorStop(1,p.j?'#444':'#c8961e');ctx.fillStyle=gr;ctx.shadowColor='#d4af37';ctx.shadowBlur=p.j?0:6;rr(x0+6,y-16,lw*n-12,32,10);ctx.fill();ctx.shadowBlur=0;
-  ctx.lineWidth=3;ctx.strokeStyle='#7a5a10';ctx.stroke();ctx.fillStyle='#2a1c00';ctx.font='900 17px monospace';ctx.fillText('$  SPACE  $',x0+lw*n/2,y+1)}
+  ctx.lineWidth=3;ctx.strokeStyle='#7a5a10';ctx.stroke();ctx.fillStyle='#2a1c00';ctx.font='900 17px monospace';ctx.fillText('$  F2  $',x0+lw*n/2,y+1)}
  const chords={};
  for(const nt of H.c.notes){if(nt.t>top)break;const yH=sy-(nt.t-t)*pps,x=x0+(nt.lane+.5)*lw,c=COLORS[nt.lane];
   if(nt.len>0){const yT=sy-(nt.t+nt.len-t)*pps;if(yT>HH)continue;const hold=H.hold[nt.lane]&&H.hold[nt.lane].n===nt,y1=hold?sy:yH;
@@ -1910,7 +2028,7 @@ function draw(t){if(!ctx||!H)return;const g=geom(),{n,lw,x0,sy,pps}=g,light=docu
   if(nt.j&&nt.j!=='miss')continue;if(yH>HH+30||yH<-30)continue;
   if(nt.chord){(chords[nt.chord]=chords[nt.chord]||[]).push([x,yH])}
   ctx.beginPath();ctx.ellipse(x,yH,lw*.36,lw*.17,0,0,7);ctx.fillStyle=nt.j==='miss'?'#444':c;ctx.shadowColor=nt.star?'#7dffb5':'transparent';ctx.shadowBlur=nt.star?6:0;ctx.fill();ctx.shadowBlur=0;
-  ctx.lineWidth=nt.star?4:2;ctx.strokeStyle=nt.star?'#eafff2':'#0a1220';ctx.stroke();if(nt.star){ctx.fillStyle='#fff';ctx.font='900 15px serif';ctx.fillText('★',x,yH+1)}}
+  ctx.lineWidth=nt.star?4:2;ctx.strokeStyle=nt.star?'#eafff2':'#0a1220';ctx.stroke();if(nt.star){ctx.fillStyle='#fff';ctx.font='900 15px serif';ctx.fillText('★',x,yH+1)}else if(nt.j!=='miss'){ctx.fillStyle='#0a1220';ctx.font='700 14px monospace';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(KL(LANEKEYS[n][nt.lane]),x,yH+1)}}
  Object.values(chords).forEach(a=>{if(a.length<2)return;ctx.strokeStyle='#ffffffaa';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(a[0][0],a[0][1]);a.forEach(p=>ctx.lineTo(p[0],p[1]));ctx.stroke()});
  const dt=Math.min(.05,(performance.now()-lastFrame)/1000);lastFrame=performance.now();
  parts=parts.filter(p=>(p.life-=dt)>0);parts.forEach(p=>{p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=900*dt;ctx.globalAlpha=Math.max(0,p.life/.6);ctx.fillStyle=p.c;ctx.fillRect(p.x,p.y,4,4)});ctx.globalAlpha=1;
@@ -1925,9 +2043,9 @@ function loop(){if(!H)return;const t=now();if(!H.paused)update(t);draw(t);hud();
 
 /* ---- menu ---- */
 function menu(){if(H){H.done=true;clearInterval(schedTimer);stopRun(H.R)}prepare();const b=bests();$('hTracks').innerHTML='';TRACKS.forEach((T,i)=>{const bt=document.createElement('button'),x=b[T.id+'-'+sel.di];
-  bt.innerHTML=`<span>${T.name}${i===0?' <i class="hot">HOT</i>':''}</span><small>${T.bpm} BPM · ${T.genre}</small><small>${x?'Best '+x.score.toLocaleString()+' · '+'★'.repeat(x.stars):'No score yet'}</small>`;bt.className=i===sel.ti?'on':'';bt.onclick=()=>{sel.ti=i;localStorage.kwHeroTrack=T.id;menu()};$('hTracks').appendChild(bt)});
+  bt.innerHTML=`<span>${T.name}${i===0?' <i class="hot">HOT</i>':''}</span><small>${T.bpm} BPM · ${T.genre}</small><small>${x?'Record '+x.score.toLocaleString()+' · '+'★'.repeat(x.stars):'No trades yet'}</small>`;bt.className=i===sel.ti?'on':'';bt.onclick=()=>{sel.ti=i;localStorage.kwHeroTrack=T.id;menu()};$('hTracks').appendChild(bt)});
  $('hDiff').innerHTML='';DIFFS.forEach((D,i)=>{const bt=document.createElement('button');bt.textContent=D.n+' · '+D.lanes+' lanes'+(i===3?' + chords':'');bt.className=i===sel.di?'on':'';bt.onclick=()=>{sel.di=i;localStorage.kwHeroD=i;menu()};$('hDiff').appendChild(bt)});
- $('hKeys').textContent='Lanes: '+LANEKEYS[DIFFS[sel.di].lanes].map(KL).join(' ')+' · gold bar = SPACE · Enter = Bull Market · Esc = pause. Touch: tap the lanes (multi-touch chords, hold for sustains), SPACE bar button for gold bars.';
+ $('hKeys').textContent='Lanes '+LANEKEYS[DIFFS[sel.di].lanes].map(KL).join(' ')+' · $ bar F2 (Fn+F2 on Mac) · Bull Market Enter · Halt Esc. On touch: tap the lanes, hold for sustains, tap the $ F2 button on drops.';
  $('hNoFail').checked=noFail;$('hVol').value=Math.round(vol*100);$('hOff').value=off;$('hOffV').textContent=off;['hPause','hRes'].forEach(id=>$(id).classList.add('hidden'));$('hMenu').classList.remove('hidden');$('hCount').textContent=''}
 function enter(){if(window.WF_ACTIVE&&typeof WF!=='undefined')WF.exit();if(typeof st!=='undefined'&&st&&st.running)end('');window.HERO_ACTIVE=true;$('hero').classList.remove('hidden');size();menu()}
 function exit(){if(H){H.done=true;clearInterval(schedTimer);stopRun(H.R)}if(ac&&ac.state==='suspended')ac.resume();H=null;window.HERO_ACTIVE=false;$('hero').classList.add('hidden')}
@@ -1940,18 +2058,19 @@ addEventListener('keydown',e=>{if(!window.HERO_ACTIVE)return;if(e.target&&e.targ
   else if((e.code==='Enter'||e.code==='Space'||e.code==='KeyR')&&!e.repeat&&!e.ctrlKey&&!e.metaKey&&!e.altKey&&!$('hRes').classList.contains('hidden')&&performance.now()-resAt>700){e.preventDefault();start()}return}
  if(e.metaKey||e.ctrlKey||e.altKey)return; // never swallow OS/browser shortcuts
  if(e.code==='Enter'||e.code==='NumpadEnter'){e.preventDefault();if(!e.repeat)activateStar();return}
- if(e.code==='Space'){e.preventDefault();if(!e.repeat&&!H.paused)dollar();return} // Space = gold bonus bar
- if(/^Key[A-Z]$/.test(e.code)){e.preventDefault();if(e.repeat||H.paused)return;const l=laneOf(e.code);if(l>=0)down(l)}},true);
-addEventListener('keyup',e=>{if(!window.HERO_ACTIVE||!H)return;const l=laneOf(e.code);if(l>=0){e.preventDefault();up(l)}},true);
+ if(e.code==='F2'||e.code==='Space'){e.preventDefault();e.stopPropagation();if(!e.repeat&&!H.paused)dollar();return} // F2 (Excel edit-cell) = gold bonus bar; Space = silent fallback (Fn-less laptops)
+ {const l=laneOf(e.code);if(l>=0){e.preventDefault();e.stopPropagation();if(e.repeat||H.paused)return;down(l);return}}
+ if(/^Key[A-Z]$/.test(e.code)||e.code==='Tab'||/^Arrow/.test(e.code))e.preventDefault()},true);
+addEventListener('keyup',e=>{if(!window.HERO_ACTIVE||!H)return;const l=laneOf(e.code);if(l>=0){e.preventDefault();e.stopPropagation();up(l)}},true);
 addEventListener('blur',()=>{if(window.HERO_ACTIVE&&H&&!H.done)pause()});
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&window.HERO_ACTIVE&&H&&!H.done)pause()});
 addEventListener('resize',()=>{if(window.HERO_ACTIVE)size()});
 const ptr={};
 function setup(){const c=$('hCv');
- c.addEventListener('pointerdown',e=>{if(!H||H.done||H.paused)return;e.preventDefault();const g=geom(),l=Math.floor((e.clientX-c.getBoundingClientRect().left-g.x0)/g.lw);if(l<0||l>=g.n)return;try{c.setPointerCapture(e.pointerId)}catch(_){}ptr[e.pointerId]=l;down(l)});
+ c.addEventListener('pointerdown',e=>{if(!H||H.done||H.paused)return;e.preventDefault();const g=geom(),l=Math.floor((e.clientX-c.getBoundingClientRect().left-g.x0)/g.lw);if(l<0||l>=g.n)return;try{c.setPointerCapture(e.pointerId)}catch(_){}ptr[e.pointerId]=l;const lag=Math.max(0,Math.min(.08,(performance.now()-e.timeStamp)/1000));down(l,now()-lag);try{navigator.vibrate&&navigator.vibrate(6)}catch(_){}});
  const rel=e=>{const l=ptr[e.pointerId];if(l==null)return;delete ptr[e.pointerId];if(!Object.values(ptr).includes(l))up(l)};
  c.addEventListener('pointerup',rel);c.addEventListener('pointercancel',rel);c.addEventListener('contextmenu',e=>e.preventDefault());
- $('hStarB').onclick=()=>activateStar();$('hDollarB').onpointerdown=e=>{e.preventDefault();dollar()};if(typeof IC!=='undefined'&&!$('hPauseB').querySelector('svg'))$('hPauseB').innerHTML=IC.pause;$('hPauseB').onclick=()=>{if(H&&!H.done)H.paused?resume():pause()};$('hBack').onclick=exit;
+ $('hStarB').onclick=()=>activateStar();$('hDollarB').onpointerdown=e=>{e.preventDefault();dollar();try{navigator.vibrate&&navigator.vibrate(15)}catch(_){}};if(typeof IC!=='undefined'&&!$('hPauseB').querySelector('svg'))$('hPauseB').innerHTML=IC.pause;$('hPauseB').onclick=()=>{if(H&&!H.done)H.paused?resume():pause()};$('hBack').onclick=exit;
  $('hResume').onclick=resume;$('hRestart').onclick=()=>start();$('hQuit').onclick=menu;$('hPlay').onclick=()=>start();
  $('hNoFail').onchange=e=>{noFail=e.target.checked;localStorage.kwHeroNF=noFail?'1':'0'};
  $('hVol').oninput=e=>{vol=e.target.value/100;localStorage.kwHeroVol=vol;if(BUS)BUS.music.gain.setTargetAtTime(vol,BUS.ctx.currentTime,.02)};
